@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Lock, Phone, User, Mail, ShieldCheck, CheckCircle2, ArrowRight, Eye, EyeOff, Wrench, Zap, Clock, AlertTriangle, FileText } from 'lucide-react';
 import { loginWithCredentials, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
-import { initGoogleSignIn, parseGoogleJwt } from './googleAuthService';
+import { triggerGoogleLoginPopup, initGoogleSignIn, parseGoogleJwt } from './googleAuthService';
 import './AuthModal.css';
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'login', initialRole = 'customer', onAuthSuccess }) {
@@ -219,13 +219,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
   };
 
   const triggerGooglePrompt = () => {
-    if (typeof window !== 'undefined' && window.google && window.google.accounts) {
-      try {
-        window.google.accounts.id.prompt();
-      } catch (e) {
+    setErrorMessage('');
+    const triggered = triggerGoogleLoginPopup({
+      onSuccess: (googleProfile) => {
+        handleGoogleProfileSuccess(googleProfile);
+      },
+      onError: (err) => {
+        console.warn("Google OAuth error, using account prompt fallback:", err);
         setMode('google_prompt');
       }
-    } else {
+    });
+
+    if (!triggered) {
       setMode('google_prompt');
     }
   };

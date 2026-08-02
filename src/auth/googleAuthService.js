@@ -1,5 +1,5 @@
 // ==========================================================================
-// HomeFix - Official Google Sign-In & JWT Token Decoder Service
+// HomeFix - Official Google Sign-In & Token Client Service
 // ==========================================================================
 
 export const DEFAULT_GOOGLE_CLIENT_ID = "272713080705-ih8t7ritnpmmga6oa35kqkkuht0hahui.apps.googleusercontent.com";
@@ -32,62 +32,57 @@ export function parseGoogleJwt(token) {
 }
 
 /**
- * Initialize Google Identity Services (GSI) Client
+ * Request Google Sign-In Native Popup Window
  */
-export function initGoogleSignIn({ clientId = getGoogleClientId(), onSuccess, onError }) {
+export function triggerGoogleLoginPopup({ clientId = getGoogleClientId(), onSuccess, onError }) {
   if (typeof window === 'undefined' || !window.google || !window.google.accounts) {
-    console.warn("Google GSI Client SDK not yet loaded.");
-    return false;
-  }
-
-  if (!clientId) {
+    if (onError) onError("Google SDK loading... Please click again in a second.");
     return false;
   }
 
   try {
-    window.google.accounts.id.initialize({
+    const tokenClient = window.google.accounts.oauth2.initTokenClient({
       client_id: clientId,
-      callback: (response) => {
-        if (response && response.credential) {
-          const payload = parseGoogleJwt(response.credential);
-          if (payload) {
-            onSuccess({
-              email: payload.email,
-              name: payload.name || payload.given_name || payload.email.split('@')[0],
-              picture: payload.picture,
-              googleId: payload.sub
+      scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+      callback: async (tokenResponse) => {
+        if (tokenResponse && tokenResponse.access_token) {
+          try {
+            const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
             });
-          } else {
-            onError("Failed to parse Google credential token.");
+            const profile = await userInfoRes.json();
+            if (profile && profile.email) {
+              onSuccess({
+                email: profile.email,
+                name: profile.name || profile.given_name || profile.email.split('@')[0],
+                picture: profile.picture,
+                googleId: profile.sub
+              });
+            } else {
+              if (onError) onError("Failed to fetch Google profile info.");
+            }
+          } catch (fetchErr) {
+            console.error("Error fetching Google userinfo:", fetchErr);
+            if (onError) onError("Network error fetching Google profile.");
           }
         } else {
-          onError("No credential returned from Google.");
+          if (onError) onError("Google login popup cancelled.");
         }
       }
     });
 
+    tokenClient.requestAccessToken({ prompt: 'select_account' });
     return true;
   } catch (err) {
-    console.error("Google Identity initialization error:", err);
+    console.error("Google OAuth token client error:", err);
+    if (onError) onError("Google OAuth error: " + err.message);
     return false;
   }
 }
 
 /**
- * Render Official Google Button
+ * Legacy GSI initializer fallback
  */
-export function renderOfficialGoogleButton(containerElement, { onSuccess, onError }) {
-  const initialized = initGoogleSignIn({ onSuccess, onError });
-  if (initialized && containerElement) {
-    containerElement.innerHTML = '';
-    window.google.accounts.id.renderButton(containerElement, {
-      theme: 'outline',
-      size: 'large',
-      width: '380',
-      text: 'continue_with',
-      shape: 'pill'
-    });
-    return true;
-  }
-  return false;
+export function initGoogleSignIn({ clientId = getGoogleClientId(), onSuccess, onError }) {
+  return triggerGoogleLoginPopup({ clientId, onSuccess, onError });
 }
