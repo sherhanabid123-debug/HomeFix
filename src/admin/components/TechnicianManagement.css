@@ -1,0 +1,27 @@
+.tech-mgmt-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tech-table-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tech-avatar-table {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.service-name-pill.green {
+  background: #ECFDF5;
+  color: #10B981;
+}
+
+.text-amber {
+  color: #F59E0B;
+}

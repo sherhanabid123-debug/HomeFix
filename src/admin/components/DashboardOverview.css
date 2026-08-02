@@ -1,0 +1,237 @@
+.dashboard-overview-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.overview-welcome-banner {
+  padding: 1.75rem 2rem;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+@media (min-width: 768px) {
+  .overview-welcome-banner {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.overview-welcome-banner h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.overview-welcome-banner p {
+  color: #64748B;
+  font-size: 0.925rem;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .kpi-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.kpi-card {
+  padding: 1.25rem;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.kpi-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kpi-icon-badge.blue { background: #EFF6FF; color: #2563EB; }
+.kpi-icon-badge.green { background: #ECFDF5; color: #10B981; }
+.kpi-icon-badge.emerald { background: #ECFDF5; color: #059669; }
+.kpi-icon-badge.amber { background: #FFFBEB; color: #F59E0B; }
+.kpi-icon-badge.indigo { background: #EEF2FF; color: #6366F1; }
+.kpi-icon-badge.purple { background: #F3E8FF; color: #9333EA; }
+.kpi-icon-badge.red { background: #FEF2F2; color: #EF4444; }
+
+.kpi-trend {
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.trend-up { background: #ECFDF5; color: #10B981; }
+.trend-warn { background: #FFFBEB; color: #D97706; }
+
+.kpi-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
+}
+
+.kpi-title {
+  font-size: 0.825rem;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.dark-mode .kpi-title {
+  color: #94A3B8;
+}
+
+.overview-two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+  .overview-two-col {
+    grid-template-columns: 1.4fr 0.8fr;
+  }
+}
+
+.activity-card, .ops-status-card {
+  padding: 2rem;
+  border-radius: 20px;
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.card-header-row h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.link-btn {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 5px;
+  box-shadow: 0 0 0 4px var(--primary-light);
+  flex-shrink: 0;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.925rem;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-time {
+  font-size: 0.775rem;
+  color: #94A3B8;
+}
+
+.timeline-sub {
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+.cat-badge {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.city-ops-box {
+  background: #F8FAFC;
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 1px solid #E2E8F0;
+}
+
+.dark-mode .city-ops-box {
+  background: #1E293B;
+  border-color: #374151;
+}
+
+.city-ops-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.city-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.city-stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+.mt-3 { margin-top: 0.85rem; }
+
+.quick-alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #ECFDF5;
+  padding: 1rem;
+  border-radius: 14px;
+  font-size: 0.85rem;
+}

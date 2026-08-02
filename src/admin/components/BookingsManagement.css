@@ -1,0 +1,188 @@
+.bookings-mgmt-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.module-header {
+  padding: 1.5rem 2rem;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.module-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.module-header p {
+  color: #64748B;
+  font-size: 0.9rem;
+}
+
+.header-action-group {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filter-panel {
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.status-tabs-row {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.status-tab {
+  padding: 0.55rem 1.1rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #64748B;
+  background: #F1F5F9;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.dark-mode .status-tab {
+  background: #1F2937;
+  color: #94A3B8;
+}
+
+.status-tab.active {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.tab-count {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.search-city-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.city-select-box {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #F8FAFC;
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid #E2E8F0;
+}
+
+.dark-mode .city-select-box {
+  background: #1F2937;
+  border-color: #374151;
+}
+
+.city-select-box select {
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  font-size: 0.85rem;
+  outline: none;
+  color: inherit;
+}
+
+.booking-id-tag {
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+
+.cust-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.cust-name {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.cust-phone {
+  font-size: 0.775rem;
+  color: #94A3B8;
+}
+
+.service-name-pill {
+  background: #EFF6FF;
+  color: #2563EB;
+  font-weight: 700;
+  font-size: 0.775rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.tech-assigned-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #10B981;
+}
+
+.tech-unassigned-badge {
+  background: #FFFBEB;
+  color: #D97706;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+/* Status Pills */
+.status-pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.775rem;
+  font-weight: 800;
+  display: inline-block;
+}
+
+.status-pending { background: #FFFBEB; color: #D97706; }
+.status-assigned { background: #EFF6FF; color: #2563EB; }
+.status-accepted { background: #EEF2FF; color: #4F46E5; }
+.status-on-the-way { background: #F3E8FF; color: #9333EA; }
+.status-started { background: #E0F2FE; color: #0284C7; }
+.status-completed { background: #ECFDF5; color: #10B981; }
+.status-cancelled { background: #FEF2F2; color: #EF4444; }
+
+.action-buttons-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.action-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-icon-btn.blue { background: #EFF6FF; color: #2563EB; }
+.action-icon-btn.green { background: #ECFDF5; color: #10B981; }
+.action-icon-btn.amber { background: #FFFBEB; color: #D97706; }
+.action-icon-btn.red { background: #FEF2F2; color: #EF4444; }
+
+.action-icon-btn:hover {
+  transform: translateY(-2px);
+}

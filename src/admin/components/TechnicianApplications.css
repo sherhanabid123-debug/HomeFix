@@ -1,0 +1,128 @@
+.apps-mgmt-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.apps-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .apps-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.app-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.app-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+}
+
+.applicant-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-light);
+}
+
+.applicant-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.dark-mode .applicant-name {
+  color: #F8FAFC;
+}
+
+.app-details-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.detail-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.skills-badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.skill-chip {
+  font-size: 0.725rem;
+  font-weight: 700;
+  background: #F1F5F9;
+  color: #334155;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.dark-mode .skill-chip {
+  background: #1F2937;
+  color: #CBD5E1;
+}
+
+.doc-preview-box {
+  background: #F8FAFC;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dark-mode .doc-preview-box {
+  background: #1E293B;
+  border-color: #374151;
+}
+
+.doc-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+}
+
+.doc-name {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.doc-license {
+  font-size: 0.725rem;
+  color: #64748B;
+}
+
+.app-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #E2E8F0;
+}
+
+.dark-mode .app-card-footer {
+  border-top-color: #374151;
+}

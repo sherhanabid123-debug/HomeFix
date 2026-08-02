@@ -1,0 +1,240 @@
+.booking-detail-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 620px;
+  background: #FFFFFF;
+  box-shadow: -12px 0 36px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  animation: slideLeft 0.25s ease-out;
+  padding: 0;
+}
+
+@keyframes slideLeft {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.drawer-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #F8FAFC;
+}
+
+.dark-mode .drawer-header {
+  background: #1E293B;
+  border-bottom-color: #374151;
+}
+
+.drawer-id-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.drawer-id-row h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.drawer-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawer-body {
+  padding: 1.75rem 2rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.drawer-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+}
+
+.btn-xs {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-danger-outline {
+  border: 1px solid #FCA5A5;
+  color: #DC2626;
+  background: #FEF2F2;
+}
+
+.reassign-box {
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.reassign-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.drawer-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.info-card {
+  padding: 1.25rem;
+  border-radius: 14px;
+}
+
+.card-sub-header {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.85rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.tech-profile-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tech-avatar-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.unassigned-box {
+  background: #FFFBEB;
+  color: #D97706;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.map-view-box {
+  height: 120px;
+  background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+  border: 1px solid #7DD3FC;
+}
+
+.map-pin-pulse {
+  background: #FFFFFF;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.photos-grid {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.job-photo-thumb {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #E2E8F0;
+}
+
+.financial-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.f-row {
+  display: flex;
+  justify-content: space-between;
+  color: #64748B;
+}
+
+.total-row {
+  border-top: 1px dashed #E2E8F0;
+  padding-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.timeline-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+}
+
+.t-mini-item {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.t-time {
+  color: #94A3B8;
+  font-weight: 700;
+  width: 50px;
+}
+
+.t-event {
+  color: #334155;
+}
+
+.note-bubble {
+  background: #F1F5F9;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  margin-bottom: 0.4rem;
+}
+
+.note-form {
+  display: flex;
+  gap: 0.5rem;
+}
