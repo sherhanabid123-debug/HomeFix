@@ -33,14 +33,69 @@ export default function AdminApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [darkMode, setDarkMode] = useState(false);
 
-  // Central Store State
-  const [bookings, setBookings] = useState(INITIAL_BOOKINGS);
-  const [technicians, setTechnicians] = useState(INITIAL_TECHNICIANS);
+  // Central Store State (persisted & synced with customer web bookings)
+  const [bookings, setBookingsState] = useState(() => {
+    const saved = localStorage.getItem('homefix_live_bookings');
+    return saved ? JSON.parse(saved) : INITIAL_BOOKINGS;
+  });
+
+  const [technicians, setTechniciansState] = useState(() => {
+    const saved = localStorage.getItem('homefix_live_technicians');
+    return saved ? JSON.parse(saved) : INITIAL_TECHNICIANS;
+  });
+
   const [applications, setApplications] = useState(INITIAL_APPLICATIONS);
-  const [customers, setCustomers] = useState(INITIAL_CUSTOMERS);
+
+  const [customers, setCustomersState] = useState(() => {
+    const saved = localStorage.getItem('homefix_live_customers');
+    return saved ? JSON.parse(saved) : INITIAL_CUSTOMERS;
+  });
+
   const [adminUsers, setAdminUsers] = useState(INITIAL_ADMIN_USERS);
-  const [logs, setLogs] = useState(INITIAL_ACTIVITY_LOGS);
+
+  const [logs, setLogsState] = useState(() => {
+    const saved = localStorage.getItem('homefix_live_logs');
+    return saved ? JSON.parse(saved) : INITIAL_ACTIVITY_LOGS;
+  });
+
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
+
+  // Sync state with localStorage setters
+  const setBookings = (newBookings) => {
+    setBookingsState(newBookings);
+    localStorage.setItem('homefix_live_bookings', JSON.stringify(newBookings));
+  };
+
+  const setTechnicians = (newTechs) => {
+    setTechniciansState(newTechs);
+    localStorage.setItem('homefix_live_technicians', JSON.stringify(newTechs));
+  };
+
+  const setCustomers = (newCusts) => {
+    setCustomersState(newCusts);
+    localStorage.setItem('homefix_live_customers', JSON.stringify(newCusts));
+  };
+
+  // Live Auto-Refresh sync on tab switch or focus
+  useEffect(() => {
+    const syncData = () => {
+      const savedBookings = localStorage.getItem('homefix_live_bookings');
+      if (savedBookings) setBookingsState(JSON.parse(savedBookings));
+
+      const savedLogs = localStorage.getItem('homefix_live_logs');
+      if (savedLogs) setLogsState(JSON.parse(savedLogs));
+
+      const savedCusts = localStorage.getItem('homefix_live_customers');
+      if (savedCusts) setCustomersState(JSON.parse(savedCusts));
+
+      const savedTechs = localStorage.getItem('homefix_live_technicians');
+      if (savedTechs) setTechniciansState(JSON.parse(savedTechs));
+    };
+
+    syncData();
+    window.addEventListener('focus', syncData);
+    return () => window.removeEventListener('focus', syncData);
+  }, [activeTab]);
 
   const handleLoginSuccess = (userData) => {
     setCurrentUser(userData);

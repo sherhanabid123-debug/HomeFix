@@ -154,6 +154,75 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
     setGeneratedId(newId);
     setStep(3); // Confirmation
 
+    const newBookingObj = {
+      id: newId,
+      customerName: 'Customer (Web Booking)',
+      customerPhone: phone || '+91 98470 12345',
+      customerEmail: 'customer@homefixkerala.com',
+      technicianName: 'Unassigned',
+      technicianPhone: '-',
+      service: service,
+      category: service.toLowerCase().includes('plumbing') || service.toLowerCase().includes('leak') || service.toLowerCase().includes('pipe') ? 'Plumbing' : 'Electrical',
+      location: `${district} (${landmark || address.slice(0, 15)})`,
+      city: district,
+      address: `${address}${landmark ? ` (Landmark: ${landmark})` : ''}`,
+      status: 'Pending',
+      bookingTime: new Date().toISOString().slice(0, 16).replace('T', ' '),
+      scheduledSlot: slot,
+      estimatedPrice: 299,
+      paymentStatus: 'Pending (Pay on Delivery)',
+      paymentMethod: 'UPI / Cash',
+      commission: 44.85,
+      technicianPayout: 254.15,
+      customerRating: 0,
+      uploadedPhotos: [],
+      timeline: [
+        { time: new Date().toLocaleTimeString().slice(0, 5), event: `Booking submitted via HomeFix Web in ${district}` }
+      ],
+      internalNotes: landmark ? `Landmark: ${landmark}` : 'No landmark specified'
+    };
+
+    try {
+      const existingBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
+      localStorage.setItem('homefix_live_bookings', JSON.stringify([newBookingObj, ...existingBookings]));
+
+      const existingLogs = JSON.parse(localStorage.getItem('homefix_live_logs') || '[]');
+      const newLog = {
+        id: `LOG-${Date.now()}`,
+        timestamp: new Date().toISOString().slice(0, 16).replace('T', ' '),
+        user: 'Customer (Web Portal)',
+        action: `New Booking #${newId} created for ${service} in ${district}`,
+        category: 'Booking Created',
+        ip: 'Web Dispatch'
+      };
+      localStorage.setItem('homefix_live_logs', JSON.stringify([newLog, ...existingLogs]));
+
+      const existingCustomers = JSON.parse(localStorage.getItem('homefix_live_customers') || '[]');
+      const existingCustIndex = existingCustomers.findIndex(c => c.phone === (phone || '+91 98470 12345'));
+      if (existingCustIndex >= 0) {
+        existingCustomers[existingCustIndex].totalBookings += 1;
+        existingCustomers[existingCustIndex].totalSpend += 299;
+        existingCustomers[existingCustIndex].lastBooking = new Date().toISOString().slice(0, 10);
+      } else {
+        existingCustomers.push({
+          id: `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
+          name: 'Customer (Web Booking)',
+          phone: phone || '+91 98470 12345',
+          email: 'customer@homefixkerala.com',
+          city: district,
+          totalBookings: 1,
+          totalSpend: 299,
+          lastBooking: new Date().toISOString().slice(0, 10),
+          status: 'Active',
+          joinedDate: new Date().toISOString().slice(0, 10),
+          savedAddresses: [`${address}${landmark ? ` (Landmark: ${landmark})` : ''}`]
+        });
+      }
+      localStorage.setItem('homefix_live_customers', JSON.stringify(existingCustomers));
+    } catch (err) {
+      console.error("Error saving booking to localStorage:", err);
+    }
+
     // Trigger instant SMS / WhatsApp Notification Simulation
     sendInstantBookingSMS({ bookingId: newId, service, phone, slot });
 
