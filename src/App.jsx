@@ -11,11 +11,15 @@ import FAQSection from './components/FAQSection';
 import Footer from './components/Footer';
 import BookingModal from './components/BookingModal';
 import PartnerModal from './components/PartnerModal';
+import TrackBookingModal from './components/TrackBookingModal';
+import ActiveBookingBar from './components/ActiveBookingBar';
 
 export default function App() {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
+  const [trackModalOpen, setTrackModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('Electrical Repairs');
+  const [trackBookingId, setTrackBookingId] = useState('');
 
   const handleOpenBooking = (serviceName = '') => {
     if (typeof serviceName === 'string' && serviceName.length > 0) {
@@ -28,11 +32,19 @@ export default function App() {
     setPartnerModalOpen(true);
   };
 
+  const handleOpenTrack = (bookingId = '') => {
+    if (typeof bookingId === 'string' && bookingId.length > 0) {
+      setTrackBookingId(bookingId);
+    }
+    setTrackModalOpen(true);
+  };
+
   return (
     <div className="app-wrapper">
       <Navbar 
         onOpenBooking={() => handleOpenBooking()} 
         onOpenPartner={handleOpenPartner} 
+        onOpenTrack={() => handleOpenTrack()}
       />
 
       <main>
@@ -69,6 +81,9 @@ export default function App() {
         onOpenPartner={handleOpenPartner} 
       />
 
+      {/* Sticky Active Booking Floating Tracker Bar */}
+      <ActiveBookingBar onOpenTrack={handleOpenTrack} />
+
       {/* Interactive Modals */}
       <BookingModal 
         isOpen={bookingModalOpen} 
@@ -79,6 +94,12 @@ export default function App() {
       <PartnerModal 
         isOpen={partnerModalOpen} 
         onClose={() => setPartnerModalOpen(false)}
+      />
+
+      <TrackBookingModal 
+        isOpen={trackModalOpen} 
+        onClose={() => setTrackModalOpen(false)}
+        defaultBookingId={trackBookingId}
       />
     </div>
   );

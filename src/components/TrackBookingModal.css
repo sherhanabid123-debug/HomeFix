@@ -1,0 +1,266 @@
+.track-modal-box {
+  max-width: 600px;
+  padding: 2rem;
+}
+
+.track-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.track-search-form {
+  margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--gray-400);
+}
+
+.track-search-input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gray-200);
+  background: var(--gray-50);
+  font-size: 0.95rem;
+}
+
+.track-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.btn-search-submit {
+  position: absolute;
+  right: 6px;
+  background: var(--primary);
+  color: var(--white);
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.search-error-msg {
+  color: #EF4444;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-align: left;
+}
+
+/* Track Card UI */
+.track-details-card {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.track-ticket-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.booking-id-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.track-service-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin-top: 4px;
+}
+
+.status-badge-pill {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+}
+
+.status-pending { background: #FEF3C7; color: #D97706; }
+.status-assigned, .status-accepted, .status-on-the-way { background: #DBEAFE; color: #2563EB; }
+.status-started { background: #E0E7FF; color: #4F46E5; }
+.status-completed { background: #D1FAE5; color: #059669; }
+.status-cancelled { background: #FEE2E2; color: #DC2626; }
+
+/* Visual Stepper */
+.track-stepper-container {
+  position: relative;
+  margin: 1.75rem 0;
+}
+
+.stepper-track-bar {
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: var(--gray-200);
+  z-index: 1;
+}
+
+.stepper-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.4s ease;
+}
+
+.stepper-nodes {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.node-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--gray-300);
+  color: var(--gray-500);
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.step-node.active .node-circle {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.node-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+.step-node.active .node-label {
+  color: var(--dark);
+  font-weight: 800;
+}
+
+/* Tech Info Card */
+.technician-info-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.tech-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-call-tech {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--secondary-light);
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.btn-call-tech:hover {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+/* Info Grid */
+.track-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  background: var(--white);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.span-2 { grid-column: span 2; }
+
+.info-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+
+.track-footer-actions {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+.btn-cancel-link {
+  color: #EF4444;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: none;
+}
+
+.btn-cancel-link:hover {
+  text-decoration: underline;
+}
+
+.no-booking-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--gray-500);
+}

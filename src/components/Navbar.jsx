@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, Zap, ShieldCheck, Menu, X, ArrowRight, PhoneCall } from 'lucide-react';
+import { Wrench, Zap, Menu, X, ArrowRight, Clock } from 'lucide-react';
 import './Navbar.css';
 
-export default function Navbar({ onOpenBooking, onOpenPartner }) {
+export default function Navbar({ onOpenBooking, onOpenPartner, onOpenTrack }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -41,6 +41,11 @@ export default function Navbar({ onOpenBooking, onOpenPartner }) {
 
         {/* CTA Actions */}
         <div className="desktop-actions">
+          <button onClick={onOpenTrack} className="nav-link-btn" title="Track your live service request">
+            <Clock size={16} />
+            <span>Track Booking</span>
+          </button>
+
           <button onClick={onOpenPartner} className="nav-btn-partner">
             Become a Technician
           </button>
@@ -72,6 +77,13 @@ export default function Navbar({ onOpenBooking, onOpenPartner }) {
             <a href="#faq" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
           </nav>
           <div className="mobile-drawer-actions">
+            <button 
+              onClick={() => { setMobileMenuOpen(false); onOpenTrack(); }} 
+              className="btn-secondary w-full flex items-center justify-center gap-2 mb-2"
+            >
+              <Clock size={18} />
+              <span>Track Booking</span>
+            </button>
             <button 
               onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }} 
               className="btn-primary w-full"
