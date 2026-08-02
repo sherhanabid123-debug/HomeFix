@@ -2,7 +2,12 @@
 // HomeFix - Official Google Sign-In & JWT Token Decoder Service
 // ==========================================================================
 
-export const DEFAULT_GOOGLE_CLIENT_ID = "108392819281-homefixkerala.apps.googleusercontent.com";
+export const getGoogleClientId = () => {
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GOOGLE_CLIENT_ID) {
+    return import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  }
+  return localStorage.getItem('homefix_custom_google_client_id') || '';
+};
 
 /**
  * Decodes Google's OAuth ID Token (JWT) safely
@@ -27,9 +32,13 @@ export function parseGoogleJwt(token) {
 /**
  * Initialize Google Identity Services (GSI) Client
  */
-export function initGoogleSignIn({ clientId = DEFAULT_GOOGLE_CLIENT_ID, onSuccess, onError }) {
+export function initGoogleSignIn({ clientId = getGoogleClientId(), onSuccess, onError }) {
   if (typeof window === 'undefined' || !window.google || !window.google.accounts) {
     console.warn("Google GSI Client SDK not yet loaded.");
+    return false;
+  }
+
+  if (!clientId) {
     return false;
   }
 
@@ -60,4 +69,23 @@ export function initGoogleSignIn({ clientId = DEFAULT_GOOGLE_CLIENT_ID, onSucces
     console.error("Google Identity initialization error:", err);
     return false;
   }
+}
+
+/**
+ * Render Official Google Button
+ */
+export function renderOfficialGoogleButton(containerElement, { onSuccess, onError }) {
+  const initialized = initGoogleSignIn({ onSuccess, onError });
+  if (initialized && containerElement) {
+    containerElement.innerHTML = '';
+    window.google.accounts.id.renderButton(containerElement, {
+      theme: 'outline',
+      size: 'large',
+      width: '380',
+      text: 'continue_with',
+      shape: 'pill'
+    });
+    return true;
+  }
+  return false;
 }
