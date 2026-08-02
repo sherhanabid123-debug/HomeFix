@@ -303,6 +303,24 @@
   flex-shrink: 0;
 }
 
+/* Input with Icon Container */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--gray-400);
+  pointer-events: none;
+}
+
+.form-input.icon-indent {
+  padding-left: 2.75rem;
+}
+
 /* Native select fallback styling */
 .form-select, .form-input {
   width: 100%;

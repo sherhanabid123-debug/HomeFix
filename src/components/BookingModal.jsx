@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, CheckCircle2, Zap, Wrench, Fan, ToggleLeft, Droplets, GitCommit, Calendar, Clock, MapPin, ShieldCheck, ArrowRight, ChevronDown, Check, Navigation, Building, MessageSquare, ExternalLink, Smartphone } from 'lucide-react';
-import { generateWhatsAppLink, sendInstantBookingSMS } from '../services/notificationService';
+import { X, CheckCircle2, Zap, Wrench, Fan, ToggleLeft, Droplets, GitCommit, Calendar, Clock, MapPin, ShieldCheck, ArrowRight, ChevronDown, Check, Navigation, User, MessageSquare, ExternalLink } from 'lucide-react';
+import { generateWhatsAppLink } from '../services/notificationService';
 import './BookingModal.css';
 
 const SERVICES_LIST = [
@@ -93,14 +93,13 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
   const [step, setStep] = useState(1);
   const [service, setService] = useState(initialService || 'Electrical Repairs');
   const [district, setDistrict] = useState('Kannur');
+  const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
   const [landmark, setLandmark] = useState('');
   const [phone, setPhone] = useState('');
   const [slot, setSlot] = useState('Immediate / ASAP');
   
-  // Notification states
   const [generatedId, setGeneratedId] = useState('');
-  const [smsNotificationToast, setSmsNotificationToast] = useState(null);
 
   // Custom Dropdowns state & refs
   const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
@@ -156,9 +155,9 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
 
     const newBookingObj = {
       id: newId,
-      customerName: 'Customer (Web Booking)',
+      customerName: customerName.trim() || 'Customer (Web Booking)',
       customerPhone: phone || '+91 98470 12345',
-      customerEmail: 'customer@homefixkerala.com',
+      customerEmail: `${(customerName || 'customer').toLowerCase().replace(/\s+/g, '')}@gmail.com`,
       technicianName: 'Unassigned',
       technicianPhone: '-',
       service: service,
@@ -177,7 +176,7 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
       customerRating: 0,
       uploadedPhotos: [],
       timeline: [
-        { time: new Date().toLocaleTimeString().slice(0, 5), event: `Booking submitted via HomeFix Web in ${district}` }
+        { time: new Date().toLocaleTimeString().slice(0, 5), event: `Booking submitted by ${customerName || 'Customer'} via HomeFix Web` }
       ],
       internalNotes: landmark ? `Landmark: ${landmark}` : 'No landmark specified'
     };
@@ -190,7 +189,7 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
       const newLog = {
         id: `LOG-${Date.now()}`,
         timestamp: new Date().toISOString().slice(0, 16).replace('T', ' '),
-        user: 'Customer (Web Portal)',
+        user: customerName || 'Customer',
         action: `New Booking #${newId} created for ${service} in ${district}`,
         category: 'Booking Created',
         ip: 'Web Dispatch'
@@ -203,12 +202,13 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
         existingCustomers[existingCustIndex].totalBookings += 1;
         existingCustomers[existingCustIndex].totalSpend += 299;
         existingCustomers[existingCustIndex].lastBooking = new Date().toISOString().slice(0, 10);
+        if (customerName) existingCustomers[existingCustIndex].name = customerName;
       } else {
         existingCustomers.push({
           id: `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
-          name: 'Customer (Web Booking)',
+          name: customerName || 'Customer (Web Booking)',
           phone: phone || '+91 98470 12345',
-          email: 'customer@homefixkerala.com',
+          email: `${(customerName || 'customer').toLowerCase().replace(/\s+/g, '')}@gmail.com`,
           city: district,
           totalBookings: 1,
           totalSpend: 299,
@@ -222,20 +222,6 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
     } catch (err) {
       console.error("Error saving booking to localStorage:", err);
     }
-
-    // Trigger instant SMS / WhatsApp Notification Simulation
-    sendInstantBookingSMS({ bookingId: newId, service, phone, slot });
-
-    // Show simulated incoming SMS banner toast
-    setSmsNotificationToast({
-      id: newId,
-      phone: phone || '+91 98470 12345',
-      text: `💬 WhatsApp: Booking #${newId} confirmed! HomeFix technician matching for ${service} in ${district}.`
-    });
-
-    setTimeout(() => {
-      setSmsNotificationToast(null);
-    }, 7000);
   };
 
   const whatsappUrl = generateWhatsAppLink({
@@ -250,23 +236,6 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      
-      {/* Live Simulated Incoming SMS / WhatsApp Toast Banner */}
-      {smsNotificationToast && (
-        <div className="sms-live-toast-banner">
-          <div className="toast-icon-box">
-            <MessageSquare size={20} color="#10B981" />
-          </div>
-          <div className="toast-text-box">
-            <strong>Instant WhatsApp & SMS Notification Sent!</strong>
-            <p>{smsNotificationToast.text}</p>
-          </div>
-          <button className="toast-close" onClick={() => setSmsNotificationToast(null)}>
-            <X size={16} />
-          </button>
-        </div>
-      )}
-
       <div className="modal-content booking-modal-box" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
           <X size={20} />
@@ -369,7 +338,7 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
               </div>
 
               <button type="submit" className="btn-primary w-full mt-4">
-                <span>Continue to Address & Time</span>
+                <span>Continue to Address & Details</span>
                 <ArrowRight size={18} />
               </button>
             </form>
@@ -381,10 +350,39 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
             <div className="modal-header-icon green-bg">
               <Calendar size={24} />
             </div>
-            <h3 className="modal-title">Address & Schedule</h3>
+            <h3 className="modal-title">Address & Details</h3>
             <p className="modal-sub">Step 2 of 2: {service} in {district}</p>
 
             <form onSubmit={handleBookingSubmit}>
+              
+              {/* Customer Name Input Field */}
+              <div className="form-group">
+                <label className="form-label">Your Full Name</label>
+                <div className="input-with-icon">
+                  <User size={18} className="input-icon" />
+                  <input 
+                    type="text" 
+                    className="form-input icon-indent" 
+                    placeholder="e.g. Anjali Menon / Rahul K"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Phone Number (WhatsApp / Mobile)</label>
+                <input 
+                  type="tel" 
+                  className="form-input" 
+                  placeholder="+91 98765 43210"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+
               <div className="form-group">
                 <label className="form-label">Door No., Street & Locality</label>
                 <input 
@@ -410,18 +408,6 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
                     onChange={(e) => setLandmark(e.target.value)}
                   />
                 </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Phone Number (WhatsApp for ETA & SMS)</label>
-                <input 
-                  type="tel" 
-                  className="form-input" 
-                  placeholder="+91 98765 43210"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
               </div>
 
               {/* Modern Custom Date & Time Slot Dropdown */}
@@ -497,7 +483,7 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
                   Back
                 </button>
                 <button type="submit" className="btn-primary flex-1">
-                  Confirm Booking & Trigger SMS
+                  Confirm Booking
                 </button>
               </div>
             </form>
@@ -511,10 +497,14 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
             </div>
             <h3 className="modal-title">Booking Confirmed!</h3>
             <p className="modal-sub">
-              Booking <strong>#{generatedId || 'HF-8942'}</strong> for <strong>{service}</strong> in <strong>{district}</strong>.
+              Booking <strong>#{generatedId || 'HF-8942'}</strong> for <strong>{customerName || 'Customer'}</strong> ({service} in {district}).
             </p>
 
             <div className="booking-ticket">
+              <div className="ticket-row">
+                <span>Customer Name:</span>
+                <strong>{customerName || 'Customer'}</strong>
+              </div>
               <div className="ticket-row">
                 <span>Status:</span>
                 <span className="ticket-status">👷 Dispatching Nearby Tech</span>
@@ -529,10 +519,6 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
               </div>
             </div>
 
-            <p className="ticket-sms-note mb-3">
-              💬 Instant SMS & WhatsApp confirmation sent to <strong>{phone || '+91 Kerala'}</strong>.
-            </p>
-
             {/* Direct WhatsApp Open Trigger */}
             <a 
               href={whatsappUrl} 
@@ -541,7 +527,7 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
               className="btn-whatsapp w-full mb-3"
             >
               <MessageSquare size={18} />
-              <span>Open Confirmation on WhatsApp</span>
+              <span>Open Details on WhatsApp</span>
               <ExternalLink size={14} />
             </a>
 
