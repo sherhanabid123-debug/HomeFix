@@ -1,0 +1,207 @@
+.customer-dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #F8FAFC;
+}
+
+.customer-sidebar {
+  width: 260px;
+  background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--gray-50);
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+}
+
+.menu-item:hover, .menu-item.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--secondary);
+  margin-left: auto;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.btn-logout-sidebar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  color: #EF4444;
+  font-weight: 700;
+  background: none;
+}
+
+.btn-logout-sidebar:hover {
+  background: #FEF2F2;
+  border-radius: var(--radius-sm);
+}
+
+.customer-main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.customer-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.customer-top-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.dashboard-hero-card {
+  padding: 2rem;
+  text-align: left;
+  border-left: 4px solid var(--primary);
+}
+
+.services-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.dash-service-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dash-service-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.dash-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.price-tag {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.empty-state-box {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.history-table-box {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.dash-table th, .dash-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.dash-table th {
+  background: var(--gray-50);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--gray-500);
+  text-transform: uppercase;
+}
+
+.status-pill.green { background: #D1FAE5; color: #059669; }
+.status-pill.red { background: #FEE2E2; color: #DC2626; }
+.badge-blue { background: var(--primary-light); color: var(--primary); font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+.badge-green { background: var(--secondary-light); color: var(--secondary); font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }

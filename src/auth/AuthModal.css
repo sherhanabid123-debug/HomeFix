@@ -1,0 +1,141 @@
+.auth-modal-box {
+  max-width: 480px;
+  padding: 2.25rem;
+}
+
+.auth-header {
+  margin-bottom: 1.5rem;
+}
+
+.brand-auth-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem auto;
+}
+
+.brand-auth-badge.green-bg {
+  background: var(--secondary-light);
+}
+
+.auth-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.auth-sub {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-top: 2px;
+}
+
+/* Official Google Branding Button */
+.btn-google-signin {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid #DADCE0;
+  background: #FFFFFF;
+  color: #3C4043;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.08);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.btn-google-signin:hover {
+  background: #F8FAFC;
+  border-color: #D1D5DB;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.15);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.25rem 0;
+}
+
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.auth-divider span {
+  padding: 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--gray-400);
+}
+
+.auth-error-alert {
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  color: #DC2626;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.forgot-link-btn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: none;
+}
+
+.forgot-link-btn:hover {
+  text-decoration: underline;
+}
+
+.eye-toggle-btn {
+  position: absolute;
+  right: 0.85rem;
+  color: var(--gray-400);
+  background: none;
+}
+
+.eye-toggle-btn:hover {
+  color: var(--dark);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.link-text-btn {
+  font-weight: 800;
+  color: var(--primary);
+  background: none;
+}
+
+.link-text-btn:hover {
+  text-decoration: underline;
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.tech-status-icon {
+  margin-bottom: 1rem;
+}

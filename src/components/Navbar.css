@@ -149,13 +149,35 @@
   transform: translateY(-1px);
 }
 
-.nav-btn-partner {
-  font-weight: 700;
+.nav-link-btn-text {
+  font-weight: 600;
   font-size: 0.95rem;
   color: var(--dark-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.nav-link-btn-text:hover {
+  color: var(--primary);
+}
+
+.nav-btn-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--dark);
+  background: var(--gray-100);
   padding: 0.6rem 1.2rem;
   border-radius: var(--radius-pill);
   transition: var(--transition);
+}
+
+.nav-btn-login:hover {
+  background: var(--gray-200);
 }
 
 .nav-btn-partner:hover {

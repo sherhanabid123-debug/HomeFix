@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -9,17 +9,39 @@ import PartnerSection from './components/PartnerSection';
 import Testimonials from './components/Testimonials';
 import FAQSection from './components/FAQSection';
 import Footer from './components/Footer';
+
 import BookingModal from './components/BookingModal';
 import PartnerModal from './components/PartnerModal';
 import TrackBookingModal from './components/TrackBookingModal';
 import ActiveBookingBar from './components/ActiveBookingBar';
+import AuthModal from './auth/AuthModal';
+
+import CustomerDashboard from './customer/CustomerDashboard';
+import PartnerDashboard from './partner/PartnerDashboard';
+import { getCurrentUser } from './auth/authStore';
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+
+  // Modals state
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [partnerModalOpen, setPartnerModalOpen] = useState(false);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+  const [authRole, setAuthRole] = useState('customer');
+
   const [selectedService, setSelectedService] = useState('Electrical Repairs');
   const [trackBookingId, setTrackBookingId] = useState('');
+
+  // Route & Session Sync
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentUser(getCurrentUser());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleOpenBooking = (serviceName = '') => {
     if (typeof serviceName === 'string' && serviceName.length > 0) {
@@ -29,7 +51,9 @@ export default function App() {
   };
 
   const handleOpenPartner = () => {
-    setPartnerModalOpen(true);
+    setAuthMode('tech_register');
+    setAuthRole('technician');
+    setAuthModalOpen(true);
   };
 
   const handleOpenTrack = (bookingId = '') => {
@@ -39,12 +63,47 @@ export default function App() {
     setTrackModalOpen(true);
   };
 
+  const handleOpenAuth = (mode = 'login', role = 'customer') => {
+    setAuthMode(mode);
+    setAuthRole(role);
+    setAuthModalOpen(true);
+  };
+
+  const handleAuthSuccess = (user) => {
+    setCurrentUser(user);
+    setAuthModalOpen(false);
+    
+    // Redirect based on role
+    if (user.role === 'customer') {
+      window.history.pushState({}, '', '/customer');
+    } else if (user.role === 'technician') {
+      window.history.pushState({}, '', '/partner/dashboard');
+    }
+  };
+
+  const handleLogoutSuccess = () => {
+    setCurrentUser(null);
+    window.history.pushState({}, '', '/');
+  };
+
+  // ================= ROLE-BASED DASHBOARD ROUTING =================
+  if (currentUser) {
+    if (currentUser.role === 'customer') {
+      return <CustomerDashboard user={currentUser} onLogoutSuccess={handleLogoutSuccess} />;
+    }
+    if (currentUser.role === 'technician') {
+      return <PartnerDashboard user={currentUser} onLogoutSuccess={handleLogoutSuccess} />;
+    }
+  }
+
+  // ================= PUBLIC LANDING PAGE =================
   return (
     <div className="app-wrapper">
       <Navbar 
         onOpenBooking={() => handleOpenBooking()} 
         onOpenPartner={handleOpenPartner} 
         onOpenTrack={() => handleOpenTrack()}
+        onOpenAuth={() => handleOpenAuth('login', 'customer')}
       />
 
       <main>
@@ -100,6 +159,14 @@ export default function App() {
         isOpen={trackModalOpen} 
         onClose={() => setTrackModalOpen(false)}
         defaultBookingId={trackBookingId}
+      />
+
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialMode={authMode}
+        initialRole={authRole}
+        onAuthSuccess={handleAuthSuccess}
       />
     </div>
   );

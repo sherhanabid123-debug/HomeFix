@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, Zap, Menu, X, ArrowRight, Clock } from 'lucide-react';
+import { Wrench, Zap, Menu, X, ArrowRight, Clock, User } from 'lucide-react';
 import './Navbar.css';
 
-export default function Navbar({ onOpenBooking, onOpenPartner, onOpenTrack }) {
+export default function Navbar({ onOpenBooking, onOpenPartner, onOpenTrack, onOpenAuth }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -29,14 +29,12 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenTrack }) {
           </div>
         </a>
 
-        {/* Desktop Navigation Links */}
+        {/* Top Navigation Links */}
         <nav className="desktop-nav">
-          <a href="#services" className="nav-link">Popular Services</a>
-          <a href="#how-it-works" className="nav-link">How It Works</a>
-          <a href="#why-us" className="nav-link">Why HomeFix</a>
-          <a href="#coverage" className="nav-link">Service Areas</a>
-          <a href="#testimonials" className="nav-link">Reviews</a>
-          <a href="#faq" className="nav-link">FAQ</a>
+          <a href="#" className="nav-link">Home</a>
+          <a href="#services" className="nav-link">Services</a>
+          <button onClick={onOpenPartner} className="nav-link-btn-text">Become a Technician</button>
+          <a href="#faq" className="nav-link">Support</a>
         </nav>
 
         {/* CTA Actions */}
@@ -46,11 +44,13 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenTrack }) {
             <span>Track Booking</span>
           </button>
 
-          <button onClick={onOpenPartner} className="nav-btn-partner">
-            Become a Technician
+          <button onClick={onOpenAuth} className="nav-btn-login">
+            <User size={16} />
+            <span>Login</span>
           </button>
+
           <button onClick={onOpenBooking} className="btn-primary btn-sm">
-            <span>Book Now</span>
+            <span>Book a Service</span>
             <ArrowRight size={16} />
           </button>
         </div>
@@ -69,32 +69,30 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenTrack }) {
       {mobileMenuOpen && (
         <div className="mobile-drawer">
           <nav className="mobile-nav">
-            <a href="#services" onClick={() => setMobileMenuOpen(false)}>Popular Services</a>
-            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
-            <a href="#why-us" onClick={() => setMobileMenuOpen(false)}>Why HomeFix</a>
-            <a href="#coverage" onClick={() => setMobileMenuOpen(false)}>Service Areas</a>
-            <a href="#testimonials" onClick={() => setMobileMenuOpen(false)}>Reviews</a>
-            <a href="#faq" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
+            <a href="#" onClick={() => setMobileMenuOpen(false)}>Home</a>
+            <a href="#services" onClick={() => setMobileMenuOpen(false)}>Services</a>
+            <a href="#partner" onClick={() => { setMobileMenuOpen(false); onOpenPartner(); }}>Become a Technician</a>
+            <a href="#faq" onClick={() => setMobileMenuOpen(false)}>Support</a>
           </nav>
           <div className="mobile-drawer-actions">
             <button 
-              onClick={() => { setMobileMenuOpen(false); onOpenTrack(); }} 
-              className="btn-secondary w-full flex items-center justify-center gap-2 mb-2"
+              onClick={() => { setMobileMenuOpen(false); onOpenAuth(); }} 
+              className="btn-secondary w-full mb-2"
             >
-              <Clock size={18} />
-              <span>Track Booking</span>
+              Login
             </button>
             <button 
               onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }} 
-              className="btn-primary w-full"
+              className="btn-primary w-full mb-2"
             >
               Book a Service
             </button>
             <button 
-              onClick={() => { setMobileMenuOpen(false); onOpenPartner(); }} 
-              className="btn-secondary w-full"
+              onClick={() => { setMobileMenuOpen(false); onOpenTrack(); }} 
+              className="btn-secondary w-full flex items-center justify-center gap-2"
             >
-              Become a Technician
+              <Clock size={18} />
+              <span>Track Booking</span>
             </button>
           </div>
         </div>

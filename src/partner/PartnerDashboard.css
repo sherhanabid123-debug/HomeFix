@@ -1,0 +1,210 @@
+.partner-status-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F8FAFC;
+  padding: 1.5rem;
+}
+
+.status-box {
+  max-width: 480px;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.status-box h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.status-box p {
+  font-size: 0.9rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+
+.status-notice-box {
+  background: var(--secondary-light);
+  color: var(--secondary);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Technician Dashboard Styling */
+.partner-dashboard-layout {
+  min-height: 100vh;
+  background: #F8FAFC;
+}
+
+.partner-top-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.header-brand h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.duty-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.duty-toggle-btn.online {
+  background: #D1FAE5;
+  color: #059669;
+  border: 1px solid #6EE7B7;
+}
+
+.duty-toggle-btn.offline {
+  background: #F3F4F6;
+  color: #6B7280;
+  border: 1px solid #E5E7EB;
+}
+
+.btn-logout-partner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.btn-logout-partner:hover {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.partner-main-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.partner-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.partner-kpi-card {
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.kpi-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon-box.green { background: #D1FAE5; color: #059669; }
+.kpi-icon-box.blue { background: #DBEAFE; color: #2563EB; }
+.kpi-icon-box.amber { background: #FEF3C7; color: #D97706; }
+
+.kpi-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+}
+
+.kpi-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.job-card {
+  padding: 1.5rem;
+  text-align: left;
+  border-left: 4px solid var(--secondary);
+}
+
+.job-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.job-category-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--secondary);
+  background: var(--secondary-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.job-header h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.job-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.job-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  background: var(--gray-50);
+  padding: 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.job-action-row {
+  display: flex;
+  gap: 0.75rem;
+}
