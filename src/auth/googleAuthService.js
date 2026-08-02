@@ -2,11 +2,13 @@
 // HomeFix - Official Google Sign-In & JWT Token Decoder Service
 // ==========================================================================
 
+export const DEFAULT_GOOGLE_CLIENT_ID = "272713080705-ih8t7ritnpmmga6oa35kqkkuht0hahui.apps.googleusercontent.com";
+
 export const getGoogleClientId = () => {
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GOOGLE_CLIENT_ID) {
     return import.meta.env.VITE_GOOGLE_CLIENT_ID;
   }
-  return localStorage.getItem('homefix_custom_google_client_id') || '';
+  return localStorage.getItem('homefix_custom_google_client_id') || DEFAULT_GOOGLE_CLIENT_ID;
 };
 
 /**
