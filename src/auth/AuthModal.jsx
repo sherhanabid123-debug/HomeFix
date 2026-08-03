@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Lock, Phone, User, Mail, ShieldCheck, CheckCircle2, ArrowRight, Eye, EyeOff, Wrench, Zap, Clock, AlertTriangle, FileText } from 'lucide-react';
 import { loginWithCredentials, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
-import { triggerGoogleLoginPopup, initGoogleSignIn, parseGoogleJwt } from './googleAuthService';
+import { triggerGoogleLoginPopup, parseGoogleJwt } from './googleAuthService';
 import './AuthModal.css';
 
-export default function AuthModal({ isOpen, onClose, initialMode = 'login', initialRole = 'customer', onAuthSuccess }) {
+export default function AuthModal({ isOpen, onClose, initialMode = 'tech_register', initialRole = 'technician', onAuthSuccess }) {
   const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot' | 'tech_register' | 'tech_status' | 'google_prompt'
   const [role, setRole] = useState(initialRole); // 'customer' | 'technician'
   const [showPassword, setShowPassword] = useState(false);
@@ -35,19 +35,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
   // Tech Status Banner
   const [techStatusInfo, setTechStatusInfo] = useState(null);
 
-  // Initialize Google Identity Services SDK
+  // Sync mode whenever initialMode or isOpen changes
   useEffect(() => {
     if (isOpen) {
-      initGoogleSignIn({
-        onSuccess: (googleProfile) => {
-          handleGoogleProfileSuccess(googleProfile);
-        },
-        onError: (err) => {
-          console.warn("Google OAuth fallback triggered:", err);
-        }
-      });
+      setMode(initialMode || 'tech_register');
+      setRole(initialRole || 'technician');
+      setErrorMessage('');
     }
-  }, [isOpen]);
+  }, [isOpen, initialMode, initialRole]);
 
   const handleGoogleProfileSuccess = (profile) => {
     const users = getRegisteredUsers();
@@ -59,7 +54,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
       return;
     }
 
-    // Prepare Google sign in prompt prefilled with verified details
     setGoogleEmail(profile.email);
     setGoogleName(profile.name);
     setMode('google_prompt');
@@ -179,7 +173,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
     alert('Password reset successfully! Please sign in with your new password.');
   };
 
-  // Secure Google Sign-In Account Selector & Creator
   const handleGoogleSubmit = (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -198,7 +191,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
       return;
     }
 
-    // New Google Account Creation
     const newGoogleUser = {
       id: `GOOG-${Math.floor(1000 + Math.random() * 9000)}`,
       role: role === 'technician' ? 'technician' : 'customer',
@@ -522,8 +514,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
               <div className="brand-auth-badge green-bg">
                 <Wrench size={22} className="text-secondary" />
               </div>
-              <h3 className="auth-title">Become a HomeFix Technician</h3>
-              <p className="auth-sub">Earn competitive payouts with flexible hours in Kerala</p>
+              <h3 className="auth-title">Join Technician Waiting List</h3>
+              <p className="auth-sub">Apply to become a verified HomeFix trade partner in Kerala</p>
             </div>
 
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
