@@ -22,6 +22,7 @@ import { getCurrentUser } from './auth/authStore';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
 
   // Modals state
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
@@ -38,6 +39,7 @@ export default function App() {
   useEffect(() => {
     const handlePopState = () => {
       setCurrentUser(getCurrentUser());
+      setCurrentPath(window.location.pathname);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -73,27 +75,30 @@ export default function App() {
     // Redirect based on role
     if (user.role === 'customer') {
       window.history.pushState({}, '', '/customer');
+      setCurrentPath('/customer');
     } else if (user.role === 'technician') {
       window.history.pushState({}, '', '/partner/dashboard');
+      setCurrentPath('/partner/dashboard');
     }
   };
 
   const handleLogoutSuccess = () => {
     setCurrentUser(null);
     window.history.pushState({}, '', '/');
+    setCurrentPath('/');
   };
 
-  // ================= ROLE-BASED DASHBOARD ROUTING =================
+  // ================= DEDICATED ROUTE ROUTING =================
   if (currentUser) {
-    if (currentUser.role === 'customer') {
+    if (currentPath === '/customer' && currentUser.role === 'customer') {
       return <CustomerDashboard user={currentUser} onLogoutSuccess={handleLogoutSuccess} />;
     }
-    if (currentUser.role === 'technician') {
+    if (currentPath.startsWith('/partner') && currentUser.role === 'technician') {
       return <PartnerDashboard user={currentUser} onLogoutSuccess={handleLogoutSuccess} />;
     }
   }
 
-  // ================= PUBLIC LANDING PAGE =================
+  // ================= PUBLIC LANDING PAGE (DEFAULT FOR /) =================
   return (
     <div className="app-wrapper">
       <Navbar 
