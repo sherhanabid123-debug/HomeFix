@@ -546,7 +546,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Trade Category</label>
+                  <label className="form-label">Service Specialization</label>
                   <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value="Electrician">⚡ Electrician</option>
                     <option value="Plumber">🚰 Plumber</option>
@@ -569,43 +569,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                     <option value="Kannur">Kannur</option>
                     <option value="Kozhikode">Kozhikode</option>
                   </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Government ID Number (Aadhaar / Voter ID)</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  placeholder="XXXX-XXXX-1234"
-                  value={govId}
-                  onChange={(e) => setGovId(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="grid-2-col">
-                <div className="form-group">
-                  <label className="form-label">Bank Account Number</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    placeholder="19283746501"
-                    value={bankAcc}
-                    onChange={(e) => setBankAcc(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">UPI ID for Payouts</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
-                    placeholder="name@upi"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    required
-                  />
                 </div>
               </div>
 
