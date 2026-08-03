@@ -424,6 +424,79 @@
 .badge-blue { background: var(--primary-light); color: var(--primary); font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
 .badge-green { background: var(--secondary-light); color: var(--secondary); font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
 
+/* Saved Addresses Grid */
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.address-card-item {
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  text-align: left;
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  transition: var(--transition);
+}
+
+.address-card-item:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.address-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.address-tag-pill {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.city-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  background: var(--gray-100);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.btn-remove-address {
+  color: var(--gray-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.btn-remove-address:hover {
+  color: #EF4444;
+  background: #FEF2F2;
+}
+
+.gps-coordinates-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--gray-200);
+}
+
 .payment-method-row {
   display: flex;
   align-items: center;

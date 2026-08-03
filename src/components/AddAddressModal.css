@@ -1,0 +1,126 @@
+.add-address-modal {
+  max-width: 480px;
+  width: 90%;
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  box-shadow: var(--shadow-xl);
+}
+
+.brand-badge-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+}
+
+.location-detect-box {
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.btn-auto-location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1.5px dashed var(--primary);
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-auto-location:hover {
+  background: #DBEAFE;
+}
+
+.location-success-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #D1FAE5;
+  color: #047857;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.825rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.location-error-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FEE2E2;
+  color: #B91C1C;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.825rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.map-preview-box {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: var(--gray-50);
+}
+
+.map-pin-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.775rem;
+  color: var(--gray-700);
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.map-iframe {
+  display: block;
+  width: 100%;
+}
+
+.tag-selector-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tag-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--gray-50);
+  font-weight: 700;
+  font-size: 0.825rem;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tag-btn.active, .tag-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.add-address-form .form-group {
+  margin-bottom: 0.85rem;
+  text-align: left;
+}

@@ -1,18 +1,40 @@
 import React, { useState } from 'react';
 import { 
   Home, Zap, Calendar, Clock, CreditCard, MapPin, HelpCircle, User, LogOut, 
-  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, Phone
+  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, Phone, Trash2, Compass
 } from 'lucide-react';
 import { logoutUser } from '../auth/authStore';
 import BookingModal from '../components/BookingModal';
 import TrackBookingModal from '../components/TrackBookingModal';
+import AddAddressModal from '../components/AddAddressModal';
 import './CustomerDashboard.css';
+
+const INITIAL_ADDRESSES = [
+  {
+    id: 'ADDR-101',
+    tag: 'Home',
+    houseNo: 'House #42, Thana Road',
+    area: 'Near St. Angelo Fort',
+    city: 'Kannur',
+    landmark: 'Opposite City Center',
+    lat: 11.8745,
+    lng: 75.3704,
+    fullText: 'House #42, Thana Road, Near St. Angelo Fort, Kannur'
+  }
+];
 
 export default function CustomerDashboard({ user, onLogoutSuccess }) {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'bookings' | 'active' | 'history' | 'addresses' | 'profile' | 'support'
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
+  const [addAddressModalOpen, setAddAddressModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('Electrical Repairs');
+
+  // Saved Addresses State with LocalStorage Persistence
+  const [savedAddresses, setSavedAddresses] = useState(() => {
+    const stored = localStorage.getItem('homefix_saved_addresses');
+    return stored ? JSON.parse(stored) : INITIAL_ADDRESSES;
+  });
 
   const liveBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
   const activeBooking = liveBookings.find(b => b.status !== 'Completed' && b.status !== 'Cancelled');
@@ -33,6 +55,20 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
   const handleOpenBookingWithService = (serviceName) => {
     setSelectedService(serviceName);
     setBookingModalOpen(true);
+  };
+
+  const handleSaveAddress = (newAddr) => {
+    const updated = [newAddr, ...savedAddresses];
+    setSavedAddresses(updated);
+    localStorage.setItem('homefix_saved_addresses', JSON.stringify(updated));
+  };
+
+  const handleRemoveAddress = (id) => {
+    if (window.confirm('Are you sure you want to remove this saved address?')) {
+      const updated = savedAddresses.filter(a => a.id !== id);
+      setSavedAddresses(updated);
+      localStorage.setItem('homefix_saved_addresses', JSON.stringify(updated));
+    }
   };
 
   return (
@@ -332,17 +368,74 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         )}
 
-        {/* ================= TAB 5: SAVED ADDRESSES ================= */}
+        {/* ================= TAB 5: SAVED ADDRESSES WITH ADD / REMOVE ================= */}
         {activeTab === 'addresses' && (
           <div className="tab-content-area">
-            <h3 className="tab-title mb-4">Saved Addresses</h3>
-            <div className="address-card glass-card">
-              <MapPin size={24} className="text-primary" />
+            <div className="flex-between mb-4">
               <div>
-                <strong>Home Location</strong>
-                <p className="text-xs text-gray-600">Thana Road, Near Fort, Kannur</p>
+                <h3 className="tab-title">Saved Addresses</h3>
+                <p className="text-xs text-gray-500">Manage your saved locations for 1-click booking</p>
               </div>
+              <button 
+                onClick={() => setAddAddressModalOpen(true)} 
+                className="btn-primary btn-sm flex-center gap-1"
+              >
+                <Plus size={16} />
+                <span>Add New Address</span>
+              </button>
             </div>
+
+            {savedAddresses.length > 0 ? (
+              <div className="addresses-grid">
+                {savedAddresses.map((addr) => (
+                  <div key={addr.id} className="address-card-item glass-card">
+                    <div className="address-card-header">
+                      <div className="flex-center gap-2">
+                        <MapPin size={20} className="text-primary" />
+                        <span className="address-tag-pill">{addr.tag || 'Home'}</span>
+                        <span className="city-pill">{addr.city}</span>
+                      </div>
+                      <button 
+                        onClick={() => handleRemoveAddress(addr.id)} 
+                        className="btn-remove-address"
+                        title="Remove Address"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+
+                    <div className="address-card-body mt-3">
+                      <strong>{addr.houseNo}</strong>
+                      <p className="text-sm text-gray-600 mt-1">{addr.area}</p>
+                      {addr.landmark && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          📍 <em>Landmark: {addr.landmark}</em>
+                        </p>
+                      )}
+
+                      {addr.lat && addr.lng && (
+                        <div className="gps-coordinates-badge mt-2">
+                          <Compass size={13} className="text-primary" />
+                          <span>GPS: {addr.lat.toFixed(4)}° N, {addr.lng.toFixed(4)}° E</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state-box">
+                <MapPin size={44} className="text-gray-300 mb-2" />
+                <h4>No Saved Addresses Yet</h4>
+                <p>Add your home or office address with 1-click GPS location auto-detection.</p>
+                <button 
+                  onClick={() => setAddAddressModalOpen(true)} 
+                  className="btn-primary btn-sm mt-3"
+                >
+                  + Add New Address
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -413,6 +506,12 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         isOpen={trackModalOpen} 
         onClose={() => setTrackModalOpen(false)}
         defaultBookingId={activeBooking?.id || ''}
+      />
+
+      <AddAddressModal 
+        isOpen={addAddressModalOpen}
+        onClose={() => setAddAddressModalOpen(false)}
+        onSaveAddress={handleSaveAddress}
       />
     </div>
   );
