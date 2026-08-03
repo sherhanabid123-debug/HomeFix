@@ -59,11 +59,14 @@ export default function AdminApp() {
           phone: u.phone,
           email: u.email || `${u.phone}@homefix.in`,
           trade: u.category || 'Electrician',
+          skills: [u.category || 'Electrician', `${u.city || 'Kannur'} Region`],
           experience: u.experience || '1-3 Years',
           city: u.city || 'Kannur',
           status: u.status === 'approved' ? 'Approved' : (u.status === 'rejected' ? 'Rejected' : 'Pending'),
           appliedDate: u.appliedDate || new Date().toISOString().slice(0, 10),
           photo: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150',
+          govIdFile: 'Aadhaar Card (Uploaded)',
+          wiremanLicense: `${u.category || 'Service'} License`,
           documents: ['Aadhaar Card (Uploaded)', 'Trade Certificate']
         }));
       
