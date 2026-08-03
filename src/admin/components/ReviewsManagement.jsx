@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Star, EyeOff, Trash2, Phone, ShieldAlert } from 'lucide-react';
 import './ReviewsManagement.css';
 
-const INITIAL_REVIEWS = [];
+const INITIAL_REVIEWS = [
+  { id: 1, customer: 'Anjali Menon', tech: 'Rajesh Kumar', rating: 5, comment: 'Rajesh arrived in 20 minutes in Kannur and fixed our short circuit cleanly.', date: '2026-08-02', status: 'Published' },
+  { id: 2, customer: 'Firoz Moopen', tech: 'Suresh Varma', rating: 5, comment: 'Great plumbing work. Found the concealed leak under kitchen tile accurately.', date: '2026-08-01', status: 'Published' },
+  { id: 3, customer: 'Anonymous', tech: 'Vineeth CP', rating: 2, comment: 'Technician arrived 15 mins late due to traffic near Mavoor road.', date: '2026-07-30', status: 'Reported' }
+];
 
 export default function ReviewsManagement() {
   const [reviews, setReviews] = useState(INITIAL_REVIEWS);
