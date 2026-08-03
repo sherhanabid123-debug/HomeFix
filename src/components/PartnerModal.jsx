@@ -64,7 +64,7 @@ export default function PartnerModal({ isOpen, onClose }) {
               <Briefcase size={24} />
             </div>
             <h3 className="modal-title">Join Technician Waiting List</h3>
-            <p className="modal-sub">Register early to get priority onboarding and instant job alerts at launch.</p>
+            <p className="modal-sub">Register your interest to join HomeFix as a verified technician.</p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -90,7 +90,7 @@ export default function PartnerModal({ isOpen, onClose }) {
                   onChange={(e) => setFormData({ ...formData, trade: e.target.value })}
                   required
                 >
-                  <option value="" disabled hidden>Select Primary Trade...</option>
+                  <option value="" disabled>Select Trade Skill</option>
                   <option value="Electrician">⚡ Licensed Electrician</option>
                   <option value="Plumber">🚰 Experienced Plumber</option>
                   <option value="Both Electrical & Plumbing">🛠️ Both Electrical & Plumbing Expert</option>
@@ -105,7 +105,7 @@ export default function PartnerModal({ isOpen, onClose }) {
                   onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                   required
                 >
-                  <option value="" disabled hidden>Select Primary District...</option>
+                  <option value="" disabled>Select District</option>
                   <option value="Kannur">Kannur District</option>
                   <option value="Kozhikode">Kozhikode District</option>
                   <option value="Kochi">Kochi District</option>
@@ -120,9 +120,9 @@ export default function PartnerModal({ isOpen, onClose }) {
                   <input 
                     type="tel"
                     className="form-input icon-indent"
-                    placeholder="Enter 10-digit mobile number"
+                    placeholder="10-digit mobile number"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
                     required
                   />
                 </div>
@@ -136,7 +136,7 @@ export default function PartnerModal({ isOpen, onClose }) {
                   onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
                   required
                 >
-                  <option value="" disabled hidden>Select Work Experience...</option>
+                  <option value="" disabled>Select Experience Level</option>
                   <option value="1-2 years">1 - 2 Years</option>
                   <option value="3-5 years">3 - 5 Years</option>
                   <option value="5-10 years">5 - 10 Years</option>
