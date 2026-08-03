@@ -175,7 +175,7 @@ export default function Services({ onOpenBooking }) {
                   onClick={() => onOpenBooking(service.title)} 
                   className="service-book-btn"
                 >
-                  <span>Join Technician Waiting List</span>
+                  <span>Book Now</span>
                   <ArrowUpRight size={18} />
                 </button>
               </div>

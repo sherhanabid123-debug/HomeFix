@@ -2,9 +2,7 @@ import React from 'react';
 import { CalendarCheck, UserCheck, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import './HowItWorks.css';
 
-export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
-  const handlePartnerClick = onOpenPartner || onOpenBooking;
-
+export default function HowItWorks({ onOpenBooking }) {
   return (
     <section id="how-it-works" className="how-section">
       <div className="container">
@@ -77,8 +75,8 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
             <h3>Need an Emergency Electrician or Plumber Right Now?</h3>
             <p>Technicians available on standby in Kannur, Kozhikode & Kochi.</p>
           </div>
-          <button onClick={handlePartnerClick} className="btn-primary">
-            <span>Join Technician Waiting List</span>
+          <button onClick={onOpenBooking} className="btn-primary">
+            <span>Book Express Service</span>
           </button>
         </div>
       </div>

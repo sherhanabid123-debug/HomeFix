@@ -6,29 +6,29 @@ import {
 import './DashboardOverview.css';
 
 export default function DashboardOverview({ allData = {}, onNavigate }) {
-  const bookings = Array.isArray(allData.bookings) ? allData.bookings : [];
-  const technicians = Array.isArray(allData.technicians) ? allData.technicians : [];
-  const applications = Array.isArray(allData.applications) ? allData.applications : [];
-  const customers = Array.isArray(allData.customers) ? allData.customers : [];
-  const logs = Array.isArray(allData.logs) ? allData.logs : [];
+  const bookings = Array.isArray(allData.bookings) ? allData.bookings.filter(Boolean) : [];
+  const technicians = Array.isArray(allData.technicians) ? allData.technicians.filter(Boolean) : [];
+  const applications = Array.isArray(allData.applications) ? allData.applications.filter(Boolean) : [];
+  const customers = Array.isArray(allData.customers) ? allData.customers.filter(Boolean) : [];
+  const logs = Array.isArray(allData.logs) ? allData.logs.filter(Boolean) : [];
 
   const todayStr = new Date().toISOString().slice(0, 10);
-  const todayBookingsCount = bookings.filter(b => b && b.bookingTime && b.bookingTime.includes(todayStr)).length;
-  const activeJobsCount = bookings.filter(b => b && ['Assigned', 'Accepted', 'On The Way', 'Started'].includes(b.status)).length;
-  const completedJobsCount = bookings.filter(b => b && b.status === 'Completed').length;
-  const pendingApprovalsCount = applications.filter(a => a && a.status === 'Pending').length;
+  const todayBookingsCount = bookings.filter(b => b.bookingTime && String(b.bookingTime).includes(todayStr)).length;
+  const activeJobsCount = bookings.filter(b => b.status && ['Assigned', 'Accepted', 'On The Way', 'Started'].includes(b.status)).length;
+  const completedJobsCount = bookings.filter(b => b.status === 'Completed').length;
+  const pendingApprovalsCount = applications.filter(a => a.status === 'Pending').length;
   const totalCustomersCount = customers.length;
   const totalTechniciansCount = technicians.length;
-  const todayRevenue = bookings.filter(b => b && b.status === 'Completed' && b.bookingTime && b.bookingTime.includes(todayStr)).reduce((sum, b) => sum + (b.estimatedPrice || 0), 0);
-  const monthlyRevenue = bookings.filter(b => b && b.status === 'Completed').reduce((sum, b) => sum + (b.estimatedPrice || 0), 0);
+  const todayRevenue = bookings.filter(b => b.status === 'Completed' && b.bookingTime && String(b.bookingTime).includes(todayStr)).reduce((sum, b) => sum + (Number(b.estimatedPrice) || 0), 0);
+  const monthlyRevenue = bookings.filter(b => b.status === 'Completed').reduce((sum, b) => sum + (Number(b.estimatedPrice) || 0), 0);
   
   const totalBookingsCount = bookings.length;
-  const cancelledCount = bookings.filter(b => b && b.status === 'Cancelled').length;
+  const cancelledCount = bookings.filter(b => b.status === 'Cancelled').length;
   const cancellationRate = totalBookingsCount > 0 ? `${((cancelledCount / totalBookingsCount) * 100).toFixed(1)}%` : '0.0%';
 
-  const ratedBookings = bookings.filter(b => b && b.customerRating > 0);
+  const ratedBookings = bookings.filter(b => Number(b.customerRating) > 0);
   const avgRating = ratedBookings.length > 0 
-    ? (ratedBookings.reduce((sum, b) => sum + (b.customerRating || 0), 0) / ratedBookings.length).toFixed(1)
+    ? (ratedBookings.reduce((sum, b) => sum + (Number(b.customerRating) || 0), 0) / ratedBookings.length).toFixed(1)
     : '0.0';
 
   const KPI_CARDS = [
@@ -52,30 +52,29 @@ export default function DashboardOverview({ allData = {}, onNavigate }) {
           <h2>Welcome back, <span className="text-primary">Sherhan</span> 👋</h2>
           <p>HomeFix Operations Dashboard, live monitoring</p>
         </div>
-        <div className="banner-actions">
-          <button onClick={() => onNavigate('bookings')} className="btn-primary btn-sm">
-            <span>Manage Live Bookings</span>
-            <ArrowUpRight size={16} />
-          </button>
+        <div className="banner-stats-pills">
+          <span className="b-pill green"><span className="pulse-dot"></span> Dispatch Live</span>
+          <span className="b-pill blue">Kannur & Kozhikode Active</span>
         </div>
       </div>
 
-      {/* 10 KPI Cards Grid */}
+      {/* 10 KPI Metric Cards Grid */}
       <div className="kpi-grid">
         {KPI_CARDS.map((kpi, idx) => {
           const IconComp = kpi.icon;
           return (
             <div 
               key={idx} 
-              className={`kpi-card glass-card color-${kpi.color}`}
-              onClick={() => onNavigate(kpi.tab)}
+              className={`kpi-card glass-card kpi-${kpi.color}`}
+              onClick={() => onNavigate && onNavigate(kpi.tab)}
             >
               <div className="kpi-card-top">
-                <div className={`kpi-icon-badge ${kpi.color}`}>
-                  <IconComp size={22} />
+                <div className="kpi-icon-badge">
+                  <IconComp size={20} />
                 </div>
-                <span className={`kpi-trend ${kpi.isUp ? 'trend-up' : 'trend-warn'}`}>
+                <span className={`kpi-trend ${kpi.isUp ? 'up' : 'neutral'}`}>
                   {kpi.trend}
+                  <ArrowUpRight size={12} />
                 </span>
               </div>
               <div className="kpi-card-bottom">
@@ -93,21 +92,21 @@ export default function DashboardOverview({ allData = {}, onNavigate }) {
         <div className="activity-card glass-card">
           <div className="card-header-row">
             <h3>Recent Activity Feed</h3>
-            <button onClick={() => onNavigate('logs')} className="link-btn">View All Logs</button>
+            <button onClick={() => onNavigate && onNavigate('logs')} className="link-btn">View All Logs</button>
           </div>
           
           <div className="activity-timeline">
             {logs.length > 0 ? (
               logs.map((log) => (
-                <div key={log.id} className="timeline-item">
+                <div key={log.id || Math.random()} className="timeline-item">
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
                     <div className="timeline-header">
-                      <strong>{log.action}</strong>
-                      <span className="timeline-time">{log.timestamp}</span>
+                      <strong>{log.action || 'System Event'}</strong>
+                      <span className="timeline-time">{log.timestamp || ''}</span>
                     </div>
                     <div className="timeline-sub">
-                      <span>By {log.user}</span> • <span className="cat-badge">{log.category}</span>
+                      <span>By {log.user || 'System'}</span> • <span className="cat-badge">{log.category || 'General'}</span>
                     </div>
                   </div>
                 </div>

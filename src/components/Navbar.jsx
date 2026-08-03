@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, Zap, Menu, X, ArrowRight } from 'lucide-react';
+import { Wrench, Zap, Menu, X, ArrowRight, User } from 'lucide-react';
 import './Navbar.css';
 
-export default function Navbar({ onOpenBooking, onOpenPartner }) {
+export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -39,8 +39,13 @@ export default function Navbar({ onOpenBooking, onOpenPartner }) {
 
         {/* CTA Actions */}
         <div className="desktop-actions">
-          <button onClick={onOpenPartner} className="btn-primary btn-sm">
-            <span>Become a Technician</span>
+          <button onClick={onOpenAuth} className="nav-btn-login">
+            <User size={16} />
+            <span>Login</span>
+          </button>
+
+          <button onClick={onOpenBooking} className="btn-primary btn-sm">
+            <span>Book a Service</span>
             <ArrowRight size={16} />
           </button>
         </div>
@@ -66,10 +71,16 @@ export default function Navbar({ onOpenBooking, onOpenPartner }) {
           </nav>
           <div className="mobile-drawer-actions">
             <button 
-              onClick={() => { setMobileMenuOpen(false); onOpenPartner(); }} 
+              onClick={() => { setMobileMenuOpen(false); onOpenAuth(); }} 
+              className="btn-secondary w-full mb-2"
+            >
+              Login
+            </button>
+            <button 
+              onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }} 
               className="btn-primary w-full"
             >
-              Become a Technician
+              Book a Service
             </button>
           </div>
         </div>
