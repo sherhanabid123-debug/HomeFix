@@ -139,30 +139,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
       return;
     }
 
-    const res = registerTechnician({
-      name: fullName,
-      phone,
-      email: email || `${phone}@homefix.in`,
-      password: 'techpassword123',
-      category,
-      experience,
-      city,
-      serviceAreas: `${city} Central`,
-      govId,
-      bankAccount: bankAcc,
-      upiId
-    });
+    const uniqueAppId = `APP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    if (!res.success) {
-      setErrorMessage(res.error);
-      return;
-    }
-
-    // Save to Supabase Cloud if configured
+    // Save to Supabase Cloud ALWAYS
     if (isSupabaseConfigured && supabase) {
       try {
-        const uniqueAppId = `APP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
-        await supabase.from('technician_applications').insert([{
+        const { error: insErr } = await supabase.from('technician_applications').insert([{
           id: uniqueAppId,
           name: fullName.trim(),
           phone: phone.trim(),
@@ -172,9 +154,31 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
           status: 'Pending',
           applied_date: new Date().toISOString().slice(0, 10)
         }]);
+        if (insErr) {
+          console.error('Supabase insert error:', insErr);
+        }
       } catch (dbErr) {
         console.warn('Supabase DB save error:', dbErr);
       }
+    }
+
+    // Backup local store registration
+    try {
+      registerTechnician({
+        name: fullName,
+        phone,
+        email: email || `${phone}@homefix.in`,
+        password: 'techpassword123',
+        category,
+        experience,
+        city,
+        serviceAreas: `${city} Central`,
+        govId,
+        bankAccount: bankAcc,
+        upiId
+      });
+    } catch (err) {
+      console.warn('Local store save warning:', err);
     }
 
     // Do NOT auto login for pre-launch waiting list
