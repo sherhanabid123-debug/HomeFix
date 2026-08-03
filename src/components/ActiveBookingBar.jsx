@@ -8,11 +8,21 @@ export default function ActiveBookingBar({ onOpenTrack }) {
 
   useEffect(() => {
     const checkBooking = () => {
-      const liveBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
-      const active = liveBookings.find(b => b.status !== 'Completed' && b.status !== 'Cancelled');
-      if (active) {
-        setLatestBooking(active);
-      } else {
+      try {
+        const saved = localStorage.getItem('homefix_live_bookings');
+        if (!saved || saved === 'undefined' || saved === 'null') {
+          setLatestBooking(null);
+          return;
+        }
+        const liveBookings = JSON.parse(saved);
+        if (Array.isArray(liveBookings)) {
+          const active = liveBookings.find(b => b.status !== 'Completed' && b.status !== 'Cancelled');
+          setLatestBooking(active || null);
+        } else {
+          setLatestBooking(null);
+        }
+      } catch (err) {
+        console.error("ActiveBookingBar localStorage error:", err);
         setLatestBooking(null);
       }
     };

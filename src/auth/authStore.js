@@ -58,22 +58,37 @@ const INITIAL_USERS = [
 ];
 
 export function getRegisteredUsers() {
-  const saved = localStorage.getItem(USERS_KEY);
-  if (!saved) {
+  try {
+    const saved = localStorage.getItem(USERS_KEY);
+    if (!saved || saved === 'undefined' || saved === 'null') {
+      localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
+      return INITIAL_USERS;
+    }
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : INITIAL_USERS;
+  } catch (e) {
+    console.error("Error parsing registered users:", e);
     localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
     return INITIAL_USERS;
   }
-  return JSON.parse(saved);
 }
 
 export function getCurrentUser() {
-  const saved = localStorage.getItem(CURRENT_USER_KEY);
-  return saved ? JSON.parse(saved) : null;
+  try {
+    const saved = localStorage.getItem(CURRENT_USER_KEY);
+    if (!saved || saved === 'undefined' || saved === 'null') return null;
+    const parsed = JSON.parse(saved);
+    return (parsed && typeof parsed === 'object') ? parsed : null;
+  } catch (e) {
+    console.error("Error parsing current user session:", e);
+    localStorage.removeItem(CURRENT_USER_KEY);
+    return null;
+  }
 }
 
 export function loginWithCredentials({ phoneOrEmail, password }) {
   const users = getRegisteredUsers();
-  const query = phoneOrEmail.trim().toLowerCase().replace(/[^a-z0-9@.]/g, '');
+  const query = phoneOrEmail ? phoneOrEmail.trim().toLowerCase().replace(/[^a-z0-9@.]/g, '') : '';
 
   const user = users.find(u => {
     const cleanPhone = u.phone ? u.phone.replace(/[^0-9]/g, '') : '';
@@ -94,54 +109,52 @@ export function registerCustomer({ name, phone, email, password }) {
   const users = getRegisteredUsers();
   const cleanPhone = phone.replace(/[^0-9]/g, '');
 
-  const existing = users.find(u => u.phone === cleanPhone);
-  if (existing) {
+  if (users.some(u => u.phone.replace(/[^0-9]/g, '') === cleanPhone)) {
     return { success: false, error: 'An account with this phone number already exists.' };
   }
 
-  const newUser = {
-    id: `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
+  const newCustomer = {
+    id: `CUST-${Math.floor(100 + Math.random() * 900)}`,
     role: 'customer',
-    name,
+    name: name.trim(),
     phone: cleanPhone,
-    email: email || `${cleanPhone}@homefix.in`,
+    email: email ? email.trim() : '',
     password,
     city: 'Kannur',
     status: 'approved',
     joinedDate: new Date().toISOString().slice(0, 10)
   };
 
-  const updatedUsers = [...users, newUser];
+  const updatedUsers = [...users, newCustomer];
   localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newUser));
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newCustomer));
 
-  return { success: true, user: newUser };
+  return { success: true, user: newCustomer };
 }
 
-export function registerTechnician(techData) {
+export function registerTechnician(data) {
   const users = getRegisteredUsers();
-  const cleanPhone = techData.phone.replace(/[^0-9]/g, '');
+  const cleanPhone = data.phone.replace(/[^0-9]/g, '');
 
-  const existing = users.find(u => u.phone === cleanPhone);
-  if (existing) {
-    return { success: false, error: 'A technician account with this phone number already exists.' };
+  if (users.some(u => u.phone.replace(/[^0-9]/g, '') === cleanPhone)) {
+    return { success: false, error: 'An account with this phone number already exists.' };
   }
 
   const newTech = {
-    id: `TECH-${Math.floor(1000 + Math.random() * 9000)}`,
+    id: `TECH-${Math.floor(200 + Math.random() * 800)}`,
     role: 'technician',
-    name: techData.name,
+    name: data.name.trim(),
     phone: cleanPhone,
-    email: techData.email || `${cleanPhone}@partner.homefix.in`,
-    password: techData.password,
-    category: techData.category || 'Electrician',
-    experience: techData.experience || '1-3 Years',
-    city: techData.city || 'Kannur',
-    serviceAreas: techData.serviceAreas || 'Kannur Central',
-    govId: techData.govId || 'Aadhaar Verified',
-    bankAccount: techData.bankAccount || 'Kerala Bank',
-    upiId: techData.upiId || `${cleanPhone}@upi`,
-    status: 'pending', // Requires admin review
+    email: data.email ? data.email.trim() : '',
+    password: data.password,
+    category: data.category || 'Electrician',
+    experience: data.experience || '1-3 Years',
+    city: data.city || 'Kannur',
+    serviceAreas: data.serviceAreas || 'Kannur Central',
+    govId: data.govId || '',
+    bankAccount: data.bankAccount || '',
+    upiId: data.upiId || '',
+    status: 'pending', // Under review by Admin
     rating: 5.0,
     completedJobs: 0,
     appliedDate: new Date().toISOString().slice(0, 10)
@@ -149,10 +162,7 @@ export function registerTechnician(techData) {
 
   const updatedUsers = [...users, newTech];
   localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-
-  // Also save to homefix_live_applications for Admin portal
-  const existingApps = JSON.parse(localStorage.getItem('homefix_live_applications') || '[]');
-  localStorage.setItem('homefix_live_applications', JSON.stringify([newTech, ...existingApps]));
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newTech));
 
   return { success: true, user: newTech };
 }
@@ -161,21 +171,13 @@ export function resetPassword({ phone, newPassword }) {
   const users = getRegisteredUsers();
   const cleanPhone = phone.replace(/[^0-9]/g, '');
 
-  const index = users.findIndex(u => u.phone === cleanPhone);
+  const index = users.findIndex(u => u.phone.replace(/[^0-9]/g, '') === cleanPhone);
   if (index === -1) {
     return { success: false, error: 'No account found matching this phone number.' };
   }
 
   users[index].password = newPassword;
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
-
-  // If current logged-in user reset password, update session
-  const current = getCurrentUser();
-  if (current && current.phone === cleanPhone) {
-    current.password = newPassword;
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(current));
-  }
-
   return { success: true };
 }
 

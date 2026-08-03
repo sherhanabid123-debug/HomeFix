@@ -9,15 +9,20 @@ export default function TrackBookingModal({ isOpen, onClose, defaultBookingId = 
 
   useEffect(() => {
     if (isOpen) {
-      const liveBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
-      if (defaultBookingId) {
-        setSearchQuery(defaultBookingId);
-        const match = liveBookings.find(b => b.id.toLowerCase() === defaultBookingId.toLowerCase());
-        if (match) setActiveBooking(match);
-        else if (liveBookings.length > 0) setActiveBooking(liveBookings[0]);
-      } else if (liveBookings.length > 0) {
-        setActiveBooking(liveBookings[0]);
-        setSearchQuery(liveBookings[0].id);
+      try {
+        const saved = localStorage.getItem('homefix_live_bookings');
+        const liveBookings = (saved && saved !== 'undefined') ? JSON.parse(saved) : [];
+        if (defaultBookingId) {
+          setSearchQuery(defaultBookingId);
+          const match = liveBookings.find(b => b.id.toLowerCase() === defaultBookingId.toLowerCase());
+          if (match) setActiveBooking(match);
+          else if (liveBookings.length > 0) setActiveBooking(liveBookings[0]);
+        } else if (liveBookings.length > 0) {
+          setActiveBooking(liveBookings[0]);
+          setSearchQuery(liveBookings[0].id);
+        }
+      } catch (err) {
+        console.error("TrackBookingModal error:", err);
       }
     }
   }, [isOpen, defaultBookingId]);
@@ -27,7 +32,11 @@ export default function TrackBookingModal({ isOpen, onClose, defaultBookingId = 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     setSearchError('');
-    const liveBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
+    let liveBookings = [];
+    try {
+      const saved = localStorage.getItem('homefix_live_bookings');
+      liveBookings = (saved && saved !== 'undefined') ? JSON.parse(saved) : [];
+    } catch (e) {}
     const query = searchQuery.trim().toLowerCase();
 
     if (!query) {
