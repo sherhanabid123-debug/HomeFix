@@ -3,7 +3,7 @@ import { Search, Download, Filter, Eye, Phone, RefreshCw, XCircle, MapPin, Calen
 import BookingDetailModal from './BookingDetailModal';
 import './BookingsManagement.css';
 
-export default function BookingsManagement({ bookings, setBookings }) {
+export default function BookingsManagement({ bookings, setBookings, technicians = [] }) {
   const [statusFilter, setStatusFilter] = useState('All');
   const [cityFilter, setCityFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -200,6 +200,7 @@ export default function BookingsManagement({ bookings, setBookings }) {
           onClose={() => setSelectedBooking(null)}
           onUpdateStatus={handleUpdateStatus}
           onReassign={handleReassignTech}
+          technicians={technicians}
         />
       )}
     </div>

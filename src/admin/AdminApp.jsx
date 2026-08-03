@@ -237,7 +237,7 @@ function AdminAppContent() {
       )}
 
       {activeTab === 'bookings' && (
-        <BookingsManagement bookings={bookings} setBookings={setBookings} />
+        <BookingsManagement bookings={bookings} setBookings={setBookings} technicians={technicians} />
       )}
 
       {activeTab === 'technicians' && (

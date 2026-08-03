@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, MapPin, User, Phone, Mail, Calendar, Clock, ShieldCheck, Printer, RefreshCw, XCircle, DollarSign, CheckCircle2, MessageSquare } from 'lucide-react';
 import './BookingDetailModal.css';
 
-export default function BookingDetailModal({ booking, onClose, onUpdateStatus, onReassign }) {
+export default function BookingDetailModal({ booking, onClose, onUpdateStatus, onReassign, technicians = [] }) {
   const [internalNote, setInternalNote] = useState('');
   const [notesList, setNotesList] = useState([booking.internalNotes].filter(Boolean));
   const [showReassignDropdown, setShowReassignDropdown] = useState(false);
@@ -64,9 +64,15 @@ export default function BookingDetailModal({ booking, onClose, onUpdateStatus, o
               <h4>Reassign Technician</h4>
               <div className="reassign-row">
                 <select id="techSelect" className="form-select text-sm">
-                  <option value="TECH-218">Rajesh Kumar (Kannur - Electrician)</option>
-                  <option value="TECH-219">Suresh Varma (Kozhikode - Plumber)</option>
-                  <option value="TECH-220">Vineeth CP (Kozhikode - Electrician)</option>
+                  {technicians && technicians.length > 0 ? (
+                    technicians.map(t => (
+                      <option key={t.id || t.name} value={t.id || t.name}>
+                        {t.name} ({t.city || 'Kerala'} - {t.trade || t.category || 'Technician'})
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">No technicians available to reassign</option>
+                  )}
                 </select>
                 <button 
                   onClick={() => {
