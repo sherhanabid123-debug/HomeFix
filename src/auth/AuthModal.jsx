@@ -25,9 +25,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
   const googleBtnRef = useRef(null);
 
   // Technician Specific States
-  const [category, setCategory] = useState('Electrician');
-  const [experience, setExperience] = useState('3-5 Years');
-  const [city, setCity] = useState('Kannur');
+  const [category, setCategory] = useState('');
+  const [experience, setExperience] = useState('');
+  const [city, setCity] = useState('');
   const [govId, setGovId] = useState('');
   const [upiId, setUpiId] = useState('');
   const [bankAcc, setBankAcc] = useState('');
@@ -122,6 +122,19 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
   const handleTechRegisterSubmit = (e) => {
     e.preventDefault();
     setErrorMessage('');
+
+    if (!category) {
+      setErrorMessage('Please select your Service Specialization.');
+      return;
+    }
+    if (!experience) {
+      setErrorMessage('Please select your Years of Experience.');
+      return;
+    }
+    if (!city) {
+      setErrorMessage('Please select your Primary Operating District.');
+      return;
+    }
 
     const res = registerTechnician({
       name: fullName,
@@ -515,7 +528,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 <Wrench size={22} className="text-secondary" />
               </div>
               <h3 className="auth-title">Join Technician Waiting List</h3>
-              <p className="auth-sub">Apply to become a HomeFix trade partner</p>
+              <p className="auth-sub">Register your interest to join HomeFix as a verified technician</p>
             </div>
 
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
@@ -526,7 +539,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 <input 
                   type="text" 
                   className="form-input" 
-                  placeholder="Rajesh Kumar"
+                  placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
@@ -539,7 +552,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                   <input 
                     type="tel" 
                     className="form-input" 
-                    placeholder="9447098765"
+                    placeholder="10-digit mobile number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
                     maxLength={10}
