@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Home, Zap, Calendar, Clock, CreditCard, MapPin, HelpCircle, User, LogOut, 
-  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, Phone, Trash2, Compass
+  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, Phone, Trash2, Compass, MessageSquare, Mail
 } from 'lucide-react';
 import { logoutUser } from '../auth/authStore';
 import BookingModal from '../components/BookingModal';
@@ -469,17 +469,88 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         )}
 
-        {/* ================= TAB 7: SUPPORT ================= */}
+        {/* ================= TAB 7: MODERN REFINED SUPPORT ================= */}
         {activeTab === 'support' && (
           <div className="tab-content-area">
-            <h3 className="tab-title mb-4">HomeFix Support & Helpline</h3>
-            <div className="support-box glass-card">
-              <PhoneCall size={28} className="text-secondary mb-2" />
-              <h4>Need Urgent Emergency Assistance?</h4>
-              <p className="text-sm text-gray-600 mb-3">Our operations desk is available 24/7 for electrical emergencies and water pipe bursts.</p>
-              <a href="tel:+919535337959" className="btn-secondary">
-                Call Helpline: +91 95353 37959
-              </a>
+            {/* Header Banner */}
+            <div className="support-header-banner glass-card mb-6">
+              <div className="support-header-left">
+                <div className="support-icon-badge">
+                  <PhoneCall size={26} className="text-primary" />
+                </div>
+                <div>
+                  <h3 className="support-banner-title">24/7 Support & Emergency Helpline</h3>
+                  <p className="support-banner-sub">Our operations team in Kannur & Kozhikode is available round-the-clock to assist with your repairs.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 3 Modern Contact Cards Grid */}
+            <div className="support-cards-grid">
+              {/* Card 1: Direct Call */}
+              <div className="modern-support-card glass-card">
+                <div className="support-card-top">
+                  <div className="channel-icon-badge blue">
+                    <Phone size={22} className="text-primary" />
+                  </div>
+                  <span className="channel-status-pill green">Available 24/7</span>
+                </div>
+                
+                <h4 className="channel-title">Direct Helpline</h4>
+                <p className="channel-desc">Call our support desk for instant emergency dispatches & booking queries.</p>
+                
+                <div className="channel-contact-number">+91 95353 37959</div>
+
+                <a href="tel:+919535337959" className="btn-primary w-full mt-4 flex-center gap-2">
+                  <Phone size={16} />
+                  <span>Call Helpline Now</span>
+                </a>
+              </div>
+
+              {/* Card 2: WhatsApp Chat */}
+              <div className="modern-support-card glass-card">
+                <div className="support-card-top">
+                  <div className="channel-icon-badge green">
+                    <MessageSquare size={22} className="text-secondary" />
+                  </div>
+                  <span className="channel-status-pill green">Instant Chat</span>
+                </div>
+
+                <h4 className="channel-title">WhatsApp Support</h4>
+                <p className="channel-desc">Chat directly with customer care to send photos or location details.</p>
+
+                <div className="channel-contact-number">+91 95353 37959</div>
+
+                <a 
+                  href="https://wa.me/919535337959?text=Hi%20HomeFix!%20I%20need%20assistance%20with%20my%20service%20booking." 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="btn-emerald w-full mt-4 flex-center gap-2"
+                >
+                  <MessageSquare size={16} />
+                  <span>Chat on WhatsApp</span>
+                </a>
+              </div>
+
+              {/* Card 3: Email Desk */}
+              <div className="modern-support-card glass-card">
+                <div className="support-card-top">
+                  <div className="channel-icon-badge blue">
+                    <Mail size={22} className="text-primary" />
+                  </div>
+                  <span className="channel-status-pill blue">24h Response</span>
+                </div>
+
+                <h4 className="channel-title">Email Operations</h4>
+                <p className="channel-desc">Send detailed feedback, receipts, or billing inquiries to our team.</p>
+
+                <div className="channel-contact-number">support@homefix.in</div>
+
+                <a href="mailto:support@homefix.in" className="btn-secondary w-full mt-4 flex-center gap-2">
+                  <Mail size={16} />
+                  <span>Send Email</span>
+                </a>
+              </div>
             </div>
           </div>
         )}
