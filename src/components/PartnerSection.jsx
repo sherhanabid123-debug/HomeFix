@@ -44,7 +44,7 @@ export default function PartnerSection({ onOpenPartner }) {
                   <div className="pf-icon"><TrendingUp size={20} /></div>
                   <div>
                     <h4>More Customers</h4>
-                    <p>Access thousands of homeowners in Kannur & Kozhikode.</p>
+                    <p>Access thousands of homeowners in Kannur, Kozhikode & Kochi.</p>
                   </div>
                 </div>
 

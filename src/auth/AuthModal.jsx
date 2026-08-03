@@ -599,6 +599,13 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                   >
                     📍 Kozhikode
                   </button>
+                  <button 
+                    type="button" 
+                    className={`option-pill-btn ${city === 'Kochi' ? 'active' : ''}`}
+                    onClick={() => setCity('Kochi')}
+                  >
+                    📍 Kochi
+                  </button>
                 </div>
               </div>
 

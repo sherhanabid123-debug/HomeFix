@@ -71,7 +71,7 @@ export default function Footer({ onOpenBooking, onOpenPartner }) {
             <ul className="footer-links-list">
               <li><a href="#coverage"><MapPin size={14} /> Kannur (Active)</a></li>
               <li><a href="#coverage"><MapPin size={14} /> Kozhikode (Active)</a></li>
-              <li><a href="#coverage"><MapPin size={14} /> Kochi (Coming Soon)</a></li>
+              <li><a href="#coverage"><MapPin size={14} /> Kochi (Active)</a></li>
               <li><a href="#coverage"><MapPin size={14} /> Thrissur (Coming Soon)</a></li>
               <li><a href="#coverage"><MapPin size={14} /> Trivandrum (Coming Soon)</a></li>
             </ul>

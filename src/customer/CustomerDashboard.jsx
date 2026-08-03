@@ -480,7 +480,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                 </div>
                 <div>
                   <h3 className="support-banner-title">24/7 Support & Emergency Helpline</h3>
-                  <p className="support-banner-sub">Our operations team in Kannur & Kozhikode is available round-the-clock to assist with your repairs.</p>
+                  <p className="support-banner-sub">Our operations team in Kannur, Kozhikode & Kochi is available round-the-clock to assist with your repairs.</p>
                 </div>
               </div>
             </div>

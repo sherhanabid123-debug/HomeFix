@@ -5,7 +5,7 @@ import './FAQSection.css';
 const FAQ_DATA = [
   {
     q: 'How do I book a technician?',
-    a: 'Simply click the "Book a Service" button on HomeFix, select your required service (Electrical or Plumbing), enter your address in Kannur or Kozhikode, and choose a preferred time slot. You will receive immediate SMS/WhatsApp confirmation with technician details.'
+    a: 'Simply click the "Book a Service" button on HomeFix, select your required service (Electrical or Plumbing), enter your address in Kannur, Kozhikode or Kochi, and choose a preferred time slot. You will receive immediate SMS/WhatsApp confirmation with technician details.'
   },
   {
     q: 'How do you pick your technicians?',

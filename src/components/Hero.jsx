@@ -13,7 +13,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
         <div className="hero-content">
           <div className="location-pill">
             <MapPin size={16} className="pin-icon" />
-            <span>Serving <strong>Kannur & Kozhikode</strong> • Expanding across Kerala</span>
+            <span>Serving <strong>Kannur, Kozhikode & Kochi</strong> • Expanding across Kerala</span>
           </div>
 
           <h1 className="hero-title">

@@ -34,16 +34,23 @@ export default function AnalyticsDashboard() {
             <div className="city-bar-item">
               <div className="flex justify-between font-bold text-sm mb-1">
                 <span>Kannur District</span>
-                <span>45% (180 Jobs)</span>
+                <span>35% (140 Jobs)</span>
               </div>
-              <div className="progress-bg"><div className="progress-fill blue w-45"></div></div>
+              <div className="progress-bg"><div className="progress-fill blue" style={{ width: '35%' }}></div></div>
             </div>
             <div className="city-bar-item mt-4">
               <div className="flex justify-between font-bold text-sm mb-1">
                 <span>Kozhikode District</span>
-                <span>55% (220 Jobs)</span>
+                <span>40% (160 Jobs)</span>
               </div>
-              <div className="progress-bg"><div className="progress-fill green w-55"></div></div>
+              <div className="progress-bg"><div className="progress-fill green" style={{ width: '40%' }}></div></div>
+            </div>
+            <div className="city-bar-item mt-4">
+              <div className="flex justify-between font-bold text-sm mb-1">
+                <span>Kochi District</span>
+                <span>25% (100 Jobs)</span>
+              </div>
+              <div className="progress-bg"><div className="progress-fill amber" style={{ width: '25%' }}></div></div>
             </div>
           </div>
         </div>

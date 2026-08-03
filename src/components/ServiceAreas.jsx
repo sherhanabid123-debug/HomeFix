@@ -3,9 +3,9 @@ import { MapPin, Navigation, CheckCircle2, Clock, Users, Send } from 'lucide-rea
 import './ServiceAreas.css';
 
 const KERALA_DISTRICTS = [
-  { id: 'kannur', name: 'Kannur', status: 'Active Now', pros: '48 Verified Pros', eta: '35 mins', popular: 'Payyambalam, Thana, Talap, Fort Road, Mattannur' },
-  { id: 'kozhikode', name: 'Kozhikode', status: 'Active Now', pros: '62 Verified Pros', eta: '30 mins', popular: 'Mavoor Road, Beach Road, Calicut City, Feroke, Nadakkavu' },
-  { id: 'kochi', name: 'Kochi (Ernakulam)', status: 'Launching Q4', pros: 'Waitlist Open', eta: 'Coming Soon', popular: 'Kakkanad, Edappally, Fort Kochi' },
+  { id: 'kannur', name: 'Kannur', status: 'Active Now', pros: '48 Active Pros', eta: '35 mins', popular: 'Payyambalam, Thana, Talap, Fort Road, Mattannur' },
+  { id: 'kozhikode', name: 'Kozhikode', status: 'Active Now', pros: '62 Active Pros', eta: '30 mins', popular: 'Mavoor Road, Beach Road, Calicut City, Feroke, Nadakkavu' },
+  { id: 'kochi', name: 'Kochi (Ernakulam)', status: 'Active Now', pros: '29 Active Pros', eta: '40 mins', popular: 'Kakkanad, Edappally, Fort Kochi' },
   { id: 'thrissur', name: 'Thrissur', status: 'Launching Q4', pros: 'Waitlist Open', eta: 'Coming Soon', popular: 'Swaraj Round, East Fort' },
   { id: 'trivandrum', name: 'Thiruvananthapuram', status: 'Launching Q4', pros: 'Waitlist Open', eta: 'Coming Soon', popular: 'Technopark, Kowdiar' }
 ];
@@ -36,7 +36,7 @@ export default function ServiceAreas({ onOpenBooking, onOpenPartner }) {
           </div>
           <h2 className="section-title">Service Areas</h2>
           <p className="section-subtitle mx-auto">
-            Launching first in <strong>Kannur & Kozhikode</strong>. More cities coming soon across Kerala.
+            Live now in <strong>Kannur, Kozhikode & Kochi</strong>. More cities coming soon across Kerala.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function ServiceAreas({ onOpenBooking, onOpenPartner }) {
                 <span className="pulse-dot"></span>
                 <span>Live Service Network</span>
               </div>
-              <span className="active-badge">2 Active Cities</span>
+              <span className="active-badge">3 Active Cities</span>
             </div>
 
             {/* Stylized SVG Map Representation of Kerala */}
@@ -95,8 +95,9 @@ export default function ServiceAreas({ onOpenBooking, onOpenPartner }) {
                 </g>
 
                 <g className="map-pin-group" onClick={() => setSelectedCity(KERALA_DISTRICTS[2])}>
-                  <circle cx="155" cy="255" r="6" className="pin-core upcoming-pin" />
-                  <text x="170" y="260" className="pin-label upcoming">Kochi (Soon)</text>
+                  <circle cx="155" cy="255" r="14" className="pin-pulse" />
+                  <circle cx="155" cy="255" r="8" className="pin-core active-pin" />
+                  <text x="175" y="260" className="pin-label">Kochi (ACTIVE)</text>
                 </g>
               </svg>
             </div>

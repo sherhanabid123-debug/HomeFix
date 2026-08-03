@@ -77,6 +77,7 @@
 
 .progress-fill.blue { background: #2563EB; }
 .progress-fill.green { background: #10B981; }
+.progress-fill.amber { background: #F59E0B; }
 
 .w-45 { width: 45%; }
 .w-55 { width: 55%; }

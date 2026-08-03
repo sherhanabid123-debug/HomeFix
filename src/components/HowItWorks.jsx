@@ -29,7 +29,7 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
             </div>
             <h3 className="step-title">1. Book</h3>
             <p className="step-desc">
-              Choose your required electrical or plumbing service, select your district (Kannur or Kozhikode), and pick a convenient time slot.
+              Choose your required electrical or plumbing service, select your district (Kannur, Kozhikode or Kochi), and pick a convenient time slot.
             </p>
             <div className="step-footer-tag">Instant Request</div>
           </div>
@@ -75,7 +75,7 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
         <div className="how-cta-banner">
           <div className="banner-text">
             <h3>Need an Emergency Electrician or Plumber Right Now?</h3>
-            <p>Technicians available on standby in Kannur & Kozhikode.</p>
+            <p>Technicians available on standby in Kannur, Kozhikode & Kochi.</p>
           </div>
           <button onClick={handlePartnerClick} className="btn-primary">
             <span>Join Technician Waiting List</span>

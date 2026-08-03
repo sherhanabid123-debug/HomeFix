@@ -44,7 +44,7 @@ export default function PartnerModal({ isOpen, onClose }) {
               <Briefcase size={24} />
             </div>
             <h3 className="modal-title">Become a HomeFix Technician</h3>
-            <p className="modal-sub">Earn steady daily income serving Kannur & Kozhikode.</p>
+            <p className="modal-sub">Earn steady daily income serving Kannur, Kozhikode & Kochi.</p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -84,6 +84,7 @@ export default function PartnerModal({ isOpen, onClose }) {
                 >
                   <option value="Kannur">Kannur District</option>
                   <option value="Kozhikode">Kozhikode District</option>
+                  <option value="Kochi">Kochi District</option>
                   <option value="Other Kerala District">Other Kerala District (Waitlist)</option>
                 </select>
               </div>

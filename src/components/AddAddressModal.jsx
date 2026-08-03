@@ -41,7 +41,8 @@ export default function AddAddressModal({ isOpen, onClose, onSaveAddress }) {
 
           if (data && data.address) {
             const detectedArea = data.address.suburb || data.address.neighbourhood || data.address.road || data.address.residential || 'Central Area';
-            const detectedCity = (data.address.city || data.address.town || data.address.county || '').toLowerCase().includes('kozhikode') ? 'Kozhikode' : 'Kannur';
+            const addressBlob = (data.address.city || data.address.town || data.address.county || '').toLowerCase();
+            const detectedCity = addressBlob.includes('kozhikode') ? 'Kozhikode' : addressBlob.includes('kochi') || addressBlob.includes('ernakulam') ? 'Kochi' : 'Kannur';
 
             setArea(detectedArea);
             setCity(detectedCity);
@@ -89,8 +90,8 @@ export default function AddAddressModal({ isOpen, onClose, onSaveAddress }) {
       area,
       city,
       landmark: landmark || '',
-      lat: detectedCoords ? detectedCoords.lat : (city === 'Kannur' ? 11.8745 : 11.2588),
-      lng: detectedCoords ? detectedCoords.lng : (city === 'Kannur' ? 75.3704 : 75.7804),
+      lat: detectedCoords ? detectedCoords.lat : (city === 'Kannur' ? 11.8745 : city === 'Kozhikode' ? 11.2588 : 9.9312),
+      lng: detectedCoords ? detectedCoords.lng : (city === 'Kannur' ? 75.3704 : city === 'Kozhikode' ? 75.7804 : 76.2673),
       fullText: `${houseNo}, ${area}, ${landmark ? landmark + ', ' : ''}${city}`
     };
 
@@ -215,6 +216,7 @@ export default function AddAddressModal({ isOpen, onClose, onSaveAddress }) {
               <select className="form-select" value={city} onChange={(e) => setCity(e.target.value)}>
                 <option value="Kannur">Kannur</option>
                 <option value="Kozhikode">Kozhikode</option>
+                <option value="Kochi">Kochi</option>
               </select>
             </div>
           </div>

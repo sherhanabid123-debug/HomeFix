@@ -334,6 +334,17 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
                     <MapPin size={16} />
                     <span>Kozhikode</span>
                   </label>
+                  <label className={`radio-pill ${district === 'Kochi' ? 'active' : ''}`}>
+                    <input 
+                      type="radio" 
+                      name="district" 
+                      value="Kochi" 
+                      checked={district === 'Kochi'}
+                      onChange={() => setDistrict('Kochi')}
+                    />
+                    <MapPin size={16} />
+                    <span>Kochi</span>
+                  </label>
                 </div>
               </div>
 

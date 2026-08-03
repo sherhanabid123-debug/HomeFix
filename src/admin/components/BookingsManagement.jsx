@@ -100,6 +100,7 @@ export default function BookingsManagement({ bookings, setBookings }) {
               <option value="All">All Cities</option>
               <option value="Kannur">Kannur</option>
               <option value="Kozhikode">Kozhikode</option>
+              <option value="Kochi">Kochi</option>
             </select>
           </div>
         </div>

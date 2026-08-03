@@ -142,6 +142,17 @@ export default function DashboardOverview({ allData, onNavigate }) {
             </div>
           </div>
 
+          <div className="city-ops-box mt-3">
+            <div className="city-ops-header">
+              <span className="city-name">Kochi Network</span>
+              <span className="status-pill active-pill">Active</span>
+            </div>
+            <div className="city-stats-row">
+              <div><span>Active Techs:</span> <strong>{technicians.filter(t => t.city === 'Kochi').length}</strong></div>
+              <div><span>Open Jobs:</span> <strong>{bookings.filter(b => b.city === 'Kochi' && b.status !== 'Completed' && b.status !== 'Cancelled').length}</strong></div>
+            </div>
+          </div>
+
           <div className="quick-alert-box mt-4">
             <ShieldCheck size={20} className="text-secondary" />
             <div>

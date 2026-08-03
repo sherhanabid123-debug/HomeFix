@@ -18,7 +18,7 @@ const WHY_CARDS = [
   {
     icon: Zap,
     title: 'Fast Response',
-    desc: 'Average technician arrival time under 45 minutes anywhere in Kannur & Kozhikode.',
+    desc: 'Average technician arrival time under 45 minutes anywhere in Kannur, Kozhikode & Kochi.',
     color: 'amber'
   },
   {

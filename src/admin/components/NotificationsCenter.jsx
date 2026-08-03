@@ -42,7 +42,7 @@ export default function NotificationsCenter() {
           <div>
             <label className="form-label">Target Recipient Group</label>
             <select value={targetGroup} onChange={(e) => setTargetGroup(e.target.value)} className="form-select">
-              <option value="All Customers">👥 All Customers (Kannur & Kozhikode)</option>
+              <option value="All Customers">👥 All Customers (Kannur, Kozhikode & Kochi)</option>
               <option value="All Technicians">👷 All Technicians</option>
               <option value="Specific Customer">👤 Specific Customer</option>
               <option value="Specific Technician">🛠️ Specific Technician</option>

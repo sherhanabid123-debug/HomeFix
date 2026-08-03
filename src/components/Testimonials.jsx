@@ -43,7 +43,7 @@ export default function Testimonials() {
           </div>
           <h2 className="section-title">Trusted by Local Homeowners</h2>
           <p className="section-subtitle mx-auto">
-            See how HomeFix delivers peace of mind to families across Kannur and Kozhikode.
+            See how HomeFix delivers peace of mind to families across Kannur, Kozhikode and Kochi.
           </p>
         </div>
 
