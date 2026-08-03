@@ -547,28 +547,58 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 </div>
                 <div className="form-group">
                   <label className="form-label">Service Specialization</label>
-                  <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="Electrician">⚡ Electrician</option>
-                    <option value="Plumber">🚰 Plumber</option>
-                  </select>
+                  <div className="custom-option-pills">
+                    <button 
+                      type="button" 
+                      className={`option-pill-btn ${category === 'Electrician' ? 'active' : ''}`}
+                      onClick={() => setCategory('Electrician')}
+                    >
+                      ⚡ Electrician
+                    </button>
+                    <button 
+                      type="button" 
+                      className={`option-pill-btn ${category === 'Plumber' ? 'active' : ''}`}
+                      onClick={() => setCategory('Plumber')}
+                    >
+                      🚰 Plumber
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid-2-col">
-                <div className="form-group">
-                  <label className="form-label">Experience</label>
-                  <select className="form-select" value={experience} onChange={(e) => setExperience(e.target.value)}>
-                    <option value="1-3 Years">1 - 3 Years</option>
-                    <option value="3-5 Years">3 - 5 Years</option>
-                    <option value="5+ Years">5+ Years</option>
-                  </select>
+              <div className="form-group mb-3">
+                <label className="form-label">Years of Experience</label>
+                <div className="custom-option-pills">
+                  {['1-3 Years', '3-5 Years', '5+ Years'].map(exp => (
+                    <button
+                      type="button"
+                      key={exp}
+                      className={`option-pill-btn ${experience === exp ? 'active' : ''}`}
+                      onClick={() => setExperience(exp)}
+                    >
+                      {exp}
+                    </button>
+                  ))}
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Primary District</label>
-                  <select className="form-select" value={city} onChange={(e) => setCity(e.target.value)}>
-                    <option value="Kannur">Kannur</option>
-                    <option value="Kozhikode">Kozhikode</option>
-                  </select>
+              </div>
+
+              <div className="form-group mb-3">
+                <label className="form-label">Primary Operating District</label>
+                <div className="custom-option-pills">
+                  <button 
+                    type="button" 
+                    className={`option-pill-btn ${city === 'Kannur' ? 'active' : ''}`}
+                    onClick={() => setCity('Kannur')}
+                  >
+                    📍 Kannur
+                  </button>
+                  <button 
+                    type="button" 
+                    className={`option-pill-btn ${city === 'Kozhikode' ? 'active' : ''}`}
+                    onClick={() => setCity('Kozhikode')}
+                  >
+                    📍 Kozhikode
+                  </button>
                 </div>
               </div>
 
