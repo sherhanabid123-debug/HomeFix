@@ -10,17 +10,7 @@ export const INITIAL_APPLICATIONS = [];
 
 export const INITIAL_CUSTOMERS = [];
 
-export const INITIAL_ADMIN_USERS = [
-  {
-    id: 'ADM-01',
-    name: 'Sherhan Abid',
-    email: 'admin@homefix.in',
-    role: 'Super Admin',
-    status: 'Active',
-    lastLogin: 'Just Now',
-    permissions: ['all']
-  }
-];
+export const INITIAL_ADMIN_USERS = [];
 
 export const INITIAL_ACTIVITY_LOGS = [];
 

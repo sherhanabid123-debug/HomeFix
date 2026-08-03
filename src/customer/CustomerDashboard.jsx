@@ -9,19 +9,7 @@ import TrackBookingModal from '../components/TrackBookingModal';
 import AddAddressModal from '../components/AddAddressModal';
 import './CustomerDashboard.css';
 
-const INITIAL_ADDRESSES = [
-  {
-    id: 'ADDR-101',
-    tag: 'Home',
-    houseNo: 'House #42, Thana Road',
-    area: 'Near St. Angelo Fort',
-    city: 'Kannur',
-    landmark: 'Opposite City Center',
-    lat: 11.8745,
-    lng: 75.3704,
-    fullText: 'House #42, Thana Road, Near St. Angelo Fort, Kannur'
-  }
-];
+const INITIAL_ADDRESSES = [];
 
 export default function CustomerDashboard({ user, onLogoutSuccess }) {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'bookings' | 'active' | 'history' | 'addresses' | 'profile' | 'support'

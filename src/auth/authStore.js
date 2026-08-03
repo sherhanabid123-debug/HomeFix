@@ -6,56 +6,7 @@ const USERS_KEY = 'homefix_registered_users';
 const CURRENT_USER_KEY = 'homefix_current_user';
 
 // Default initial accounts if empty
-const INITIAL_USERS = [
-  {
-    id: 'CUST-101',
-    role: 'customer',
-    name: 'Anjali Menon',
-    phone: '9847012345',
-    email: 'anjali@gmail.com',
-    password: 'password123',
-    city: 'Kannur',
-    status: 'approved',
-    joinedDate: '2026-08-01'
-  },
-  {
-    id: 'TECH-201',
-    role: 'technician',
-    name: 'Rajesh Kumar',
-    phone: '9447098765',
-    email: 'rajesh.k@homefix.in',
-    password: 'password123',
-    category: 'Electrician',
-    experience: '5+ Years',
-    city: 'Kannur',
-    status: 'approved',
-    rating: 4.9,
-    completedJobs: 142
-  },
-  {
-    id: 'TECH-202',
-    role: 'technician',
-    name: 'Suresh Babu',
-    phone: '9847055555',
-    email: 'suresh.babu@gmail.com',
-    password: 'password123',
-    category: 'Plumber',
-    experience: '3 Years',
-    city: 'Kozhikode',
-    status: 'pending',
-    rating: 5.0,
-    completedJobs: 0
-  },
-  {
-    id: 'ADM-001',
-    role: 'admin',
-    name: 'Sherhan Abid',
-    phone: '9000000000',
-    email: 'admin@homefix.in',
-    password: 'admin123',
-    status: 'approved'
-  }
-];
+const INITIAL_USERS = [];
 
 export function getRegisteredUsers() {
   try {
