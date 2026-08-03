@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, CheckCircle2, XCircle, Phone, Mail, Calendar, MapPin, Wrench, User } from 'lucide-react';
+import { Search, CheckCircle2, XCircle, Phone, Mail, Calendar, MapPin, Wrench, User, Clock } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabaseClient';
 import './TechnicianApplications.css';
 
 export default function TechnicianApplications({ applications = [], setApplications, onApproveApplicant }) {
@@ -21,9 +22,16 @@ export default function TechnicianApplications({ applications = [], setApplicati
     return matchesTab && matchesSearch;
   });
 
-  const handleStatusChange = (id, newStatus) => {
+  const handleStatusChange = async (id, newStatus) => {
     if (typeof setApplications === 'function') {
       setApplications(safeApps.map(a => a.id === id ? { ...a, status: newStatus } : a));
+    }
+    if (isSupabaseConfigured && supabase && id) {
+      try {
+        await supabase.from('technician_applications').update({ status: newStatus }).eq('id', id);
+      } catch (dbErr) {
+        console.warn('Supabase status update error:', dbErr);
+      }
     }
     if (newStatus === 'Approved') {
       const app = safeApps.find(a => a.id === id);
@@ -115,7 +123,7 @@ export default function TechnicianApplications({ applications = [], setApplicati
                 </div>
                 {app.appliedDate && (
                   <div className="detail-line">
-                    <Calendar size={14} className="text-gray" /> <span>Applied: {app.appliedDate}</span>
+                    <Clock size={14} className="text-gray" /> <span>Applied: <strong>{app.appliedDate}</strong></span>
                   </div>
                 )}
               </div>
@@ -137,7 +145,17 @@ export default function TechnicianApplications({ applications = [], setApplicati
                     </button>
                   </>
                 ) : (
-                  <span className="text-xs text-gray italic">Status: {app.status}</span>
+                  <div className="flex items-center justify-between w-full" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                    <span className="text-xs text-gray italic">Status: <strong>{app.status}</strong></span>
+                    {app.status === 'Rejected' && (
+                      <button 
+                        onClick={() => handleStatusChange(app.id, 'Pending')} 
+                        style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+                      >
+                        Re-Open to Pending
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

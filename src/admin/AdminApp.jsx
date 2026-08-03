@@ -198,16 +198,30 @@ function AdminAppContent() {
           }
 
           if (Array.isArray(dbApps) && dbApps.length > 0) {
-            const formattedDbApps = dbApps.map(a => ({
-              id: a.id,
-              name: a.name,
-              phone: a.phone,
-              trade: a.trade,
-              district: a.district,
-              experience: a.experience,
-              status: String(a.status || 'Pending').toLowerCase() === 'approved' ? 'Approved' : (String(a.status || '').toLowerCase() === 'rejected' ? 'Rejected' : 'Pending'),
-              appliedDate: a.applied_date || new Date().toISOString().slice(0, 10)
-            })).sort((a, b) => (b.appliedDate || '').localeCompare(a.appliedDate || ''));
+            const formattedDbApps = dbApps.map(a => {
+              let timeStr = a.applied_date || new Date().toISOString().slice(0, 10);
+              if (a.created_at) {
+                try {
+                  timeStr = new Date(a.created_at).toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', hour12: true
+                  });
+                } catch (e) {
+                  timeStr = a.applied_date || new Date().toISOString().slice(0, 10);
+                }
+              }
+              return {
+                id: a.id,
+                name: a.name,
+                phone: a.phone,
+                trade: a.trade,
+                district: a.district,
+                experience: a.experience,
+                status: String(a.status || 'Pending').toLowerCase() === 'approved' ? 'Approved' : (String(a.status || '').toLowerCase() === 'rejected' ? 'Rejected' : 'Pending'),
+                appliedDate: timeStr,
+                createdAt: a.created_at || new Date().toISOString()
+              };
+            }).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
             const mergedAppsMap = new Map();
             [...formattedDbApps, ...localApps].forEach(item => {
               if (item && item.id && !mergedAppsMap.has(item.id)) {
