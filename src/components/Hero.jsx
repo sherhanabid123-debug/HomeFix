@@ -46,9 +46,6 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
               <span>Join Technician Waiting List</span>
               <ArrowRight size={18} />
             </button>
-            <button onClick={onOpenPartner} className="btn-secondary hero-btn">
-              <span>Become a Technician</span>
-            </button>
           </div>
         </div>
 

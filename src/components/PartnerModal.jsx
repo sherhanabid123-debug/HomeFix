@@ -28,6 +28,26 @@ export default function PartnerModal({ isOpen, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    try {
+      const existingApps = JSON.parse(localStorage.getItem('homefix_live_applications') || '[]');
+      const newApp = {
+        id: `APP-${Date.now().toString().slice(-4)}`,
+        name: formData.name,
+        trade: formData.trade,
+        district: formData.district,
+        phone: formData.phone,
+        experience: formData.experience,
+        status: 'Pending',
+        appliedDate: new Date().toISOString().slice(0, 10),
+        timestamp: new Date().toLocaleString()
+      };
+      const updated = [newApp, ...(Array.isArray(existingApps) ? existingApps : [])];
+      localStorage.setItem('homefix_live_applications', JSON.stringify(updated));
+    } catch (err) {
+      console.error('Failed to save technician application:', err);
+    }
+
     setSubmitted(true);
   };
 
