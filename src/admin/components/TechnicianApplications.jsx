@@ -13,7 +13,8 @@ export default function TechnicianApplications({ applications = [], setApplicati
     const name = a.name || '';
     const phone = a.phone || '';
     const trade = a.trade || '';
-    const matchesTab = filterTab === 'All' || a.status === filterTab;
+    const status = (a.status || 'Pending').toLowerCase();
+    const matchesTab = filterTab === 'All' || status === filterTab.toLowerCase();
     const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           phone.includes(searchQuery) ||
                           trade.toLowerCase().includes(searchQuery.toLowerCase());
@@ -58,7 +59,7 @@ export default function TechnicianApplications({ applications = [], setApplicati
             >
               {tab} Applications
               <span className="tab-count">
-                {tab === 'All' ? safeApps.length : safeApps.filter(a => a && a.status === tab).length}
+                {tab === 'All' ? safeApps.length : safeApps.filter(a => a && (a.status || 'Pending').toLowerCase() === tab.toLowerCase()).length}
               </span>
             </button>
           ))}

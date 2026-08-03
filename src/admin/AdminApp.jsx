@@ -205,7 +205,7 @@ function AdminAppContent() {
               trade: a.trade,
               district: a.district,
               experience: a.experience,
-              status: a.status || 'Pending',
+              status: String(a.status || 'Pending').toLowerCase() === 'approved' ? 'Approved' : (String(a.status || '').toLowerCase() === 'rejected' ? 'Rejected' : 'Pending'),
               appliedDate: a.applied_date || new Date().toISOString().slice(0, 10)
             })).sort((a, b) => (b.appliedDate || '').localeCompare(a.appliedDate || ''));
             const mergedAppsMap = new Map();
