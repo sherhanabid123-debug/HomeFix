@@ -368,21 +368,12 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         )}
 
-        {/* ================= TAB 5: SAVED ADDRESSES WITH ADD / REMOVE ================= */}
+        {/* ================= TAB 5: SAVED ADDRESSES ================= */}
         {activeTab === 'addresses' && (
           <div className="tab-content-area">
-            <div className="flex-between mb-4">
-              <div>
-                <h3 className="tab-title">Saved Addresses</h3>
-                <p className="text-xs text-gray-500">Manage your saved locations for 1-click booking</p>
-              </div>
-              <button 
-                onClick={() => setAddAddressModalOpen(true)} 
-                className="btn-primary btn-sm flex-center gap-1"
-              >
-                <Plus size={16} />
-                <span>Add New Address</span>
-              </button>
+            <div className="mb-4">
+              <h3 className="tab-title">Saved Addresses</h3>
+              <p className="text-xs text-gray-500">Manage your saved locations for 1-click booking</p>
             </div>
 
             {savedAddresses.length > 0 ? (
