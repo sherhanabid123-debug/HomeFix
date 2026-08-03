@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import AdminLogin from './AdminLogin';
 import AdminLayout from './AdminLayout';
 import DashboardOverview from './components/DashboardOverview';
@@ -12,6 +12,7 @@ import NotificationsCenter from './components/NotificationsCenter';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import PlatformSettings from './components/PlatformSettings';
 import AdminUsers from './components/AdminUsers';
+import ActivityLogs from './components/ActivityLogs';
 import CustomerInquiries from './components/CustomerInquiries';
 
 import { 
@@ -24,51 +25,101 @@ import {
   INITIAL_SETTINGS 
 } from './mockData';
 
-export default function AdminApp() {
-  const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('homefix_admin_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+// Helper for safe JSON parsing across all localStorage keys
+function safeParseJSON(key, fallback) {
+  try {
+    const saved = localStorage.getItem(key);
+    if (!saved || saved === 'undefined' || saved === 'null') return fallback;
+    const parsed = JSON.parse(saved);
+    return parsed !== undefined && parsed !== null ? parsed : fallback;
+  } catch (e) {
+    console.error(`Error parsing localStorage key "${key}":`, e);
+    return fallback;
+  }
+}
 
+// Admin Error Boundary to prevent white screens
+class AdminErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Admin Portal Error Boundary caught error:", error, errorInfo);
+  }
+
+  handleReset = () => {
+    localStorage.removeItem('homefix_live_applications');
+    localStorage.removeItem('homefix_live_faq_questions');
+    localStorage.removeItem('homefix_admin_user');
+    window.location.reload();
+  };
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '3rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
+          <h2 style={{ color: '#DC2626', fontSize: '1.5rem', fontWeight: 800 }}>Admin Portal Render Error</h2>
+          <p style={{ color: '#4B5563', margin: '1rem 0' }}>An error occurred while displaying the Admin Portal tab.</p>
+          <button 
+            onClick={this.handleReset}
+            style={{ 
+              background: '#10B981', 
+              color: '#fff', 
+              border: 'none', 
+              padding: '0.75rem 1.5rem', 
+              borderRadius: '8px', 
+              fontWeight: 700, 
+              cursor: 'pointer' 
+            }}
+          >
+            Reset Admin Session & Reload
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function AdminAppContent() {
+  const [currentUser, setCurrentUser] = useState(() => safeParseJSON('homefix_admin_user', null));
   const [activeTab, setActiveTab] = useState('dashboard');
   const [darkMode, setDarkMode] = useState(false);
 
-  // Central Store State (persisted & synced with customer web bookings)
-  const [bookings, setBookingsState] = useState(() => {
-    const saved = localStorage.getItem('homefix_live_bookings');
-    return saved ? JSON.parse(saved) : INITIAL_BOOKINGS;
-  });
-
-  const [technicians, setTechniciansState] = useState(() => {
-    const saved = localStorage.getItem('homefix_live_technicians');
-    return saved ? JSON.parse(saved) : INITIAL_TECHNICIANS;
-  });
+  // Central Store State
+  const [bookings, setBookingsState] = useState(() => safeParseJSON('homefix_live_bookings', INITIAL_BOOKINGS));
+  const [technicians, setTechniciansState] = useState(() => safeParseJSON('homefix_live_technicians', INITIAL_TECHNICIANS));
 
   const loadApplications = () => {
     try {
-      const savedApps = localStorage.getItem('homefix_live_applications');
-      const customApps = (savedApps && savedApps !== 'undefined') ? JSON.parse(savedApps) : [];
-      
-      const savedUsers = localStorage.getItem('homefix_registered_users');
-      const users = (savedUsers && savedUsers !== 'undefined') ? JSON.parse(savedUsers) : [];
-      const userTechApps = users
-        .filter(u => u.role === 'technician')
+      const customApps = safeParseJSON('homefix_live_applications', []);
+      const users = safeParseJSON('homefix_registered_users', []);
+      const userTechApps = Array.isArray(users) ? users
+        .filter(u => u && u.role === 'technician')
         .map(u => ({
-          id: u.id,
-          name: u.name,
-          phone: u.phone,
+          id: u.id || `TECH-${Math.floor(Math.random() * 1000)}`,
+          name: u.name || 'Technician Applicant',
+          phone: u.phone || '',
           email: u.email && !u.email.includes('@homefix.in') ? u.email : '',
           trade: u.category || 'Electrician',
           experience: u.experience || '1-3 Years',
           city: u.city || 'Kannur',
           status: u.status === 'approved' ? 'Approved' : (u.status === 'rejected' ? 'Rejected' : 'Pending'),
           appliedDate: u.appliedDate || new Date().toISOString().slice(0, 10)
-        }));
+        })) : [];
       
-      const combined = [...customApps, ...userTechApps, ...INITIAL_APPLICATIONS];
+      const combined = [...(Array.isArray(customApps) ? customApps : []), ...userTechApps, ...INITIAL_APPLICATIONS];
       const uniqueMap = new Map();
       combined.forEach(item => {
-        if (!uniqueMap.has(item.id)) uniqueMap.set(item.id, item);
+        if (item && item.id && !uniqueMap.has(item.id)) {
+          uniqueMap.set(item.id, item);
+        }
       });
       return Array.from(uniqueMap.values());
     } catch (e) {
@@ -83,14 +134,7 @@ export default function AdminApp() {
     localStorage.setItem('homefix_live_applications', JSON.stringify(newApps));
   };
 
-  const loadInquiries = () => {
-    try {
-      const saved = localStorage.getItem('homefix_live_faq_questions');
-      return (saved && saved !== 'undefined') ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  };
+  const loadInquiries = () => safeParseJSON('homefix_live_faq_questions', []);
 
   const [inquiries, setInquiriesState] = useState(() => loadInquiries());
 
@@ -99,18 +143,9 @@ export default function AdminApp() {
     localStorage.setItem('homefix_live_faq_questions', JSON.stringify(newInqs));
   };
 
-  const [customers, setCustomersState] = useState(() => {
-    const saved = localStorage.getItem('homefix_live_customers');
-    return saved ? JSON.parse(saved) : INITIAL_CUSTOMERS;
-  });
-
+  const [customers, setCustomersState] = useState(() => safeParseJSON('homefix_live_customers', INITIAL_CUSTOMERS));
   const [adminUsers, setAdminUsers] = useState(INITIAL_ADMIN_USERS);
-
-  const [logs, setLogsState] = useState(() => {
-    const saved = localStorage.getItem('homefix_live_logs');
-    return saved ? JSON.parse(saved) : INITIAL_ACTIVITY_LOGS;
-  });
-
+  const [logs, setLogsState] = useState(() => safeParseJSON('homefix_live_logs', INITIAL_ACTIVITY_LOGS));
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
 
   // Sync state with localStorage setters
@@ -132,18 +167,10 @@ export default function AdminApp() {
   // Live Auto-Refresh sync on tab switch or focus
   useEffect(() => {
     const syncData = () => {
-      const savedBookings = localStorage.getItem('homefix_live_bookings');
-      if (savedBookings) setBookingsState(JSON.parse(savedBookings));
-
-      const savedLogs = localStorage.getItem('homefix_live_logs');
-      if (savedLogs) setLogsState(JSON.parse(savedLogs));
-
-      const savedCusts = localStorage.getItem('homefix_live_customers');
-      if (savedCusts) setCustomersState(JSON.parse(savedCusts));
-
-      const savedTechs = localStorage.getItem('homefix_live_technicians');
-      if (savedTechs) setTechniciansState(JSON.parse(savedTechs));
-
+      setBookingsState(safeParseJSON('homefix_live_bookings', INITIAL_BOOKINGS));
+      setLogsState(safeParseJSON('homefix_live_logs', INITIAL_ACTIVITY_LOGS));
+      setCustomersState(safeParseJSON('homefix_live_customers', INITIAL_CUSTOMERS));
+      setTechniciansState(safeParseJSON('homefix_live_technicians', INITIAL_TECHNICIANS));
       setApplicationsState(loadApplications());
       setInquiriesState(loadInquiries());
     };
@@ -164,42 +191,19 @@ export default function AdminApp() {
   };
 
   const handleApproveApplicant = (applicant) => {
+    if (!applicant) return;
     const newTech = {
       id: `TECH-${Math.floor(220 + Math.random() * 100)}`,
-      name: applicant.name,
-      phone: applicant.phone,
-      email: applicant.email,
-      category: applicant.trade,
-      photo: applicant.photo,
-      rating: 5.0,
-      jobsCompleted: 0,
+      name: applicant.name || 'Technician',
+      phone: applicant.phone || '',
+      email: applicant.email || '',
+      category: applicant.trade || 'Electrician',
       status: 'Online',
-      city: applicant.city,
-      serviceAreas: `${applicant.city} Central`,
-      languages: 'Malayalam, English',
-      govIdType: 'Aadhaar Card',
-      govIdNumber: 'Verified',
-      bankName: 'Kerala Bank',
-      accountNumber: 'XXXX-XXXX-1928',
-      ifsc: 'KRLB000100',
-      upiId: `${applicant.name.toLowerCase().replace(/\s+/g, '')}@upi`,
-      monthlyEarnings: 0,
-      experience: applicant.experience,
-      documentsVerified: true
+      city: applicant.city || 'Kannur',
+      experience: applicant.experience || '1-3 Years'
     };
 
     setTechnicians([...technicians, newTech]);
-    setLogs([
-      {
-        id: `LOG-${Date.now()}`,
-        timestamp: new Date().toISOString().slice(0, 16).replace('T', ' '),
-        user: currentUser?.name || 'Admin',
-        action: `Approved Technician Application #${applicant.id} (${applicant.name})`,
-        category: 'Technician Onboarding',
-        ip: '103.220.14.82'
-      },
-      ...logs
-    ]);
   };
 
   // If not logged in -> render Admin Login
@@ -208,13 +212,13 @@ export default function AdminApp() {
   }
 
   const allData = {
-    bookings,
-    technicians,
-    applications,
-    inquiries,
-    customers,
-    adminUsers,
-    logs,
+    bookings: Array.isArray(bookings) ? bookings : [],
+    technicians: Array.isArray(technicians) ? technicians : [],
+    applications: Array.isArray(applications) ? applications : [],
+    inquiries: Array.isArray(inquiries) ? inquiries : [],
+    customers: Array.isArray(customers) ? customers : [],
+    adminUsers: Array.isArray(adminUsers) ? adminUsers : [],
+    logs: Array.isArray(logs) ? logs : [],
     settings
   };
 
@@ -287,5 +291,13 @@ export default function AdminApp() {
         <ActivityLogs logs={logs} />
       )}
     </AdminLayout>
+  );
+}
+
+export default function AdminApp() {
+  return (
+    <AdminErrorBoundary>
+      <AdminAppContent />
+    </AdminErrorBoundary>
   );
 }
