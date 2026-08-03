@@ -40,6 +40,21 @@
   border: 2px solid var(--primary-light);
 }
 
+.applicant-initials-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--secondary-light);
+  color: var(--secondary);
+  border: 2px solid var(--secondary);
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .applicant-name {
   font-size: 1.1rem;
   font-weight: 800;
