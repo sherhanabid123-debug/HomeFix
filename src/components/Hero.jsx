@@ -42,8 +42,8 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
 
           {/* CTAs */}
           <div className="hero-cta-group">
-            <button onClick={onOpenBooking} className="btn-primary hero-btn">
-              <span>Book a Service</span>
+            <button onClick={onOpenPartner} className="btn-primary hero-btn">
+              <span>Join Technician Waiting List</span>
               <ArrowRight size={18} />
             </button>
             <button onClick={onOpenPartner} className="btn-secondary hero-btn">

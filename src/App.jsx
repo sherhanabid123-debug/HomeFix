@@ -44,10 +44,7 @@ export default function App() {
   }, []);
 
   const handleOpenBooking = (serviceName = '') => {
-    if (typeof serviceName === 'string' && serviceName.length > 0) {
-      setSelectedService(serviceName);
-    }
-    setBookingModalOpen(true);
+    handleOpenPartner();
   };
 
   const handleOpenPartner = () => {

@@ -146,8 +146,8 @@ export default function ServiceAreas({ onOpenBooking }) {
               </div>
 
               {selectedCity.status.includes('Active') ? (
-                <button onClick={() => onOpenBooking(selectedCity.name)} className="btn-primary w-full mt-4">
-                  Book Technician in {selectedCity.name}
+                <button onClick={onOpenPartner} className="btn-primary w-full mt-4">
+                  Become a Technician in {selectedCity.name}
                 </button>
               ) : (
                 <div className="vote-box mt-4">

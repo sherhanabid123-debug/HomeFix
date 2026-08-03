@@ -75,8 +75,8 @@ export default function HowItWorks({ onOpenBooking }) {
             <h3>Need an Emergency Electrician or Plumber Right Now?</h3>
             <p>Technicians available on standby in Kannur & Kozhikode.</p>
           </div>
-          <button onClick={onOpenBooking} className="btn-primary">
-            <span>Book Express Service</span>
+          <button onClick={onOpenPartner} className="btn-primary">
+            <span>Join Technician Waiting List</span>
           </button>
         </div>
       </div>

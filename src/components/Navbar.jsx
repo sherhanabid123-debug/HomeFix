@@ -44,8 +44,8 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
             <span>Login</span>
           </button>
 
-          <button onClick={onOpenBooking} className="btn-primary btn-sm">
-            <span>Book a Service</span>
+          <button onClick={onOpenPartner} className="btn-primary btn-sm">
+            <span>Become a Technician</span>
             <ArrowRight size={16} />
           </button>
         </div>
@@ -77,10 +77,10 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
               Login
             </button>
             <button 
-              onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }} 
+              onClick={() => { setMobileMenuOpen(false); onOpenPartner(); }} 
               className="btn-primary w-full"
             >
-              Book a Service
+              Become a Technician
             </button>
           </div>
         </div>
