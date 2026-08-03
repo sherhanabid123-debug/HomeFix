@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Wrench, Zap, Menu, X, ArrowRight, User } from 'lucide-react';
+import { Wrench, Zap, Menu, X, ArrowRight } from 'lucide-react';
 import './Navbar.css';
 
-export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
+export default function Navbar({ onOpenBooking, onOpenPartner }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -39,11 +39,6 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
 
         {/* CTA Actions */}
         <div className="desktop-actions">
-          <button onClick={onOpenAuth} className="nav-btn-login">
-            <User size={16} />
-            <span>Login</span>
-          </button>
-
           <button onClick={onOpenPartner} className="btn-primary btn-sm">
             <span>Become a Technician</span>
             <ArrowRight size={16} />
@@ -70,12 +65,6 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
             <a href="#faq" onClick={() => setMobileMenuOpen(false)}>Support</a>
           </nav>
           <div className="mobile-drawer-actions">
-            <button 
-              onClick={() => { setMobileMenuOpen(false); onOpenAuth(); }} 
-              className="btn-secondary w-full mb-2"
-            >
-              Login
-            </button>
             <button 
               onClick={() => { setMobileMenuOpen(false); onOpenPartner(); }} 
               className="btn-primary w-full"
