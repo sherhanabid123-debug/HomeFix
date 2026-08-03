@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, ChevronDown, ChevronUp, Search, MessageSquare } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp, Search, MessageSquare, Send, CheckCircle2, User, Phone, Mail, FileText } from 'lucide-react';
 import './FAQSection.css';
 
 const FAQ_DATA = [
@@ -29,6 +29,13 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Ask Question Form States
+  const [askerName, setAskerName] = useState('');
+  const [askerPhone, setAskerPhone] = useState('');
+  const [askerEmail, setAskerEmail] = useState('');
+  const [askerQuestion, setAskerQuestion] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
   const toggleAccordion = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -37,6 +44,39 @@ export default function FAQSection() {
     item.q.toLowerCase().includes(searchQuery.toLowerCase()) || 
     item.a.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleAskQuestionSubmit = (e) => {
+    e.preventDefault();
+    if (!askerName.trim() || !askerPhone.trim() || !askerQuestion.trim()) return;
+
+    const newInquiry = {
+      id: `INQ-${Math.floor(1000 + Math.random() * 9000)}`,
+      name: askerName.trim(),
+      phone: askerPhone.trim(),
+      email: askerEmail.trim() || '',
+      question: askerQuestion.trim(),
+      status: 'Pending',
+      submittedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
+    };
+
+    try {
+      const savedInquiries = localStorage.getItem('homefix_live_faq_questions');
+      const inquiries = (savedInquiries && savedInquiries !== 'undefined') ? JSON.parse(savedInquiries) : [];
+      localStorage.setItem('homefix_live_faq_questions', JSON.stringify([newInquiry, ...inquiries]));
+    } catch (err) {
+      console.error("Error saving FAQ question:", err);
+    }
+
+    setSubmitSuccess(true);
+    setAskerName('');
+    setAskerPhone('');
+    setAskerEmail('');
+    setAskerQuestion('');
+
+    setTimeout(() => {
+      setSubmitSuccess(false);
+    }, 5000);
+  };
 
   return (
     <section id="faq" className="faq-section">
@@ -90,17 +130,104 @@ export default function FAQSection() {
           })}
         </div>
 
+        {/* Ask a Question Card Form */}
+        <div className="ask-question-card glass-card">
+          <div className="ask-card-header">
+            <div className="ask-icon-badge">
+              <MessageSquare size={22} className="text-emerald" />
+            </div>
+            <div>
+              <h3>Ask Us a Custom Question</h3>
+              <p>Can't find your answer above? Submit your question and our Kerala operations team will contact you directly.</p>
+            </div>
+          </div>
+
+          {submitSuccess && (
+            <div className="ask-success-alert">
+              <CheckCircle2 size={18} />
+              <span>Thank you! Your question has been sent to our support desk. We will reach out to you shortly.</span>
+            </div>
+          )}
+
+          <form onSubmit={handleAskQuestionSubmit} className="ask-form">
+            <div className="grid-3-col">
+              <div className="form-group">
+                <label className="form-label">Full Name *</label>
+                <div className="input-with-icon">
+                  <User size={16} className="input-icon" />
+                  <input 
+                    type="text" 
+                    className="form-input icon-indent" 
+                    placeholder="Anjali Menon"
+                    value={askerName}
+                    onChange={(e) => setAskerName(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Phone Number *</label>
+                <div className="input-with-icon">
+                  <Phone size={16} className="input-icon" />
+                  <input 
+                    type="tel" 
+                    className="form-input icon-indent" 
+                    placeholder="9847098765"
+                    value={askerPhone}
+                    onChange={(e) => setAskerPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+                    maxLength={10}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Email Address (Optional)</label>
+                <div className="input-with-icon">
+                  <Mail size={16} className="input-icon" />
+                  <input 
+                    type="email" 
+                    className="form-input icon-indent" 
+                    placeholder="name@email.com"
+                    value={askerEmail}
+                    onChange={(e) => setAskerEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group mt-3">
+              <label className="form-label">Your Question / Inquiry *</label>
+              <textarea 
+                className="form-input text-area-input" 
+                placeholder="Type your detailed question here..."
+                value={askerQuestion}
+                onChange={(e) => setAskerQuestion(e.target.value)}
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn-emerald btn-ask-submit">
+              <Send size={16} />
+              <span>Submit Question</span>
+            </button>
+          </form>
+        </div>
+
         {/* Need More Help Box */}
         <div className="faq-help-box glass-card">
           <div className="help-icon-wrapper">
-            <MessageSquare size={24} />
+            <Phone size={24} />
           </div>
           <div>
-            <h4>Still have a question?</h4>
-            <p>Our customer support team is available 24/7 to assist you.</p>
+            <h4>Need Urgent Assistance?</h4>
+            <p>Our customer helpline is active for instant support in Kerala.</p>
           </div>
           <a href="tel:+919535337959" className="btn-secondary btn-sm">
-            Call Support: +91 95353 37959
+            Call Helpline: +91 95353 37959
           </a>
         </div>
       </div>

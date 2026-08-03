@@ -27,6 +27,7 @@ export default function AdminLayout({
     { id: 'bookings', label: 'Bookings', icon: CalendarCheck, badge: allData.bookings.filter(b => b.status === 'Pending').length },
     { id: 'technicians', label: 'Technicians', icon: UserCheck },
     { id: 'applications', label: 'Applications', icon: FileCheck, badge: allData.applications.filter(a => a.status === 'Pending').length },
+    { id: 'inquiries', label: 'FAQ Inquiries', icon: MessageSquare, badge: (allData.inquiries || []).filter(i => i.status === 'Pending').length },
     { id: 'customers', label: 'Customers', icon: Users },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'reviews', label: 'Reviews', icon: Star },

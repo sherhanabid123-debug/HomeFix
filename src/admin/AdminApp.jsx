@@ -12,7 +12,7 @@ import NotificationsCenter from './components/NotificationsCenter';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import PlatformSettings from './components/PlatformSettings';
 import AdminUsers from './components/AdminUsers';
-import ActivityLogs from './components/ActivityLogs';
+import CustomerInquiries from './components/CustomerInquiries';
 
 import { 
   INITIAL_BOOKINGS, 
@@ -83,6 +83,22 @@ export default function AdminApp() {
     localStorage.setItem('homefix_live_applications', JSON.stringify(newApps));
   };
 
+  const loadInquiries = () => {
+    try {
+      const saved = localStorage.getItem('homefix_live_faq_questions');
+      return (saved && saved !== 'undefined') ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const [inquiries, setInquiriesState] = useState(() => loadInquiries());
+
+  const setInquiries = (newInqs) => {
+    setInquiriesState(newInqs);
+    localStorage.setItem('homefix_live_faq_questions', JSON.stringify(newInqs));
+  };
+
   const [customers, setCustomersState] = useState(() => {
     const saved = localStorage.getItem('homefix_live_customers');
     return saved ? JSON.parse(saved) : INITIAL_CUSTOMERS;
@@ -129,6 +145,7 @@ export default function AdminApp() {
       if (savedTechs) setTechniciansState(JSON.parse(savedTechs));
 
       setApplicationsState(loadApplications());
+      setInquiriesState(loadInquiries());
     };
 
     syncData();
@@ -194,6 +211,7 @@ export default function AdminApp() {
     bookings,
     technicians,
     applications,
+    inquiries,
     customers,
     adminUsers,
     logs,
@@ -227,6 +245,13 @@ export default function AdminApp() {
           applications={applications} 
           setApplications={setApplications} 
           onApproveApplicant={handleApproveApplicant}
+        />
+      )}
+
+      {activeTab === 'inquiries' && (
+        <CustomerInquiries 
+          inquiries={inquiries}
+          setInquiries={setInquiries}
         />
       )}
 

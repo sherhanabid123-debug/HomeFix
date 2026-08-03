@@ -1,0 +1,94 @@
+.inquiries-mgmt-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inquiries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.inquiry-card {
+  padding: 1.5rem;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.inquiry-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.asker-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--secondary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.asker-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.asker-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 4px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.contact-link:hover {
+  text-decoration: underline;
+}
+
+.time-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.785rem;
+  color: var(--gray-500);
+}
+
+.inquiry-question-box {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+}
+
+.question-text {
+  font-size: 0.95rem;
+  color: var(--dark);
+  font-weight: 600;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.inquiry-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
