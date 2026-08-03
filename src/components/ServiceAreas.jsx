@@ -10,10 +10,12 @@ const KERALA_DISTRICTS = [
   { id: 'trivandrum', name: 'Thiruvananthapuram', status: 'Launching Q4', pros: 'Waitlist Open', eta: 'Coming Soon', popular: 'Technopark, Kowdiar' }
 ];
 
-export default function ServiceAreas({ onOpenBooking }) {
+export default function ServiceAreas({ onOpenBooking, onOpenPartner }) {
   const [selectedCity, setSelectedCity] = useState(KERALA_DISTRICTS[0]);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
   const [userCity, setUserCity] = useState('');
+
+  const handlePartnerClick = onOpenPartner || onOpenBooking;
 
   const handleVoteSubmit = (e) => {
     e.preventDefault();
@@ -146,7 +148,7 @@ export default function ServiceAreas({ onOpenBooking }) {
               </div>
 
               {selectedCity.status.includes('Active') ? (
-                <button onClick={onOpenPartner} className="btn-primary w-full mt-4">
+                <button onClick={handlePartnerClick} className="btn-primary w-full mt-4">
                   Become a Technician in {selectedCity.name}
                 </button>
               ) : (
