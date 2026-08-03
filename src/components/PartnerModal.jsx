@@ -31,7 +31,7 @@ export default function PartnerModal({ isOpen, onClose }) {
     e.preventDefault();
     
     const newApp = {
-      id: `APP-${Date.now().toString().slice(-4)}`,
+      id: `APP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
       name: formData.name,
       trade: formData.trade,
       district: formData.district,
