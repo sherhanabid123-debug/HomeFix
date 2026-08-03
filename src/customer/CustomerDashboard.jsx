@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Home, Zap, Calendar, Clock, CreditCard, MapPin, HelpCircle, User, LogOut, 
   Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, 
-  Search, Star, Check, Phone, MessageSquare
+  Search, Star, Check, Phone, MessageSquare, X 
 } from 'lucide-react';
 import { logoutUser } from '../auth/authStore';
 import BookingModal from '../components/BookingModal';
@@ -68,6 +68,7 @@ const SERVICES_DATA = [
 
 export default function CustomerDashboard({ user, onLogoutSuccess }) {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'bookings' | 'active' | 'history' | 'addresses' | 'profile' | 'support'
+  const [categoryFilter, setCategoryFilter] = useState('All'); // 'All' | 'Electrical' | 'Plumbing'
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,8 +97,9 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
 
   const filteredServices = SERVICES_DATA.filter(s => {
     const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    return (
+    const matchesCategory = categoryFilter === 'All' || s.category === categoryFilter;
+    if (!query) return matchesCategory;
+    return matchesCategory && (
       s.title.toLowerCase().includes(query) ||
       s.desc.toLowerCase().includes(query) ||
       s.tags.some(tag => tag.includes(query))
@@ -106,7 +108,8 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
 
   return (
     <div className="customer-dashboard-layout">
-      {/* Sidebar Navigation */}
+      
+      {/* Desktop Sidebar Navigation */}
       <aside className="customer-sidebar">
         <div className="sidebar-brand">
           <div className="logo-icon-badge">
@@ -128,7 +131,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         </div>
 
-        {/* Simplified Sidebar Navigation */}
+        {/* Sidebar Menu */}
         <nav className="sidebar-menu">
           <button 
             className={`menu-item ${activeTab === 'home' ? 'active' : ''}`}
@@ -176,7 +179,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
             onClick={() => setActiveTab('profile')}
           >
             <User size={18} />
-            <span>Profile</span>
+            <span>Profile & Billing</span>
           </button>
 
           <button 
@@ -196,18 +199,18 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      {/* Main Content Container */}
       <main className="customer-main-content">
         
-        {/* Dynamic Greeting Top Header */}
+        {/* Dynamic Top Header */}
         <header className="customer-top-header">
           <div>
             <h2>{getGreeting()}, <span className="text-primary">{user.name ? user.name.split(' ')[0] : 'Customer'}</span> 👋</h2>
             <p className="sub-greeting">How can we help you today?</p>
           </div>
-          <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary btn-sm">
+          <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary btn-sm desktop-only-btn">
             <Plus size={16} />
-            <span>Book New Service</span>
+            <span>Book Service</span>
           </button>
         </header>
 
@@ -215,13 +218,13 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         {(activeTab === 'home' || activeTab === 'bookings') && (
           <div className="tab-content-area">
             
-            {/* CONTEXT-AWARE HERO LOGIC */}
+            {/* CONTEXT-AWARE HERO CARD */}
             {activeBooking ? (
-              /* Active Booking Hero Card */
+              /* Active Booking Compact Hero Card */
               <div className="active-hero-card glass-card">
                 <div className="active-hero-top">
                   <div>
-                    <span className="badge-blue mb-1">Active Booking #{activeBooking.id}</span>
+                    <span className="badge-blue">#{activeBooking.id}</span>
                     <h3 className="active-hero-title">{activeBooking.service}</h3>
                   </div>
                   <span className="status-pill green">
@@ -232,7 +235,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                 <div className="active-hero-info-grid mt-3">
                   <div>
                     <span className="label-dim">Assigned Technician</span>
-                    <strong>{activeBooking.technicianName !== 'Unassigned' ? activeBooking.technicianName : 'Matching Verified Technician...'}</strong>
+                    <strong>{activeBooking.technicianName !== 'Unassigned' ? activeBooking.technicianName : 'Matching Verified Pro...'}</strong>
                   </div>
                   <div>
                     <span className="label-dim">Estimated Arrival</span>
@@ -240,45 +243,45 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                   </div>
                   <div className="span-2">
                     <span className="label-dim">Location</span>
-                    <span>{activeBooking.address}, {activeBooking.city}</span>
+                    <span className="text-sm">{activeBooking.address}, {activeBooking.city}</span>
                   </div>
                 </div>
 
-                <div className="active-hero-cta-row mt-4">
+                <div className="active-hero-cta-row mt-3">
                   <button onClick={() => setTrackModalOpen(true)} className="btn-primary flex-1">
-                    <span>Track Live Booking</span>
-                    <ArrowRight size={18} />
+                    <span>Track Status</span>
+                    <ArrowRight size={16} />
                   </button>
 
                   {activeBooking.technicianPhone && activeBooking.technicianPhone !== '-' && (
                     <a href={`tel:${activeBooking.technicianPhone}`} className="btn-secondary flex-center gap-2">
                       <Phone size={16} />
-                      <span>Call Technician</span>
+                      <span>Call Tech</span>
                     </a>
                   )}
                 </div>
               </div>
             ) : (
-              /* Booking Hero Card when NO active booking exists */
+              /* Clean Minimal Hero Card when NO active booking exists */
               <div className="dashboard-hero-card glass-card">
                 <div>
                   <h3 className="hero-heading">Need an Electrician or Plumber?</h3>
-                  <p className="hero-subtext">Book verified professionals on demand. Guaranteed 45-min arrival with transparent pricing.</p>
+                  <p className="hero-subtext">Book verified professionals on demand with transparent pricing.</p>
                 </div>
 
-                {/* Trust Indicators */}
-                <div className="trust-badges-row mt-3 mb-4">
+                {/* Compact Trust Badges */}
+                <div className="trust-badges-row my-3">
                   <div className="trust-pill">
                     <Check size={14} className="text-emerald" />
-                    <span>Verified Technicians</span>
+                    <span>Verified Techs</span>
                   </div>
                   <div className="trust-pill">
                     <Zap size={14} className="text-primary" />
-                    <span>45-Min Response</span>
+                    <span>45-Min Arrival</span>
                   </div>
                   <div className="trust-pill">
                     <Star size={14} className="text-amber" />
-                    <span>Highly Rated Professionals</span>
+                    <span>Rated 4.9/5</span>
                   </div>
                 </div>
 
@@ -289,14 +292,14 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
               </div>
             )}
 
-            {/* Service Search Bar */}
-            <div className="service-search-section mt-6">
+            {/* Service Search Bar & Filter Pills */}
+            <div className="service-search-section mt-5">
               <div className="service-search-box">
                 <Search size={18} className="search-icon" />
                 <input 
                   type="text" 
                   className="service-search-input" 
-                  placeholder="Search for a service... (e.g. Electrician, Plumber, Fan, Water Leak, MCB)"
+                  placeholder="Search service... (e.g. Electrician, Plumber, Fan, Leak, MCB)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -306,77 +309,82 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                   </button>
                 )}
               </div>
+
+              {/* Category Filter Pills */}
+              <div className="category-filter-pills mt-3">
+                <button 
+                  className={`cat-pill ${categoryFilter === 'All' ? 'active' : ''}`}
+                  onClick={() => setCategoryFilter('All')}
+                >
+                  All Services
+                </button>
+                <button 
+                  className={`cat-pill ${categoryFilter === 'Electrical' ? 'active' : ''}`}
+                  onClick={() => setCategoryFilter('Electrical')}
+                >
+                  ⚡ Electrical
+                </button>
+                <button 
+                  className={`cat-pill ${categoryFilter === 'Plumbing' ? 'active' : ''}`}
+                  onClick={() => setCategoryFilter('Plumbing')}
+                >
+                  🚰 Plumbing
+                </button>
+              </div>
             </div>
 
-            {/* Popular Home Services Grid */}
-            <div className="flex-between mt-6 mb-3">
-              <h4 className="section-subtitle">Popular Home Services</h4>
-              <span className="text-xs text-gray-500">{filteredServices.length} Services Available</span>
+            {/* Services Minimal Grid */}
+            <div className="flex-between mt-5 mb-2">
+              <h4 className="section-subtitle">Home Services</h4>
+              <span className="text-xs text-gray-500">{filteredServices.length} Options</span>
             </div>
 
             {filteredServices.length > 0 ? (
-              <div className="services-grid-3">
+              <div className="services-grid-minimal">
                 {filteredServices.map((s) => (
                   <div 
                     key={s.id} 
-                    className="dash-service-card" 
+                    className="dash-service-card-minimal" 
                     onClick={() => handleOpenBookingWithService(s.title)}
                   >
-                    <div className={`dash-icon ${s.color}`}>{s.icon}</div>
-                    <strong>{s.title}</strong>
-                    <p>{s.desc}</p>
-                    <div className="service-card-bottom">
-                      <span className="price-tag-modern">Starts at ₹299</span>
-                      <ChevronRight size={16} className="text-gray-400" />
+                    <div className="card-top-row">
+                      <span className="dash-emoji">{s.icon}</span>
+                      <span className="price-tag-minimal">Starts at ₹299</span>
                     </div>
+                    <strong className="service-card-title">{s.title}</strong>
+                    <p className="service-card-desc">{s.desc}</p>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="empty-search-state">
-                <p>No services found matching "{searchQuery}". Need custom repair assistance?</p>
+                <p>No services matching "{searchQuery}". Need custom repair?</p>
                 <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-secondary btn-sm mt-2">
-                  Request Custom Service
+                  Request Custom Repair
                 </button>
               </div>
             )}
 
-            {/* Bottom Support Card Section */}
-            <div className="bottom-support-card glass-card mt-8">
-              <div className="support-card-header">
-                <h3>Need Help?</h3>
-                <p className="text-sm text-gray-600">Our customer support team is available to assist you with your bookings and repairs.</p>
+            {/* Compact Bottom Support Strip */}
+            <div className="compact-support-strip glass-card mt-6">
+              <div className="support-strip-left">
+                <HelpCircle size={20} className="text-primary" />
+                <span>Need assistance with your booking?</span>
               </div>
-
-              <div className="quick-help-grid mt-4">
-                <a href="tel:+914972704663" className="help-action-card">
-                  <PhoneCall size={22} className="text-primary" />
-                  <div>
-                    <strong>Call Support</strong>
-                    <span>+91 (497) 270-HOME</span>
-                  </div>
+              <div className="support-strip-actions">
+                <a href="tel:+914972704663" className="strip-action-btn">
+                  <PhoneCall size={14} />
+                  <span>Call Support</span>
                 </a>
-
                 <a 
                   href="https://wa.me/919447000000?text=Hi%20HomeFix!%20I%20need%20assistance%20with%20my%20service%20booking." 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="help-action-card"
+                  className="strip-action-btn whatsapp"
                 >
-                  <MessageSquare size={22} className="text-secondary" />
-                  <div>
-                    <strong>WhatsApp Support</strong>
-                    <span>Instant Chat</span>
-                  </div>
+                  <MessageSquare size={14} />
+                  <span>WhatsApp</span>
                 </a>
-
-                <button onClick={() => setActiveTab('support')} className="help-action-card border-none bg-none">
-                  <HelpCircle size={22} className="text-amber-500" />
-                  <div>
-                    <strong>FAQs & Guides</strong>
-                    <span>View Common Questions</span>
-                  </div>
-                </button>
               </div>
             </div>
 
@@ -491,7 +499,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         {/* ================= TAB 6: PROFILE (INCLUDES PAYMENTS) ================= */}
         {activeTab === 'profile' && (
           <div className="tab-content-area">
-            <h3 className="tab-title mb-4">Account Profile & Payments</h3>
+            <h3 className="tab-title mb-4">Account Profile & Billing</h3>
             
             <div className="profile-grid-two">
               {/* Profile Details */}
@@ -513,7 +521,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
 
               {/* Payments Section inside Profile */}
               <div className="payments-section-box glass-card">
-                <h4 className="card-sub-heading mb-3">Payment Methods & Billing</h4>
+                <h4 className="card-sub-heading mb-3">Payment Methods</h4>
                 <div className="payment-method-row">
                   <CreditCard size={24} className="text-primary" />
                   <div>
@@ -543,6 +551,39 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         )}
 
       </main>
+
+      {/* Mobile Bottom Navigation Bar for Native App Feel */}
+      <nav className="mobile-bottom-nav">
+        <button 
+          className={`mobile-nav-item ${activeTab === 'home' || activeTab === 'bookings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('home')}
+        >
+          <Home size={20} />
+          <span>Home</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${activeTab === 'active' ? 'active' : ''}`}
+          onClick={() => setActiveTab('active')}
+        >
+          <Clock size={20} />
+          <span>Active</span>
+          {activeBooking && <span className="mobile-nav-badge"></span>}
+        </button>
+        <button 
+          className={`mobile-nav-item ${activeTab === 'history' ? 'active' : ''}`}
+          onClick={() => setActiveTab('history')}
+        >
+          <Calendar size={20} />
+          <span>History</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
+          onClick={() => setActiveTab('profile')}
+        >
+          <User size={20} />
+          <span>Profile</span>
+        </button>
+      </nav>
 
       {/* Modals */}
       <BookingModal 
