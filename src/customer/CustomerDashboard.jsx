@@ -1,26 +1,108 @@
 import React, { useState } from 'react';
 import { 
-  Zap, Calendar, Clock, CreditCard, MapPin, HelpCircle, User, LogOut, 
-  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, ArrowLeft 
+  Home, Zap, Calendar, Clock, CreditCard, MapPin, HelpCircle, User, LogOut, 
+  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, 
+  Search, Star, Check, Phone, MessageSquare
 } from 'lucide-react';
 import { logoutUser } from '../auth/authStore';
 import BookingModal from '../components/BookingModal';
 import TrackBookingModal from '../components/TrackBookingModal';
 import './CustomerDashboard.css';
 
+const SERVICES_DATA = [
+  {
+    id: 'Electrical Repairs',
+    title: 'Electrical Repairs',
+    icon: '⚡',
+    desc: 'Wiring, short circuits, MCB trips & light fittings',
+    category: 'Electrical',
+    color: 'blue',
+    tags: ['electrician', 'mcb', 'wiring', 'fuse', 'short circuit']
+  },
+  {
+    id: 'Plumbing Repairs',
+    title: 'Plumbing Repairs',
+    icon: '🚰',
+    desc: 'Leaky taps, pipe fits, clogged drains & toilets',
+    category: 'Plumbing',
+    color: 'green',
+    tags: ['plumber', 'pipe', 'leak', 'tap', 'drain', 'toilet']
+  },
+  {
+    id: 'Fan Installation',
+    title: 'Fan Installation',
+    icon: '🌀',
+    desc: 'Ceiling fans, wall fans & regulator replacement',
+    category: 'Electrical',
+    color: 'blue',
+    tags: ['fan', 'ceiling fan', 'regulator', 'installation']
+  },
+  {
+    id: 'Switch & Socket Replacement',
+    title: 'Switch & Socket Replacement',
+    icon: '🔌',
+    desc: 'Modular switchboards, heavy sockets & DB box',
+    category: 'Electrical',
+    color: 'blue',
+    tags: ['switch', 'socket', 'plug', 'board', 'mcb']
+  },
+  {
+    id: 'Water Leak Repairs',
+    title: 'Water Leak Repairs',
+    icon: '💧',
+    desc: 'Concealed pipe leaks, ceiling dampness & tank sealing',
+    category: 'Plumbing',
+    color: 'green',
+    tags: ['water leak', 'dampness', 'ceiling', 'tank', 'leak']
+  },
+  {
+    id: 'Pipe Installation',
+    title: 'Pipe Installation',
+    icon: '🔧',
+    desc: 'CPVC & PVC pipe fitting for bathroom & kitchen',
+    category: 'Plumbing',
+    color: 'green',
+    tags: ['pipe repair', 'pvc', 'cpvc', 'bathroom', 'kitchen']
+  }
+];
+
 export default function CustomerDashboard({ user, onLogoutSuccess }) {
-  const [activeTab, setActiveTab] = useState('bookings'); // 'bookings' | 'active' | 'history' | 'payments' | 'addresses' | 'support' | 'profile'
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'bookings' | 'active' | 'history' | 'addresses' | 'profile' | 'support'
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedService, setSelectedService] = useState('Electrical Repairs');
 
   const liveBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
   const activeBooking = liveBookings.find(b => b.status !== 'Completed' && b.status !== 'Cancelled');
   const completedBookings = liveBookings.filter(b => b.status === 'Completed' || b.status === 'Cancelled');
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
   const handleLogout = () => {
     logoutUser();
     onLogoutSuccess();
   };
+
+  const handleOpenBookingWithService = (serviceName) => {
+    setSelectedService(serviceName);
+    setBookingModalOpen(true);
+  };
+
+  const filteredServices = SERVICES_DATA.filter(s => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    return (
+      s.title.toLowerCase().includes(query) ||
+      s.desc.toLowerCase().includes(query) ||
+      s.tags.some(tag => tag.includes(query))
+    );
+  });
 
   return (
     <div className="customer-dashboard-layout">
@@ -38,21 +120,30 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
 
         <div className="user-profile-badge">
           <div className="user-avatar">
-            {user.name.charAt(0)}
+            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
           <div className="user-info">
-            <strong>{user.name}</strong>
+            <strong>{user.name || 'Customer'}</strong>
             <span className="text-xs text-gray-500">{user.phone}</span>
           </div>
         </div>
 
+        {/* Simplified Sidebar Navigation */}
         <nav className="sidebar-menu">
+          <button 
+            className={`menu-item ${activeTab === 'home' ? 'active' : ''}`}
+            onClick={() => setActiveTab('home')}
+          >
+            <Home size={18} />
+            <span>Home</span>
+          </button>
+
           <button 
             className={`menu-item ${activeTab === 'bookings' ? 'active' : ''}`}
             onClick={() => setActiveTab('bookings')}
           >
             <Zap size={18} />
-            <span>Book a Service</span>
+            <span>Book Service</span>
           </button>
           
           <button 
@@ -61,7 +152,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           >
             <Clock size={18} />
             <span>Active Booking</span>
-            {activeBooking && <span className="active-dot"></span>}
+            {activeBooking && <span className="active-live-badge">● Live</span>}
           </button>
 
           <button 
@@ -73,14 +164,6 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </button>
 
           <button 
-            className={`menu-item ${activeTab === 'payments' ? 'active' : ''}`}
-            onClick={() => setActiveTab('payments')}
-          >
-            <CreditCard size={18} />
-            <span>Payments</span>
-          </button>
-
-          <button 
             className={`menu-item ${activeTab === 'addresses' ? 'active' : ''}`}
             onClick={() => setActiveTab('addresses')}
           >
@@ -89,19 +172,19 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </button>
 
           <button 
-            className={`menu-item ${activeTab === 'support' ? 'active' : ''}`}
-            onClick={() => setActiveTab('support')}
-          >
-            <HelpCircle size={18} />
-            <span>Support</span>
-          </button>
-
-          <button 
             className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile')}
           >
             <User size={18} />
             <span>Profile</span>
+          </button>
+
+          <button 
+            className={`menu-item ${activeTab === 'support' ? 'active' : ''}`}
+            onClick={() => setActiveTab('support')}
+          >
+            <HelpCircle size={18} />
+            <span>Support</span>
           </button>
         </nav>
 
@@ -116,57 +199,191 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
       {/* Main Content Area */}
       <main className="customer-main-content">
         
-        {/* Top Header Bar */}
+        {/* Dynamic Greeting Top Header */}
         <header className="customer-top-header">
           <div>
-            <h2>Welcome, <span className="text-primary">{user.name}</span> 👋</h2>
-            <p className="text-xs text-gray-500">Kannur & Kozhikode Verified Services Network</p>
+            <h2>{getGreeting()}, <span className="text-primary">{user.name ? user.name.split(' ')[0] : 'Customer'}</span> 👋</h2>
+            <p className="sub-greeting">How can we help you today?</p>
           </div>
-          <button onClick={() => setBookingModalOpen(true)} className="btn-primary btn-sm">
+          <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary btn-sm">
             <Plus size={16} />
             <span>Book New Service</span>
           </button>
         </header>
 
-        {/* Tab 1: Book a Service Overview */}
-        {activeTab === 'bookings' && (
+        {/* ================= TAB 1: HOME ================= */}
+        {(activeTab === 'home' || activeTab === 'bookings') && (
           <div className="tab-content-area">
-            <div className="dashboard-hero-card glass-card">
-              <div>
-                <h3>Need an Electrician or Plumber in Kerala?</h3>
-                <p>Book verified professionals on demand. Guaranteed 45-min arrival with transparent pricing.</p>
+            
+            {/* CONTEXT-AWARE HERO LOGIC */}
+            {activeBooking ? (
+              /* Active Booking Hero Card */
+              <div className="active-hero-card glass-card">
+                <div className="active-hero-top">
+                  <div>
+                    <span className="badge-blue mb-1">Active Booking #{activeBooking.id}</span>
+                    <h3 className="active-hero-title">{activeBooking.service}</h3>
+                  </div>
+                  <span className="status-pill green">
+                    {activeBooking.status === 'Pending' ? 'Searching Technician' : activeBooking.status}
+                  </span>
+                </div>
+
+                <div className="active-hero-info-grid mt-3">
+                  <div>
+                    <span className="label-dim">Assigned Technician</span>
+                    <strong>{activeBooking.technicianName !== 'Unassigned' ? activeBooking.technicianName : 'Matching Verified Technician...'}</strong>
+                  </div>
+                  <div>
+                    <span className="label-dim">Estimated Arrival</span>
+                    <strong className="text-primary">{activeBooking.scheduledSlot}</strong>
+                  </div>
+                  <div className="span-2">
+                    <span className="label-dim">Location</span>
+                    <span>{activeBooking.address}, {activeBooking.city}</span>
+                  </div>
+                </div>
+
+                <div className="active-hero-cta-row mt-4">
+                  <button onClick={() => setTrackModalOpen(true)} className="btn-primary flex-1">
+                    <span>Track Live Booking</span>
+                    <ArrowRight size={18} />
+                  </button>
+
+                  {activeBooking.technicianPhone && activeBooking.technicianPhone !== '-' && (
+                    <a href={`tel:${activeBooking.technicianPhone}`} className="btn-secondary flex-center gap-2">
+                      <Phone size={16} />
+                      <span>Call Technician</span>
+                    </a>
+                  )}
+                </div>
               </div>
-              <button onClick={() => setBookingModalOpen(true)} className="btn-primary mt-3">
-                <span>Book Service Now</span>
-                <ArrowRight size={18} />
-              </button>
+            ) : (
+              /* Booking Hero Card when NO active booking exists */
+              <div className="dashboard-hero-card glass-card">
+                <div>
+                  <h3 className="hero-heading">Need an Electrician or Plumber?</h3>
+                  <p className="hero-subtext">Book verified professionals on demand. Guaranteed 45-min arrival with transparent pricing.</p>
+                </div>
+
+                {/* Trust Indicators */}
+                <div className="trust-badges-row mt-3 mb-4">
+                  <div className="trust-pill">
+                    <Check size={14} className="text-emerald" />
+                    <span>Verified Technicians</span>
+                  </div>
+                  <div className="trust-pill">
+                    <Zap size={14} className="text-primary" />
+                    <span>45-Min Response</span>
+                  </div>
+                  <div className="trust-pill">
+                    <Star size={14} className="text-amber" />
+                    <span>Highly Rated Professionals</span>
+                  </div>
+                </div>
+
+                <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary">
+                  <span>Book Service Now</span>
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+            )}
+
+            {/* Service Search Bar */}
+            <div className="service-search-section mt-6">
+              <div className="service-search-box">
+                <Search size={18} className="search-icon" />
+                <input 
+                  type="text" 
+                  className="service-search-input" 
+                  placeholder="Search for a service... (e.g. Electrician, Plumber, Fan, Water Leak, MCB)"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="clear-search-btn">
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
             </div>
 
-            <h4 className="section-subtitle mt-6 mb-3">Popular Kerala Home Services</h4>
-            <div className="services-grid-3">
-              <div className="dash-service-card" onClick={() => setBookingModalOpen(true)}>
-                <div className="dash-icon blue">⚡</div>
-                <strong>Electrical Repairs</strong>
-                <p>Wiring, short circuits, MCB trips</p>
-                <span className="price-tag">From ₹299</span>
+            {/* Popular Home Services Grid */}
+            <div className="flex-between mt-6 mb-3">
+              <h4 className="section-subtitle">Popular Home Services</h4>
+              <span className="text-xs text-gray-500">{filteredServices.length} Services Available</span>
+            </div>
+
+            {filteredServices.length > 0 ? (
+              <div className="services-grid-3">
+                {filteredServices.map((s) => (
+                  <div 
+                    key={s.id} 
+                    className="dash-service-card" 
+                    onClick={() => handleOpenBookingWithService(s.title)}
+                  >
+                    <div className={`dash-icon ${s.color}`}>{s.icon}</div>
+                    <strong>{s.title}</strong>
+                    <p>{s.desc}</p>
+                    <div className="service-card-bottom">
+                      <span className="price-tag-modern">Starts at ₹299</span>
+                      <ChevronRight size={16} className="text-gray-400" />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="dash-service-card" onClick={() => setBookingModalOpen(true)}>
-                <div className="dash-icon green">🚰</div>
-                <strong>Plumbing Repairs</strong>
-                <p>Leaky taps, pipe fits, clogged drains</p>
-                <span className="price-tag">From ₹299</span>
+            ) : (
+              <div className="empty-search-state">
+                <p>No services found matching "{searchQuery}". Need custom repair assistance?</p>
+                <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-secondary btn-sm mt-2">
+                  Request Custom Service
+                </button>
               </div>
-              <div className="dash-service-card" onClick={() => setBookingModalOpen(true)}>
-                <div className="dash-icon blue">🌀</div>
-                <strong>Fan & Switch Installation</strong>
-                <p>Ceiling fans, modular switches</p>
-                <span className="price-tag">From ₹299</span>
+            )}
+
+            {/* Bottom Support Card Section */}
+            <div className="bottom-support-card glass-card mt-8">
+              <div className="support-card-header">
+                <h3>Need Help?</h3>
+                <p className="text-sm text-gray-600">Our customer support team is available to assist you with your bookings and repairs.</p>
+              </div>
+
+              <div className="quick-help-grid mt-4">
+                <a href="tel:+914972704663" className="help-action-card">
+                  <PhoneCall size={22} className="text-primary" />
+                  <div>
+                    <strong>Call Support</strong>
+                    <span>+91 (497) 270-HOME</span>
+                  </div>
+                </a>
+
+                <a 
+                  href="https://wa.me/919447000000?text=Hi%20HomeFix!%20I%20need%20assistance%20with%20my%20service%20booking." 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="help-action-card"
+                >
+                  <MessageSquare size={22} className="text-secondary" />
+                  <div>
+                    <strong>WhatsApp Support</strong>
+                    <span>Instant Chat</span>
+                  </div>
+                </a>
+
+                <button onClick={() => setActiveTab('support')} className="help-action-card border-none bg-none">
+                  <HelpCircle size={22} className="text-amber-500" />
+                  <div>
+                    <strong>FAQs & Guides</strong>
+                    <span>View Common Questions</span>
+                  </div>
+                </button>
               </div>
             </div>
+
           </div>
         )}
 
-        {/* Tab 2: Active Booking */}
+        {/* ================= TAB 3: ACTIVE BOOKING ================= */}
         {activeTab === 'active' && (
           <div className="tab-content-area">
             {activeBooking ? (
@@ -174,7 +391,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                 <div className="flex-between">
                   <div>
                     <span className="badge-blue">#{activeBooking.id}</span>
-                    <h3>{activeBooking.service}</h3>
+                    <h3 className="mt-1">{activeBooking.service}</h3>
                   </div>
                   <span className="status-pill green">
                     {activeBooking.status}
@@ -191,7 +408,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                     <strong>{activeBooking.scheduledSlot}</strong>
                   </div>
                   <div>
-                    <span>Est. Price:</span>
+                    <span>Estimated Price:</span>
                     <strong>₹299</strong>
                   </div>
                 </div>
@@ -206,7 +423,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                 <Clock size={44} className="text-gray-300 mb-2" />
                 <h4>No Active Bookings Right Now</h4>
                 <p>You don't have any ongoing repairs. Need help at home?</p>
-                <button onClick={() => setBookingModalOpen(true)} className="btn-primary btn-sm mt-3">
+                <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary btn-sm mt-3">
                   Book a Service
                 </button>
               </div>
@@ -214,7 +431,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         )}
 
-        {/* Tab 3: Booking History */}
+        {/* ================= TAB 4: BOOKING HISTORY ================= */}
         {activeTab === 'history' && (
           <div className="tab-content-area">
             <h3 className="tab-title mb-4">Booking History</h3>
@@ -257,69 +474,70 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         )}
 
-        {/* Tab 4: Payments */}
-        {activeTab === 'payments' && (
-          <div className="tab-content-area">
-            <h3 className="tab-title mb-4">Payment Receipts & Options</h3>
-            <div className="payments-card glass-card">
-              <div className="payment-method-row">
-                <CreditCard size={24} className="text-primary" />
-                <div>
-                  <strong>Pay on Delivery (UPI / Cash)</strong>
-                  <p className="text-xs text-gray-500">Pay directly to technician after job completion</p>
-                </div>
-                <span className="badge-green">Default</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 5: Saved Addresses */}
+        {/* ================= TAB 5: SAVED ADDRESSES ================= */}
         {activeTab === 'addresses' && (
           <div className="tab-content-area">
             <h3 className="tab-title mb-4">Saved Addresses</h3>
             <div className="address-card glass-card">
               <MapPin size={24} className="text-primary" />
               <div>
-                <strong>Home - Kannur</strong>
+                <strong>Home Location</strong>
                 <p className="text-xs text-gray-600">Thana Road, Near Fort, Kannur</p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Tab 6: Support */}
+        {/* ================= TAB 6: PROFILE (INCLUDES PAYMENTS) ================= */}
+        {activeTab === 'profile' && (
+          <div className="tab-content-area">
+            <h3 className="tab-title mb-4">Account Profile & Payments</h3>
+            
+            <div className="profile-grid-two">
+              {/* Profile Details */}
+              <div className="profile-form-box glass-card">
+                <h4 className="card-sub-heading mb-3">Personal Details</h4>
+                <div className="form-group mb-3">
+                  <label className="form-label">Full Name</label>
+                  <input type="text" className="form-input" value={user.name || ''} readOnly />
+                </div>
+                <div className="form-group mb-3">
+                  <label className="form-label">Phone Number</label>
+                  <input type="text" className="form-input" value={user.phone || ''} readOnly />
+                </div>
+                <div className="form-group mb-3">
+                  <label className="form-label">Email</label>
+                  <input type="text" className="form-input" value={user.email || 'Not provided'} readOnly />
+                </div>
+              </div>
+
+              {/* Payments Section inside Profile */}
+              <div className="payments-section-box glass-card">
+                <h4 className="card-sub-heading mb-3">Payment Methods & Billing</h4>
+                <div className="payment-method-row">
+                  <CreditCard size={24} className="text-primary" />
+                  <div>
+                    <strong>Pay on Delivery (UPI / Cash)</strong>
+                    <p className="text-xs text-gray-500">Pay directly to technician after job completion</p>
+                  </div>
+                  <span className="badge-green">Default</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB 7: SUPPORT ================= */}
         {activeTab === 'support' && (
           <div className="tab-content-area">
             <h3 className="tab-title mb-4">HomeFix Support & Helpline</h3>
             <div className="support-box glass-card">
               <PhoneCall size={28} className="text-secondary mb-2" />
               <h4>Need Urgent Emergency Assistance?</h4>
-              <p className="text-sm text-gray-600 mb-3">Our Kerala operations desk is available 24/7 for electrical emergencies and water pipe bursts.</p>
+              <p className="text-sm text-gray-600 mb-3">Our operations desk is available 24/7 for electrical emergencies and water pipe bursts.</p>
               <a href="tel:+914972704663" className="btn-secondary">
                 Call Helpline: +91 (497) 270-HOME
               </a>
-            </div>
-          </div>
-        )}
-
-        {/* Tab 7: Profile */}
-        {activeTab === 'profile' && (
-          <div className="tab-content-area">
-            <h3 className="tab-title mb-4">Account Profile</h3>
-            <div className="profile-form-box glass-card">
-              <div className="form-group mb-3">
-                <label className="form-label">Full Name</label>
-                <input type="text" className="form-input" value={user.name} readOnly />
-              </div>
-              <div className="form-group mb-3">
-                <label className="form-label">Phone Number</label>
-                <input type="text" className="form-input" value={user.phone} readOnly />
-              </div>
-              <div className="form-group mb-3">
-                <label className="form-label">Email</label>
-                <input type="text" className="form-input" value={user.email || 'Not provided'} readOnly />
-              </div>
             </div>
           </div>
         )}
@@ -330,6 +548,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
       <BookingModal 
         isOpen={bookingModalOpen} 
         onClose={() => setBookingModalOpen(false)}
+        initialService={selectedService}
       />
 
       <TrackBookingModal 
