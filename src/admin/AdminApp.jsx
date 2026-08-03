@@ -119,7 +119,10 @@ function AdminAppContent() {
       const uniqueMap = new Map();
       combined.forEach(item => {
         if (item && item.id && !uniqueMap.has(item.id)) {
-          uniqueMap.set(item.id, item);
+          const isTest = String(item.name || '').includes('Test') || String(item.id || '').includes('APP-TEST');
+          if (!isTest) {
+            uniqueMap.set(item.id, item);
+          }
         }
       });
       return Array.from(uniqueMap.values());
@@ -195,7 +198,10 @@ function AdminAppContent() {
             const mergedAppsMap = new Map();
             [...formattedDbApps, ...localApps].forEach(item => {
               if (item && item.id && !mergedAppsMap.has(item.id)) {
-                mergedAppsMap.set(item.id, item);
+                const isTest = String(item.name || '').includes('Test') || String(item.id || '').includes('APP-TEST');
+                if (!isTest) {
+                  mergedAppsMap.set(item.id, item);
+                }
               }
             });
             setApplicationsState(Array.from(mergedAppsMap.values()));
