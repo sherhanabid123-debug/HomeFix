@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  LayoutDashboard, CalendarCheck, Users, UserCheck, FileCheck, 
+  LayoutDashboard, CalendarCheck, Users, UserCheck, FileCheck, MessageSquare,
   CreditCard, Star, Bell, BarChart3, Settings, ShieldCheck, 
   History, LogOut, Search, Sun, Moon, Zap, Wrench, Menu, X, ChevronRight, CheckCircle2
 } from 'lucide-react';
