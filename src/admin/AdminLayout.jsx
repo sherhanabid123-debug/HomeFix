@@ -22,12 +22,16 @@ export default function AdminLayout({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
+  const safeBookings = Array.isArray(allData?.bookings) ? allData.bookings : [];
+  const safeApplications = Array.isArray(allData?.applications) ? allData.applications : [];
+  const safeInquiries = Array.isArray(allData?.inquiries) ? allData.inquiries : [];
+
   const NAV_ITEMS = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'bookings', label: 'Bookings', icon: CalendarCheck, badge: allData.bookings.filter(b => b.status === 'Pending').length },
+    { id: 'bookings', label: 'Bookings', icon: CalendarCheck, badge: safeBookings.filter(b => b && b.status === 'Pending').length },
     { id: 'technicians', label: 'Technicians', icon: UserCheck },
-    { id: 'applications', label: 'Applications', icon: FileCheck, badge: allData.applications.filter(a => a.status === 'Pending').length },
-    { id: 'inquiries', label: 'FAQ Inquiries', icon: MessageSquare, badge: (allData.inquiries || []).filter(i => i.status === 'Pending').length },
+    { id: 'applications', label: 'Applications', icon: FileCheck, badge: safeApplications.filter(a => a && a.status === 'Pending').length },
+    { id: 'inquiries', label: 'FAQ Inquiries', icon: MessageSquare, badge: safeInquiries.filter(i => i && i.status === 'Pending').length },
     { id: 'customers', label: 'Customers', icon: Users },
     { id: 'payments', label: 'Payments', icon: CreditCard },
     { id: 'reviews', label: 'Reviews', icon: Star },

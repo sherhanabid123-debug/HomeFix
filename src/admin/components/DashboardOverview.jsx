@@ -5,26 +5,30 @@ import {
 } from 'lucide-react';
 import './DashboardOverview.css';
 
-export default function DashboardOverview({ allData, onNavigate }) {
-  const { bookings, technicians, applications, customers, logs } = allData;
+export default function DashboardOverview({ allData = {}, onNavigate }) {
+  const bookings = Array.isArray(allData.bookings) ? allData.bookings : [];
+  const technicians = Array.isArray(allData.technicians) ? allData.technicians : [];
+  const applications = Array.isArray(allData.applications) ? allData.applications : [];
+  const customers = Array.isArray(allData.customers) ? allData.customers : [];
+  const logs = Array.isArray(allData.logs) ? allData.logs : [];
 
   const todayStr = new Date().toISOString().slice(0, 10);
-  const todayBookingsCount = bookings.filter(b => b.bookingTime && b.bookingTime.includes(todayStr)).length;
-  const activeJobsCount = bookings.filter(b => ['Assigned', 'Accepted', 'On The Way', 'Started'].includes(b.status)).length;
-  const completedJobsCount = bookings.filter(b => b.status === 'Completed').length;
-  const pendingApprovalsCount = applications.filter(a => a.status === 'Pending').length;
+  const todayBookingsCount = bookings.filter(b => b && b.bookingTime && b.bookingTime.includes(todayStr)).length;
+  const activeJobsCount = bookings.filter(b => b && ['Assigned', 'Accepted', 'On The Way', 'Started'].includes(b.status)).length;
+  const completedJobsCount = bookings.filter(b => b && b.status === 'Completed').length;
+  const pendingApprovalsCount = applications.filter(a => a && a.status === 'Pending').length;
   const totalCustomersCount = customers.length;
   const totalTechniciansCount = technicians.length;
-  const todayRevenue = bookings.filter(b => b.status === 'Completed' && b.bookingTime && b.bookingTime.includes(todayStr)).reduce((sum, b) => sum + (b.estimatedPrice || 0), 0);
-  const monthlyRevenue = bookings.filter(b => b.status === 'Completed').reduce((sum, b) => sum + (b.estimatedPrice || 0), 0);
+  const todayRevenue = bookings.filter(b => b && b.status === 'Completed' && b.bookingTime && b.bookingTime.includes(todayStr)).reduce((sum, b) => sum + (b.estimatedPrice || 0), 0);
+  const monthlyRevenue = bookings.filter(b => b && b.status === 'Completed').reduce((sum, b) => sum + (b.estimatedPrice || 0), 0);
   
   const totalBookingsCount = bookings.length;
-  const cancelledCount = bookings.filter(b => b.status === 'Cancelled').length;
+  const cancelledCount = bookings.filter(b => b && b.status === 'Cancelled').length;
   const cancellationRate = totalBookingsCount > 0 ? `${((cancelledCount / totalBookingsCount) * 100).toFixed(1)}%` : '0.0%';
 
-  const ratedBookings = bookings.filter(b => b.customerRating > 0);
+  const ratedBookings = bookings.filter(b => b && b.customerRating > 0);
   const avgRating = ratedBookings.length > 0 
-    ? (ratedBookings.reduce((sum, b) => sum + b.customerRating, 0) / ratedBookings.length).toFixed(1)
+    ? (ratedBookings.reduce((sum, b) => sum + (b.customerRating || 0), 0) / ratedBookings.length).toFixed(1)
     : '0.0';
 
   const KPI_CARDS = [
