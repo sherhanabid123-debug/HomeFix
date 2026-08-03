@@ -11,13 +11,15 @@ export default function BookingsManagement({ bookings, setBookings }) {
 
   const STATUS_OPTIONS = ['All', 'Pending', 'Assigned', 'Accepted', 'On The Way', 'Started', 'Completed', 'Cancelled'];
 
-  const filteredBookings = bookings.filter(b => {
+  const filteredBookings = (Array.isArray(bookings) ? bookings : []).filter(b => {
+    if (!b) return false;
     const matchesStatus = statusFilter === 'All' || b.status === statusFilter;
     const matchesCity = cityFilter === 'All' || b.city === cityFilter;
-    const matchesSearch = b.id.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          b.customerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          b.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          b.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = (b.id && String(b.id).toLowerCase().includes(query)) || 
+                          (b.customerName && String(b.customerName).toLowerCase().includes(query)) || 
+                          (b.service && String(b.service).toLowerCase().includes(query)) ||
+                          (b.location && String(b.location).toLowerCase().includes(query));
     return matchesStatus && matchesCity && matchesSearch;
   });
 

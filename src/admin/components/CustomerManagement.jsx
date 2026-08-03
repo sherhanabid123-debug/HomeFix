@@ -6,11 +6,13 @@ export default function CustomerManagement({ customers, setCustomers, bookings }
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const filteredCustomers = customers.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    c.phone.includes(searchQuery) || 
-    c.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCustomers = (Array.isArray(customers) ? customers : []).filter(c => {
+    if (!c) return false;
+    const query = searchQuery.toLowerCase();
+    return (c.name && String(c.name).toLowerCase().includes(query)) || 
+           (c.phone && String(c.phone).includes(query)) || 
+           (c.email && String(c.email).toLowerCase().includes(query));
+  });
 
   return (
     <div className="customers-mgmt-page">

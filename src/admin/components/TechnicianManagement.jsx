@@ -9,12 +9,14 @@ export default function TechnicianManagement({ technicians, setTechnicians }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTech, setSelectedTech] = useState(null);
 
-  const filteredTechnicians = technicians.filter(t => {
+  const filteredTechnicians = (Array.isArray(technicians) ? technicians : []).filter(t => {
+    if (!t) return false;
     const matchesCategory = categoryFilter === 'All' || t.category === categoryFilter;
     const matchesCity = cityFilter === 'All' || t.city === cityFilter;
-    const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          t.phone.includes(searchQuery) || 
-                          t.serviceAreas.toLowerCase().includes(searchQuery.toLowerCase());
+    const query = searchQuery.toLowerCase();
+    const matchesSearch = (t.name && String(t.name).toLowerCase().includes(query)) || 
+                          (t.phone && String(t.phone).includes(query)) || 
+                          (t.serviceAreas && String(t.serviceAreas).toLowerCase().includes(query));
     return matchesCategory && matchesCity && matchesSearch;
   });
 
