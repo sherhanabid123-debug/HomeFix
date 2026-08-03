@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, ChevronUp, Search, MessageSquare, Send, CheckCircle2, User, Phone, Mail, FileText } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import './FAQSection.css';
 
 const FAQ_DATA = [
@@ -45,7 +46,7 @@ export default function FAQSection() {
     item.a.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleAskQuestionSubmit = (e) => {
+  const handleAskQuestionSubmit = async (e) => {
     e.preventDefault();
     if (!askerName.trim() || !askerPhone.trim() || !askerQuestion.trim()) return;
 
@@ -58,6 +59,22 @@ export default function FAQSection() {
       status: 'Pending',
       submittedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
     };
+
+    // Save to Supabase Cloud if configured
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('customer_inquiries').insert([{
+          id: newInquiry.id,
+          asker_name: newInquiry.name,
+          phone: newInquiry.phone,
+          email: newInquiry.email,
+          question: newInquiry.question,
+          status: newInquiry.status
+        }]);
+      } catch (dbErr) {
+        console.warn('Supabase DB inquiry save error:', dbErr);
+      }
+    }
 
     try {
       const savedInquiries = localStorage.getItem('homefix_live_faq_questions');

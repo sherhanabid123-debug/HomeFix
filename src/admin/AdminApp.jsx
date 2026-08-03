@@ -14,6 +14,7 @@ import PlatformSettings from './components/PlatformSettings';
 import AdminUsers from './components/AdminUsers';
 import ActivityLogs from './components/ActivityLogs';
 import CustomerInquiries from './components/CustomerInquiries';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 
 import { 
   INITIAL_BOOKINGS, 
@@ -164,15 +165,73 @@ function AdminAppContent() {
     localStorage.setItem('homefix_live_customers', JSON.stringify(newCusts));
   };
 
-  // Live Auto-Refresh sync on tab switch or focus
+  // Live Auto-Refresh sync on tab switch, focus, or Supabase real-time trigger
   useEffect(() => {
-    const syncData = () => {
+    const syncData = async () => {
       setBookingsState(safeParseJSON('homefix_live_bookings', INITIAL_BOOKINGS));
       setLogsState(safeParseJSON('homefix_live_logs', INITIAL_ACTIVITY_LOGS));
       setCustomersState(safeParseJSON('homefix_live_customers', INITIAL_CUSTOMERS));
       setTechniciansState(safeParseJSON('homefix_live_technicians', INITIAL_TECHNICIANS));
-      setApplicationsState(loadApplications());
-      setInquiriesState(loadInquiries());
+      
+      const localApps = loadApplications();
+      const localInqs = loadInquiries();
+
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const { data: dbApps } = await supabase.from('technician_applications').select('*').order('created_at', { ascending: false });
+          const { data: dbInqs } = await supabase.from('customer_inquiries').select('*').order('created_at', { ascending: false });
+
+          if (Array.isArray(dbApps) && dbApps.length > 0) {
+            const formattedDbApps = dbApps.map(a => ({
+              id: a.id,
+              name: a.name,
+              phone: a.phone,
+              trade: a.trade,
+              district: a.district,
+              experience: a.experience,
+              status: a.status || 'Pending',
+              appliedDate: a.applied_date || new Date().toISOString().slice(0, 10)
+            }));
+            const mergedAppsMap = new Map();
+            [...formattedDbApps, ...localApps].forEach(item => {
+              if (item && item.id && !mergedAppsMap.has(item.id)) {
+                mergedAppsMap.set(item.id, item);
+              }
+            });
+            setApplicationsState(Array.from(mergedAppsMap.values()));
+          } else {
+            setApplicationsState(localApps);
+          }
+
+          if (Array.isArray(dbInqs) && dbInqs.length > 0) {
+            const formattedDbInqs = dbInqs.map(i => ({
+              id: i.id,
+              name: i.asker_name,
+              phone: i.phone,
+              email: i.email || '',
+              question: i.question,
+              status: i.status || 'Pending',
+              submittedAt: i.created_at ? new Date(i.created_at).toISOString().slice(0, 16).replace('T', ' ') : ''
+            }));
+            const mergedInqsMap = new Map();
+            [...formattedDbInqs, ...localInqs].forEach(item => {
+              if (item && item.id && !mergedInqsMap.has(item.id)) {
+                mergedInqsMap.set(item.id, item);
+              }
+            });
+            setInquiriesState(Array.from(mergedInqsMap.values()));
+          } else {
+            setInquiriesState(localInqs);
+          }
+        } catch (dbErr) {
+          console.warn('Supabase fetch error:', dbErr);
+          setApplicationsState(localApps);
+          setInquiriesState(localInqs);
+        }
+      } else {
+        setApplicationsState(localApps);
+        setInquiriesState(localInqs);
+      }
     };
 
     syncData();

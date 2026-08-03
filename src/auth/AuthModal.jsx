@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Lock, Phone, User, Mail, ShieldCheck, CheckCircle2, ArrowRight, Eye, EyeOff, Wrench, Zap, Clock, AlertTriangle, FileText } from 'lucide-react';
+import { 
+  X, Zap, Mail, Lock, Phone, User, Wrench, ShieldCheck, CheckCircle2, ArrowRight, Eye, EyeOff, AlertTriangle, MapPin, Briefcase, Clock 
+} from 'lucide-react';
 import { loginWithCredentials, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
-import { triggerGoogleLoginPopup, parseGoogleJwt } from './googleAuthService';
+import { triggerGoogleLoginPopup } from './googleAuthService';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import './AuthModal.css';
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'tech_register', initialRole = 'technician', onAuthSuccess }) {
@@ -119,7 +122,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     onAuthSuccess(res.user);
   };
 
-  const handleTechRegisterSubmit = (e) => {
+  const handleTechRegisterSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -153,6 +156,24 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     if (!res.success) {
       setErrorMessage(res.error);
       return;
+    }
+
+    // Save to Supabase Cloud if configured
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('technician_applications').insert([{
+          id: `APP-${Date.now().toString().slice(-4)}`,
+          name: fullName.trim(),
+          phone: phone.trim(),
+          trade: category,
+          district: city,
+          experience: experience,
+          status: 'Pending',
+          applied_date: new Date().toISOString().slice(0, 10)
+        }]);
+      } catch (dbErr) {
+        console.warn('Supabase DB save error:', dbErr);
+      }
     }
 
     // Do NOT auto login for pre-launch waiting list

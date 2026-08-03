@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, Briefcase, CheckCircle2, ShieldCheck, MapPin, Phone, User, Award } from 'lucide-react';
+import { X, Briefcase, CheckCircle2, ShieldCheck, Phone, User } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import './PartnerModal.css';
 
 export default function PartnerModal({ isOpen, onClose }) {
@@ -26,22 +27,43 @@ export default function PartnerModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
+    const newApp = {
+      id: `APP-${Date.now().toString().slice(-4)}`,
+      name: formData.name,
+      trade: formData.trade,
+      district: formData.district,
+      phone: formData.phone,
+      experience: formData.experience,
+      status: 'Pending',
+      applied_date: new Date().toISOString().slice(0, 10),
+      appliedDate: new Date().toISOString().slice(0, 10),
+      timestamp: new Date().toLocaleString()
+    };
+
+    // Save to Supabase Cloud if configured
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('technician_applications').insert([{
+          id: newApp.id,
+          name: newApp.name,
+          phone: newApp.phone,
+          trade: newApp.trade,
+          district: newApp.district,
+          experience: newApp.experience,
+          status: newApp.status,
+          applied_date: newApp.applied_date
+        }]);
+      } catch (dbErr) {
+        console.warn('Supabase DB save error:', dbErr);
+      }
+    }
+
+    // Backup save to localStorage
     try {
       const existingApps = JSON.parse(localStorage.getItem('homefix_live_applications') || '[]');
-      const newApp = {
-        id: `APP-${Date.now().toString().slice(-4)}`,
-        name: formData.name,
-        trade: formData.trade,
-        district: formData.district,
-        phone: formData.phone,
-        experience: formData.experience,
-        status: 'Pending',
-        appliedDate: new Date().toISOString().slice(0, 10),
-        timestamp: new Date().toLocaleString()
-      };
       const updated = [newApp, ...(Array.isArray(existingApps) ? existingApps : [])];
       localStorage.setItem('homefix_live_applications', JSON.stringify(updated));
     } catch (err) {
