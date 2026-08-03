@@ -1,77 +1,17 @@
 import React, { useState } from 'react';
 import { 
   Home, Zap, Calendar, Clock, CreditCard, MapPin, HelpCircle, User, LogOut, 
-  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, 
-  Search, Star, Check, Phone, MessageSquare, X 
+  Plus, CheckCircle2, ShieldCheck, PhoneCall, ChevronRight, ArrowRight, ExternalLink, Phone
 } from 'lucide-react';
 import { logoutUser } from '../auth/authStore';
 import BookingModal from '../components/BookingModal';
 import TrackBookingModal from '../components/TrackBookingModal';
 import './CustomerDashboard.css';
 
-const SERVICES_DATA = [
-  {
-    id: 'Electrical Repairs',
-    title: 'Electrical Repairs',
-    icon: '⚡',
-    desc: 'Wiring, short circuits, MCB trips & light fittings',
-    category: 'Electrical',
-    color: 'blue',
-    tags: ['electrician', 'mcb', 'wiring', 'fuse', 'short circuit']
-  },
-  {
-    id: 'Plumbing Repairs',
-    title: 'Plumbing Repairs',
-    icon: '🚰',
-    desc: 'Leaky taps, pipe fits, clogged drains & toilets',
-    category: 'Plumbing',
-    color: 'green',
-    tags: ['plumber', 'pipe', 'leak', 'tap', 'drain', 'toilet']
-  },
-  {
-    id: 'Fan Installation',
-    title: 'Fan Installation',
-    icon: '🌀',
-    desc: 'Ceiling fans, wall fans & regulator replacement',
-    category: 'Electrical',
-    color: 'blue',
-    tags: ['fan', 'ceiling fan', 'regulator', 'installation']
-  },
-  {
-    id: 'Switch & Socket Replacement',
-    title: 'Switch & Socket Replacement',
-    icon: '🔌',
-    desc: 'Modular switchboards, heavy sockets & DB box',
-    category: 'Electrical',
-    color: 'blue',
-    tags: ['switch', 'socket', 'plug', 'board', 'mcb']
-  },
-  {
-    id: 'Water Leak Repairs',
-    title: 'Water Leak Repairs',
-    icon: '💧',
-    desc: 'Concealed pipe leaks, ceiling dampness & tank sealing',
-    category: 'Plumbing',
-    color: 'green',
-    tags: ['water leak', 'dampness', 'ceiling', 'tank', 'leak']
-  },
-  {
-    id: 'Pipe Installation',
-    title: 'Pipe Installation',
-    icon: '🔧',
-    desc: 'CPVC & PVC pipe fitting for bathroom & kitchen',
-    category: 'Plumbing',
-    color: 'green',
-    tags: ['pipe repair', 'pvc', 'cpvc', 'bathroom', 'kitchen']
-  }
-];
-
 export default function CustomerDashboard({ user, onLogoutSuccess }) {
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'bookings' | 'active' | 'history' | 'addresses' | 'profile' | 'support'
-  const [categoryFilter, setCategoryFilter] = useState('All'); // 'All' | 'Electrical' | 'Plumbing'
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedService, setSelectedService] = useState('Electrical Repairs');
 
   const liveBookings = JSON.parse(localStorage.getItem('homefix_live_bookings') || '[]');
@@ -95,21 +35,9 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
     setBookingModalOpen(true);
   };
 
-  const filteredServices = SERVICES_DATA.filter(s => {
-    const query = searchQuery.toLowerCase().trim();
-    const matchesCategory = categoryFilter === 'All' || s.category === categoryFilter;
-    if (!query) return matchesCategory;
-    return matchesCategory && (
-      s.title.toLowerCase().includes(query) ||
-      s.desc.toLowerCase().includes(query) ||
-      s.tags.some(tag => tag.includes(query))
-    );
-  });
-
   return (
     <div className="customer-dashboard-layout">
-      
-      {/* Desktop Sidebar Navigation */}
+      {/* Sidebar Navigation */}
       <aside className="customer-sidebar">
         <div className="sidebar-brand">
           <div className="logo-icon-badge">
@@ -131,7 +59,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
           </div>
         </div>
 
-        {/* Sidebar Menu */}
+        {/* Clean Sidebar Navigation */}
         <nav className="sidebar-menu">
           <button 
             className={`menu-item ${activeTab === 'home' ? 'active' : ''}`}
@@ -179,7 +107,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
             onClick={() => setActiveTab('profile')}
           >
             <User size={18} />
-            <span>Profile & Billing</span>
+            <span>Profile</span>
           </button>
 
           <button 
@@ -199,18 +127,18 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         </div>
       </aside>
 
-      {/* Main Content Container */}
+      {/* Main Content Area */}
       <main className="customer-main-content">
         
-        {/* Dynamic Top Header */}
+        {/* Dynamic Greeting Top Header */}
         <header className="customer-top-header">
           <div>
             <h2>{getGreeting()}, <span className="text-primary">{user.name ? user.name.split(' ')[0] : 'Customer'}</span> 👋</h2>
             <p className="sub-greeting">How can we help you today?</p>
           </div>
-          <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary btn-sm desktop-only-btn">
+          <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary btn-sm">
             <Plus size={16} />
-            <span>Book Service</span>
+            <span>Book New Service</span>
           </button>
         </header>
 
@@ -218,13 +146,13 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         {(activeTab === 'home' || activeTab === 'bookings') && (
           <div className="tab-content-area">
             
-            {/* CONTEXT-AWARE HERO CARD */}
+            {/* CONTEXT-AWARE HERO LOGIC */}
             {activeBooking ? (
-              /* Active Booking Compact Hero Card */
+              /* Active Booking Hero Card */
               <div className="active-hero-card glass-card">
                 <div className="active-hero-top">
                   <div>
-                    <span className="badge-blue">#{activeBooking.id}</span>
+                    <span className="badge-blue mb-1">Active Booking #{activeBooking.id}</span>
                     <h3 className="active-hero-title">{activeBooking.service}</h3>
                   </div>
                   <span className="status-pill green">
@@ -235,7 +163,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                 <div className="active-hero-info-grid mt-3">
                   <div>
                     <span className="label-dim">Assigned Technician</span>
-                    <strong>{activeBooking.technicianName !== 'Unassigned' ? activeBooking.technicianName : 'Matching Verified Pro...'}</strong>
+                    <strong>{activeBooking.technicianName !== 'Unassigned' ? activeBooking.technicianName : 'Matching Verified Technician...'}</strong>
                   </div>
                   <div>
                     <span className="label-dim">Estimated Arrival</span>
@@ -243,148 +171,70 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
                   </div>
                   <div className="span-2">
                     <span className="label-dim">Location</span>
-                    <span className="text-sm">{activeBooking.address}, {activeBooking.city}</span>
+                    <span>{activeBooking.address}, {activeBooking.city}</span>
                   </div>
                 </div>
 
-                <div className="active-hero-cta-row mt-3">
+                <div className="active-hero-cta-row mt-4">
                   <button onClick={() => setTrackModalOpen(true)} className="btn-primary flex-1">
-                    <span>Track Status</span>
-                    <ArrowRight size={16} />
+                    <span>Track Live Booking</span>
+                    <ArrowRight size={18} />
                   </button>
 
                   {activeBooking.technicianPhone && activeBooking.technicianPhone !== '-' && (
                     <a href={`tel:${activeBooking.technicianPhone}`} className="btn-secondary flex-center gap-2">
                       <Phone size={16} />
-                      <span>Call Tech</span>
+                      <span>Call Technician</span>
                     </a>
                   )}
                 </div>
               </div>
             ) : (
-              /* Clean Minimal Hero Card when NO active booking exists */
+              /* Clean Spacious Hero Card */
               <div className="dashboard-hero-card glass-card">
                 <div>
-                  <h3 className="hero-heading">Need an Electrician or Plumber?</h3>
-                  <p className="hero-subtext">Book verified professionals on demand with transparent pricing.</p>
+                  <h3 className="hero-heading">Need an Electrician or Plumber in Kerala?</h3>
+                  <p className="hero-subtext">Book verified professionals on demand. Guaranteed 45-min arrival with transparent pricing.</p>
                 </div>
 
-                {/* Compact Trust Badges */}
-                <div className="trust-badges-row my-3">
-                  <div className="trust-pill">
-                    <Check size={14} className="text-emerald" />
-                    <span>Verified Techs</span>
-                  </div>
-                  <div className="trust-pill">
-                    <Zap size={14} className="text-primary" />
-                    <span>45-Min Arrival</span>
-                  </div>
-                  <div className="trust-pill">
-                    <Star size={14} className="text-amber" />
-                    <span>Rated 4.9/5</span>
-                  </div>
-                </div>
-
-                <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary">
+                <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-primary mt-4">
                   <span>Book Service Now</span>
                   <ArrowRight size={18} />
                 </button>
               </div>
             )}
 
-            {/* Service Search Bar & Filter Pills */}
-            <div className="service-search-section mt-5">
-              <div className="service-search-box">
-                <Search size={18} className="search-icon" />
-                <input 
-                  type="text" 
-                  className="service-search-input" 
-                  placeholder="Search service... (e.g. Electrician, Plumber, Fan, Leak, MCB)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery('')} className="clear-search-btn">
-                    <X size={16} />
-                  </button>
-                )}
+            {/* Popular Home Services Grid (Spacious 3 Cards) */}
+            <h4 className="section-subtitle mt-6 mb-3">Popular Home Services</h4>
+            <div className="services-grid-3">
+              <div className="dash-service-card" onClick={() => handleOpenBookingWithService('Electrical Repairs')}>
+                <div className="dash-icon blue">⚡</div>
+                <strong>Electrical Repairs</strong>
+                <p>Wiring, short circuits, MCB trips</p>
+                <div className="service-card-bottom">
+                  <span className="price-tag-modern">Starts at ₹299</span>
+                  <ChevronRight size={16} className="text-gray-400" />
+                </div>
               </div>
 
-              {/* Category Filter Pills */}
-              <div className="category-filter-pills mt-3">
-                <button 
-                  className={`cat-pill ${categoryFilter === 'All' ? 'active' : ''}`}
-                  onClick={() => setCategoryFilter('All')}
-                >
-                  All Services
-                </button>
-                <button 
-                  className={`cat-pill ${categoryFilter === 'Electrical' ? 'active' : ''}`}
-                  onClick={() => setCategoryFilter('Electrical')}
-                >
-                  ⚡ Electrical
-                </button>
-                <button 
-                  className={`cat-pill ${categoryFilter === 'Plumbing' ? 'active' : ''}`}
-                  onClick={() => setCategoryFilter('Plumbing')}
-                >
-                  🚰 Plumbing
-                </button>
+              <div className="dash-service-card" onClick={() => handleOpenBookingWithService('Plumbing Repairs')}>
+                <div className="dash-icon green">🚰</div>
+                <strong>Plumbing Repairs</strong>
+                <p>Leaky taps, pipe fits, clogged drains</p>
+                <div className="service-card-bottom">
+                  <span className="price-tag-modern">Starts at ₹299</span>
+                  <ChevronRight size={16} className="text-gray-400" />
+                </div>
               </div>
-            </div>
 
-            {/* Services Minimal Grid */}
-            <div className="flex-between mt-5 mb-2">
-              <h4 className="section-subtitle">Home Services</h4>
-              <span className="text-xs text-gray-500">{filteredServices.length} Options</span>
-            </div>
-
-            {filteredServices.length > 0 ? (
-              <div className="services-grid-minimal">
-                {filteredServices.map((s) => (
-                  <div 
-                    key={s.id} 
-                    className="dash-service-card-minimal" 
-                    onClick={() => handleOpenBookingWithService(s.title)}
-                  >
-                    <div className="card-top-row">
-                      <span className="dash-emoji">{s.icon}</span>
-                      <span className="price-tag-minimal">Starts at ₹299</span>
-                    </div>
-                    <strong className="service-card-title">{s.title}</strong>
-                    <p className="service-card-desc">{s.desc}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-search-state">
-                <p>No services matching "{searchQuery}". Need custom repair?</p>
-                <button onClick={() => handleOpenBookingWithService('Electrical Repairs')} className="btn-secondary btn-sm mt-2">
-                  Request Custom Repair
-                </button>
-              </div>
-            )}
-
-            {/* Compact Bottom Support Strip */}
-            <div className="compact-support-strip glass-card mt-6">
-              <div className="support-strip-left">
-                <HelpCircle size={20} className="text-primary" />
-                <span>Need assistance with your booking?</span>
-              </div>
-              <div className="support-strip-actions">
-                <a href="tel:+914972704663" className="strip-action-btn">
-                  <PhoneCall size={14} />
-                  <span>Call Support</span>
-                </a>
-                <a 
-                  href="https://wa.me/919447000000?text=Hi%20HomeFix!%20I%20need%20assistance%20with%20my%20service%20booking." 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="strip-action-btn whatsapp"
-                >
-                  <MessageSquare size={14} />
-                  <span>WhatsApp</span>
-                </a>
+              <div className="dash-service-card" onClick={() => handleOpenBookingWithService('Fan Installation')}>
+                <div className="dash-icon blue">🌀</div>
+                <strong>Fan & Switch Installation</strong>
+                <p>Ceiling fans, modular switches</p>
+                <div className="service-card-bottom">
+                  <span className="price-tag-modern">Starts at ₹299</span>
+                  <ChevronRight size={16} className="text-gray-400" />
+                </div>
               </div>
             </div>
 
@@ -499,7 +349,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         {/* ================= TAB 6: PROFILE (INCLUDES PAYMENTS) ================= */}
         {activeTab === 'profile' && (
           <div className="tab-content-area">
-            <h3 className="tab-title mb-4">Account Profile & Billing</h3>
+            <h3 className="tab-title mb-4">Account Profile & Payments</h3>
             
             <div className="profile-grid-two">
               {/* Profile Details */}
@@ -521,7 +371,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
 
               {/* Payments Section inside Profile */}
               <div className="payments-section-box glass-card">
-                <h4 className="card-sub-heading mb-3">Payment Methods</h4>
+                <h4 className="card-sub-heading mb-3">Payment Methods & Billing</h4>
                 <div className="payment-method-row">
                   <CreditCard size={24} className="text-primary" />
                   <div>
@@ -551,39 +401,6 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
         )}
 
       </main>
-
-      {/* Mobile Bottom Navigation Bar for Native App Feel */}
-      <nav className="mobile-bottom-nav">
-        <button 
-          className={`mobile-nav-item ${activeTab === 'home' || activeTab === 'bookings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('home')}
-        >
-          <Home size={20} />
-          <span>Home</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${activeTab === 'active' ? 'active' : ''}`}
-          onClick={() => setActiveTab('active')}
-        >
-          <Clock size={20} />
-          <span>Active</span>
-          {activeBooking && <span className="mobile-nav-badge"></span>}
-        </button>
-        <button 
-          className={`mobile-nav-item ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-        >
-          <Calendar size={20} />
-          <span>History</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          <User size={20} />
-          <span>Profile</span>
-        </button>
-      </nav>
 
       {/* Modals */}
       <BookingModal 
