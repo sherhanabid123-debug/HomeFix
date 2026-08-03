@@ -6,10 +6,10 @@ export default function PartnerModal({ isOpen, onClose }) {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    trade: 'Electrician',
-    district: 'Kannur',
+    trade: '',
+    district: '',
     phone: '',
-    experience: '3-5 years'
+    experience: ''
   });
 
   // Lock background scroll when modal is open
@@ -63,8 +63,8 @@ export default function PartnerModal({ isOpen, onClose }) {
             <div className="modal-header-icon emerald-bg">
               <Briefcase size={24} />
             </div>
-            <h3 className="modal-title">Become a HomeFix Technician</h3>
-            <p className="modal-sub">Earn steady daily income serving Kannur, Kozhikode & Kochi.</p>
+            <h3 className="modal-title">Join Technician Waiting List</h3>
+            <p className="modal-sub">Register early to get priority onboarding and instant job alerts at launch.</p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -74,7 +74,7 @@ export default function PartnerModal({ isOpen, onClose }) {
                   <input 
                     type="text"
                     className="form-input icon-indent"
-                    placeholder="e.g. Suresh Kumar"
+                    placeholder="Enter your full name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
@@ -88,7 +88,9 @@ export default function PartnerModal({ isOpen, onClose }) {
                   className="form-select"
                   value={formData.trade}
                   onChange={(e) => setFormData({ ...formData, trade: e.target.value })}
+                  required
                 >
+                  <option value="" disabled hidden>Select Primary Trade...</option>
                   <option value="Electrician">⚡ Licensed Electrician</option>
                   <option value="Plumber">🚰 Experienced Plumber</option>
                   <option value="Both Electrical & Plumbing">🛠️ Both Electrical & Plumbing Expert</option>
@@ -101,7 +103,9 @@ export default function PartnerModal({ isOpen, onClose }) {
                   className="form-select"
                   value={formData.district}
                   onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                  required
                 >
+                  <option value="" disabled hidden>Select Primary District...</option>
                   <option value="Kannur">Kannur District</option>
                   <option value="Kozhikode">Kozhikode District</option>
                   <option value="Kochi">Kochi District</option>
@@ -116,7 +120,7 @@ export default function PartnerModal({ isOpen, onClose }) {
                   <input 
                     type="tel"
                     className="form-input icon-indent"
-                    placeholder="+91 98765 43210"
+                    placeholder="Enter 10-digit mobile number"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     required
@@ -130,7 +134,9 @@ export default function PartnerModal({ isOpen, onClose }) {
                   className="form-select"
                   value={formData.experience}
                   onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                  required
                 >
+                  <option value="" disabled hidden>Select Work Experience...</option>
                   <option value="1-2 years">1 - 2 Years</option>
                   <option value="3-5 years">3 - 5 Years</option>
                   <option value="5-10 years">5 - 10 Years</option>
