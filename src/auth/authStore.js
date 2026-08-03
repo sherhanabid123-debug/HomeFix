@@ -164,6 +164,28 @@ export function registerTechnician(data) {
   localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
   localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newTech));
 
+  // Sync with Admin Applications store
+  try {
+    const savedApps = localStorage.getItem('homefix_live_applications');
+    const apps = savedApps ? JSON.parse(savedApps) : [];
+    const newApp = {
+      id: newTech.id,
+      name: newTech.name,
+      phone: newTech.phone,
+      email: newTech.email || `${newTech.phone}@homefix.in`,
+      trade: newTech.category || 'Electrician',
+      experience: newTech.experience || '1-3 Years',
+      city: newTech.city || 'Kannur',
+      status: 'Pending',
+      appliedDate: newTech.appliedDate,
+      photo: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150',
+      documents: ['Aadhaar Card (Uploaded)', 'Trade Certificate']
+    };
+    localStorage.setItem('homefix_live_applications', JSON.stringify([newApp, ...apps]));
+  } catch (e) {
+    console.error("Error updating live applications store:", e);
+  }
+
   return { success: true, user: newTech };
 }
 

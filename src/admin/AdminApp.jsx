@@ -44,7 +44,46 @@ export default function AdminApp() {
     return saved ? JSON.parse(saved) : INITIAL_TECHNICIANS;
   });
 
-  const [applications, setApplications] = useState(INITIAL_APPLICATIONS);
+  const loadApplications = () => {
+    try {
+      const savedApps = localStorage.getItem('homefix_live_applications');
+      const customApps = (savedApps && savedApps !== 'undefined') ? JSON.parse(savedApps) : [];
+      
+      const savedUsers = localStorage.getItem('homefix_registered_users');
+      const users = (savedUsers && savedUsers !== 'undefined') ? JSON.parse(savedUsers) : [];
+      const userTechApps = users
+        .filter(u => u.role === 'technician')
+        .map(u => ({
+          id: u.id,
+          name: u.name,
+          phone: u.phone,
+          email: u.email || `${u.phone}@homefix.in`,
+          trade: u.category || 'Electrician',
+          experience: u.experience || '1-3 Years',
+          city: u.city || 'Kannur',
+          status: u.status === 'approved' ? 'Approved' : (u.status === 'rejected' ? 'Rejected' : 'Pending'),
+          appliedDate: u.appliedDate || new Date().toISOString().slice(0, 10),
+          photo: 'https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=150',
+          documents: ['Aadhaar Card (Uploaded)', 'Trade Certificate']
+        }));
+      
+      const combined = [...customApps, ...userTechApps, ...INITIAL_APPLICATIONS];
+      const uniqueMap = new Map();
+      combined.forEach(item => {
+        if (!uniqueMap.has(item.id)) uniqueMap.set(item.id, item);
+      });
+      return Array.from(uniqueMap.values());
+    } catch (e) {
+      return INITIAL_APPLICATIONS;
+    }
+  };
+
+  const [applications, setApplicationsState] = useState(() => loadApplications());
+
+  const setApplications = (newApps) => {
+    setApplicationsState(newApps);
+    localStorage.setItem('homefix_live_applications', JSON.stringify(newApps));
+  };
 
   const [customers, setCustomersState] = useState(() => {
     const saved = localStorage.getItem('homefix_live_customers');
@@ -90,6 +129,8 @@ export default function AdminApp() {
 
       const savedTechs = localStorage.getItem('homefix_live_technicians');
       if (savedTechs) setTechniciansState(JSON.parse(savedTechs));
+
+      setApplicationsState(loadApplications());
     };
 
     syncData();
