@@ -477,8 +477,8 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
               <PhoneCall size={28} className="text-secondary mb-2" />
               <h4>Need Urgent Emergency Assistance?</h4>
               <p className="text-sm text-gray-600 mb-3">Our operations desk is available 24/7 for electrical emergencies and water pipe bursts.</p>
-              <a href="tel:+914972704663" className="btn-secondary">
-                Call Helpline: +91 (497) 270-HOME
+              <a href="tel:+919535337959" className="btn-secondary">
+                Call Helpline: +91 95353 37959
               </a>
             </div>
           </div>

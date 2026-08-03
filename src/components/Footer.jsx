@@ -83,7 +83,7 @@ export default function Footer({ onOpenBooking, onOpenPartner }) {
             <ul className="footer-contact-list">
               <li>
                 <Phone size={16} />
-                <span>+91 (497) 270-HOME</span>
+                <span>+91 95353 37959</span>
               </li>
               <li>
                 <Mail size={16} />

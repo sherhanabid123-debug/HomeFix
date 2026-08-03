@@ -99,8 +99,8 @@ export default function FAQSection() {
             <h4>Still have a question?</h4>
             <p>Our Kerala customer support team is available 24/7 to assist you.</p>
           </div>
-          <a href="tel:+91497270000" className="btn-secondary btn-sm">
-            Call Support: +91 (497) 270-HOME
+          <a href="tel:+919535337959" className="btn-secondary btn-sm">
+            Call Support: +91 95353 37959
           </a>
         </div>
       </div>
