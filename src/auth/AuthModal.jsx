@@ -539,9 +539,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                   <input 
                     type="tel" 
                     className="form-input" 
-                    placeholder="94470 98765"
+                    placeholder="9447098765"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+                    maxLength={10}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     required
                   />
                 </div>
