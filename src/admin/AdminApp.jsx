@@ -255,8 +255,37 @@ function AdminAppContent() {
     };
 
     syncData();
+    const interval = setInterval(syncData, 4000);
     window.addEventListener('focus', syncData);
-    return () => window.removeEventListener('focus', syncData);
+
+    let channel = null;
+    if (isSupabaseConfigured && supabase) {
+      try {
+        channel = supabase
+          .channel('schema-db-changes')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'technician_applications' },
+            () => syncData()
+          )
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'customer_inquiries' },
+            () => syncData()
+          )
+          .subscribe();
+      } catch (err) {
+        console.warn('Supabase Realtime subscription warning:', err);
+      }
+    }
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', syncData);
+      if (channel && supabase) {
+        supabase.removeChannel(channel);
+      }
+    };
   }, [activeTab]);
 
   const handleLoginSuccess = (userData) => {
