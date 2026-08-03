@@ -5,8 +5,8 @@ import './WhyChooseUs.css';
 const WHY_CARDS = [
   {
     icon: ShieldCheck,
-    title: 'Verified Professionals',
-    desc: '100% background checked and tested on their trade skills.',
+    title: 'Rated By Real Customers',
+    desc: 'Every job gets reviewed. Technicians with poor ratings get dropped from the platform.',
     color: 'blue'
   },
   {
@@ -30,13 +30,13 @@ const WHY_CARDS = [
   {
     icon: MapPin,
     title: 'Live Booking Status',
-    desc: 'Live GPS tracking of your technician’s travel status and estimated arrival.',
+    desc: 'Follow every step of your booking, from confirmed to on the way to done.',
     color: 'green'
   },
   {
     icon: Headphones,
     title: '24/7 Customer Support',
-    desc: 'Dedicated Kerala support team ready to assist with scheduling, queries, and feedback.',
+    desc: 'Dedicated support team ready to assist with scheduling, queries, and feedback.',
     color: 'amber'
   }
 ];

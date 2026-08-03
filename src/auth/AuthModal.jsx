@@ -240,7 +240,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 <Zap size={22} className="text-primary" />
               </div>
               <h3 className="auth-title">Welcome to HomeFix</h3>
-              <p className="auth-sub">Sign in to manage your bookings and repairs in Kerala</p>
+              <p className="auth-sub">Sign in to manage your bookings and repairs</p>
             </div>
 
             {/* Google Sign In Button */}
@@ -402,7 +402,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
           <div className="auth-step-body">
             <div className="auth-header text-center">
               <h3 className="auth-title">Create HomeFix Account</h3>
-              <p className="auth-sub">Book verified electricians and plumbers across Kerala</p>
+              <p className="auth-sub">Book trusted electricians and plumbers near you</p>
             </div>
 
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
@@ -515,7 +515,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 <Wrench size={22} className="text-secondary" />
               </div>
               <h3 className="auth-title">Join Technician Waiting List</h3>
-              <p className="auth-sub">Apply to become a verified HomeFix trade partner in Kerala</p>
+              <p className="auth-sub">Apply to become a HomeFix trade partner</p>
             </div>
 
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}

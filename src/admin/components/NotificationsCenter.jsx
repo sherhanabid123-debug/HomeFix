@@ -26,7 +26,7 @@ export default function NotificationsCenter() {
       <div className="module-header glass-card">
         <div>
           <h2>Notifications Broadcast Center</h2>
-          <p>Send instant announcements via Push, SMS, and Email to Kerala users</p>
+          <p>Send instant announcements via Push, SMS, and Email to all users</p>
         </div>
       </div>
 

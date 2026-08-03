@@ -21,7 +21,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
           </h1>
 
           <p className="hero-subtitle">
-            From small repairs to emergency call outs, HomeFix connects you with verified local professionals across Kerala. Fast, reliable, and upfront about pricing.
+            From small repairs to emergency call outs, HomeFix connects you with trusted local professionals across Kerala. Fast, reliable, and upfront about pricing.
           </p>
 
           {/* Quick Value Props */}
@@ -32,7 +32,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
             </div>
             <div className="bullet-item">
               <CheckCircle2 size={18} className="bullet-icon" />
-              <span>Background Verified</span>
+              <span>Live Status Updates</span>
             </div>
             <div className="bullet-item">
               <CheckCircle2 size={18} className="bullet-icon" />
@@ -57,7 +57,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
           <div className="hero-image-wrapper">
             <img 
               src="/images/hero.jpg" 
-              alt="HomeFix Kerala verified electricians and plumbers arriving at customer home" 
+              alt="HomeFix verified electricians and plumbers arriving at customer home" 
               className="hero-main-image"
             />
 
@@ -68,7 +68,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
               </div>
               <div className="card-info">
                 <div className="card-value">⭐ 4.9 Rating</div>
-                <div className="card-sub">1,200+ Kerala Customers</div>
+                <div className="card-sub">1,200+ Happy Customers</div>
               </div>
             </div>
 

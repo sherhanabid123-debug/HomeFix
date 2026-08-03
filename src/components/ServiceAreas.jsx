@@ -32,7 +32,7 @@ export default function ServiceAreas({ onOpenBooking, onOpenPartner }) {
         <div className="text-center">
           <div className="section-badge secondary">
             <Navigation size={14} />
-            <span>Kerala Network</span>
+            <span>Service Network</span>
           </div>
           <h2 className="section-title">Service Areas</h2>
           <p className="section-subtitle mx-auto">
@@ -46,7 +46,7 @@ export default function ServiceAreas({ onOpenBooking, onOpenPartner }) {
             <div className="map-header">
               <div className="live-indicator">
                 <span className="pulse-dot"></span>
-                <span>Live Kerala Service Network</span>
+                <span>Live Service Network</span>
               </div>
               <span className="active-badge">2 Active Cities</span>
             </div>

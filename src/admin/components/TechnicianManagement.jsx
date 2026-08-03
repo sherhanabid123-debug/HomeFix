@@ -37,7 +37,7 @@ export default function TechnicianManagement({ technicians, setTechnicians }) {
       <div className="module-header glass-card">
         <div>
           <h2>Technician Roster</h2>
-          <p>Manage background checked electricians and plumbers across Kerala</p>
+          <p>Manage electricians and plumbers on the platform</p>
         </div>
       </div>
 

@@ -310,7 +310,7 @@ export default function BookingModal({ isOpen, onClose, initialService = '' }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Select District in Kerala</label>
+                <label className="form-label">Select District</label>
                 <div className="district-radio-group">
                   <label className={`radio-pill ${district === 'Kannur' ? 'active' : ''}`}>
                     <input 

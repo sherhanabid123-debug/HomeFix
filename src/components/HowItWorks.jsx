@@ -15,7 +15,7 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
           </div>
           <h2 className="section-title">How HomeFix Works</h2>
           <p className="section-subtitle mx-auto">
-            Booking professional home maintenance in Kerala has never been simpler. Just 3 quick steps to get verified service at your doorstep.
+            Booking a professional has never been simpler. Just 3 quick steps to get service at your doorstep.
           </p>
         </div>
 
@@ -47,9 +47,9 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
             </div>
             <h3 className="step-title">2. Get Matched</h3>
             <p className="step-desc">
-              We match you with a highly rated, background checked technician near your location, usually in under 2 minutes.
+              We match you with a highly rated technician near your location, usually in under 2 minutes.
             </p>
-            <div className="step-footer-tag">Verified Professionals</div>
+            <div className="step-footer-tag">Rated Technicians</div>
           </div>
 
           {/* Connection Indicator Arrow (Desktop) */}

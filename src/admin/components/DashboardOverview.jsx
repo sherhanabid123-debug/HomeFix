@@ -46,7 +46,7 @@ export default function DashboardOverview({ allData, onNavigate }) {
       <div className="overview-welcome-banner glass-card">
         <div>
           <h2>Welcome back, <span className="text-primary">Sherhan</span> 👋</h2>
-          <p>HomeFix Kerala Operations Dashboard, live monitoring</p>
+          <p>HomeFix Operations Dashboard, live monitoring</p>
         </div>
         <div className="banner-actions">
           <button onClick={() => onNavigate('bookings')} className="btn-primary btn-sm">
@@ -118,7 +118,7 @@ export default function DashboardOverview({ allData, onNavigate }) {
 
         {/* Live Operational Status */}
         <div className="ops-status-card glass-card">
-          <h3>Kerala City Ops Summary</h3>
+          <h3>City Ops Summary</h3>
 
           <div className="city-ops-box">
             <div className="city-ops-header">

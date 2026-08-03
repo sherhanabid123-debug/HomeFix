@@ -17,7 +17,7 @@ export default function CustomerManagement({ customers, setCustomers, bookings }
       <div className="module-header glass-card">
         <div>
           <h2>Customer Management</h2>
-          <p>View registered Kerala homeowners, booking history & total spend</p>
+          <p>View registered homeowners, booking history & total spend</p>
         </div>
       </div>
 

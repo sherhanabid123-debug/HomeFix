@@ -229,7 +229,7 @@ export default function CustomerDashboard({ user, onLogoutSuccess }) {
               /* Clean Spacious Hero Card */
               <div className="dashboard-hero-card glass-card">
                 <div>
-                  <h3 className="hero-heading">Need an Electrician or Plumber in Kerala?</h3>
+                  <h3 className="hero-heading">Need an Electrician or Plumber?</h3>
                   <p className="hero-subtext">Book verified professionals on demand. Guaranteed 45-min arrival with transparent pricing.</p>
                 </div>
 

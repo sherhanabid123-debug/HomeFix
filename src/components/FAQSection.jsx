@@ -8,8 +8,8 @@ const FAQ_DATA = [
     a: 'Simply click the "Book a Service" button on HomeFix, select your required service (Electrical or Plumbing), enter your address in Kannur or Kozhikode, and choose a preferred time slot. You will receive immediate SMS/WhatsApp confirmation with technician details.'
   },
   {
-    q: 'Are technicians verified?',
-    a: 'Yes, 100%. Every electrician and plumber on HomeFix undergoes strict background verification, government ID check, and practical trade skill evaluations before joining our Kerala network.'
+    q: 'How do you pick your technicians?',
+    a: 'Every technician builds a profile on HomeFix and gets rated by customers after each job. Anyone who consistently gets poor ratings or complaints is removed from the platform, so the people you book have a track record you can actually see.'
   },
   {
     q: 'How do payments work?',
@@ -48,7 +48,7 @@ export default function FAQSection() {
           </div>
           <h2 className="section-title">Frequently Asked Questions</h2>
           <p className="section-subtitle mx-auto">
-            Everything you need to know about booking electricians and plumbers with HomeFix in Kerala.
+            Everything you need to know about booking electricians and plumbers with HomeFix.
           </p>
         </div>
 
@@ -97,7 +97,7 @@ export default function FAQSection() {
           </div>
           <div>
             <h4>Still have a question?</h4>
-            <p>Our Kerala customer support team is available 24/7 to assist you.</p>
+            <p>Our customer support team is available 24/7 to assist you.</p>
           </div>
           <a href="tel:+919535337959" className="btn-secondary btn-sm">
             Call Support: +91 95353 37959

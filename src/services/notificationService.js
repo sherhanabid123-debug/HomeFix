@@ -10,13 +10,13 @@ export function generateWhatsAppLink({ bookingId, service, district, address, la
   const targetPhone = cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone}`;
   
   const text = encodeURIComponent(
-    `🏠 *HomeFix Kerala Booking Confirmation*\n\n` +
+    `🏠 *HomeFix Booking Confirmation*\n\n` +
     `📌 *Booking ID:* ${bookingId}\n` +
     `⚡ *Service:* ${service}\n` +
     `📍 *Location:* ${address}${landmark ? ` (Landmark: ${landmark})` : ''}, ${district}\n` +
     `⏰ *Slot:* ${slot}\n` +
     `💳 *Payment:* Pay after service (UPI / Cash)\n\n` +
-    `Technician is being assigned to your doorstep. Reply *TRACK* for live location.`
+    `Technician is being assigned to your doorstep. Reply *TRACK* for live status.`
   );
 
   return `https://wa.me/${targetPhone}?text=${text}`;

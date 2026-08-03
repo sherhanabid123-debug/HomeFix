@@ -26,7 +26,7 @@ export default function Footer({ onOpenBooking, onOpenPartner }) {
             </a>
 
             <p className="footer-tagline">
-              Trusted electricians and plumbers, on demand. Connecting Kerala homeowners with background checked trade experts.
+              Trusted electricians and plumbers, on demand. Connecting homeowners with reliable trade experts.
             </p>
 
             <div className="footer-socials">

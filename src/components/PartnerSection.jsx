@@ -20,7 +20,7 @@ export default function PartnerSection({ onOpenPartner }) {
               </h2>
 
               <p className="partner-text">
-                Join Kerala’s growing network of verified electricians and plumbers. Get more customer bookings, flexible work schedules, and reliable daily payouts.
+                Join our growing network of verified electricians and plumbers. Get more customer bookings, flexible work schedules, and reliable daily payouts.
               </p>
 
               <div className="partner-features">
@@ -28,7 +28,7 @@ export default function PartnerSection({ onOpenPartner }) {
                   <div className="pf-icon"><CreditCard size={20} /></div>
                   <div>
                     <h4>Timely Payouts</h4>
-                    <p>Daily or weekly payouts straight into your Kerala bank account.</p>
+                    <p>Daily or weekly payouts straight into your bank account.</p>
                   </div>
                 </div>
 
@@ -51,8 +51,8 @@ export default function PartnerSection({ onOpenPartner }) {
                 <div className="pf-item">
                   <div className="pf-icon"><Shield size={20} /></div>
                   <div>
-                    <h4>Free Partner Insurance</h4>
-                    <p>Complimentary job accident protection and official tool kit gear.</p>
+                    <h4>Support When You Need It</h4>
+                    <p>Reach our partner support line if a job goes sideways or a customer doesn't show.</p>
                   </div>
                 </div>
               </div>
@@ -70,7 +70,7 @@ export default function PartnerSection({ onOpenPartner }) {
               <div className="partner-img-wrapper">
                 <img 
                   src="/images/partner.jpg" 
-                  alt="HomeFix electrician and plumber technician in Kerala holding smartphone" 
+                  alt="HomeFix electrician and plumber technician holding smartphone" 
                   className="partner-img"
                 />
                 

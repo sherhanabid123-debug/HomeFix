@@ -56,7 +56,7 @@ export default function BookingsManagement({ bookings, setBookings }) {
       <div className="module-header glass-card">
         <div>
           <h2>Bookings Management</h2>
-          <p>Live job dispatches and customer requests across Kerala</p>
+          <p>Live job dispatches and customer requests</p>
         </div>
 
         <div className="header-action-group">

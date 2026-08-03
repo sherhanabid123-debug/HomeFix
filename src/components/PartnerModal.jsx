@@ -133,7 +133,7 @@ export default function PartnerModal({ isOpen, onClose }) {
             </div>
             <h3 className="modal-title">Application Submitted!</h3>
             <p className="modal-sub">
-              Thank you <strong>{formData.name}</strong>. Our Kerala Technician Onboarding Officer will contact you within 24 hours.
+              Thank you <strong>{formData.name}</strong>. Our Technician Onboarding Officer will contact you within 24 hours.
             </p>
 
             <div className="partner-summary-box">

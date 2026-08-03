@@ -28,7 +28,7 @@ const TESTIMONIALS_DATA = [
     rating: 5,
     date: '3 days ago',
     image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200',
-    comment: 'As a working professional, scheduling home repairs used to be a hassle. With HomeFix, I picked an evening slot and received live technician tracking. Highly recommended across Kerala!'
+    comment: 'As a working professional, scheduling home repairs used to be a hassle. With HomeFix, I picked an evening slot and got live technician tracking. Highly recommended!'
   }
 ];
 
@@ -41,7 +41,7 @@ export default function Testimonials() {
             <Star size={14} fill="#2563EB" color="#2563EB" />
             <span>Customer Stories</span>
           </div>
-          <h2 className="section-title">Trusted by Kerala Homeowners</h2>
+          <h2 className="section-title">Trusted by Local Homeowners</h2>
           <p className="section-subtitle mx-auto">
             See how HomeFix delivers peace of mind to families across Kannur and Kozhikode.
           </p>
