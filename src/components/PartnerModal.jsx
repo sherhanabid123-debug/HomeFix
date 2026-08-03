@@ -46,7 +46,7 @@ export default function PartnerModal({ isOpen, onClose }) {
     // Save to Supabase Cloud if configured
     if (isSupabaseConfigured && supabase) {
       try {
-        await supabase.from('technician_applications').insert([{
+        const { error: insertError } = await supabase.from('technician_applications').insert([{
           id: newApp.id,
           name: newApp.name,
           phone: newApp.phone,
@@ -56,8 +56,11 @@ export default function PartnerModal({ isOpen, onClose }) {
           status: newApp.status,
           applied_date: newApp.applied_date
         }]);
+        if (insertError) {
+          console.error('Supabase technician application insert failed:', insertError.message, insertError);
+        }
       } catch (dbErr) {
-        console.warn('Supabase DB save error:', dbErr);
+        console.error('Supabase DB save error:', dbErr);
       }
     }
 

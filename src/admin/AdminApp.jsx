@@ -141,6 +141,7 @@ function AdminAppContent() {
   const loadInquiries = () => safeParseJSON('homefix_live_faq_questions', []);
 
   const [inquiries, setInquiriesState] = useState(() => loadInquiries());
+  const [cloudSyncError, setCloudSyncError] = useState(null);
 
   const setInquiries = (newInqs) => {
     setInquiriesState(newInqs);
@@ -181,8 +182,20 @@ function AdminAppContent() {
 
       if (isSupabaseConfigured && supabase) {
         try {
-          const { data: dbApps } = await supabase.from('technician_applications').select('*').order('created_at', { ascending: false });
-          const { data: dbInqs } = await supabase.from('customer_inquiries').select('*').order('created_at', { ascending: false });
+          const { data: dbApps, error: appsError } = await supabase.from('technician_applications').select('*');
+          const { data: dbInqs, error: inqsError } = await supabase.from('customer_inquiries').select('*');
+
+          if (appsError) {
+            console.error('Supabase technician_applications fetch failed:', appsError.message, appsError);
+            setCloudSyncError(`Applications cloud sync failed: ${appsError.message}`);
+          }
+          if (inqsError) {
+            console.error('Supabase customer_inquiries fetch failed:', inqsError.message, inqsError);
+            setCloudSyncError(`Inquiries cloud sync failed: ${inqsError.message}`);
+          }
+          if (!appsError && !inqsError) {
+            setCloudSyncError(null);
+          }
 
           if (Array.isArray(dbApps) && dbApps.length > 0) {
             const formattedDbApps = dbApps.map(a => ({
@@ -194,11 +207,11 @@ function AdminAppContent() {
               experience: a.experience,
               status: a.status || 'Pending',
               appliedDate: a.applied_date || new Date().toISOString().slice(0, 10)
-            }));
+            })).sort((a, b) => (b.appliedDate || '').localeCompare(a.appliedDate || ''));
             const mergedAppsMap = new Map();
             [...formattedDbApps, ...localApps].forEach(item => {
               if (item && item.id && !mergedAppsMap.has(item.id)) {
-                const isTest = String(item.name || '').includes('Test') || String(item.id || '').includes('APP-TEST');
+                const isTest = String(item.name || '').toLowerCase().includes('test applicant') || String(item.id || '').includes('APP-TEST');
                 if (!isTest) {
                   mergedAppsMap.set(item.id, item);
                 }
@@ -218,7 +231,7 @@ function AdminAppContent() {
               question: i.question,
               status: i.status || 'Pending',
               submittedAt: i.created_at ? new Date(i.created_at).toISOString().slice(0, 16).replace('T', ' ') : ''
-            }));
+            })).sort((a, b) => (b.submittedAt || '').localeCompare(a.submittedAt || ''));
             const mergedInqsMap = new Map();
             [...formattedDbInqs, ...localInqs].forEach(item => {
               if (item && item.id && !mergedInqsMap.has(item.id)) {
@@ -231,6 +244,7 @@ function AdminAppContent() {
           }
         } catch (dbErr) {
           console.warn('Supabase fetch error:', dbErr);
+          setCloudSyncError(`Cloud sync error: ${dbErr.message || dbErr}`);
           setApplicationsState(localApps);
           setInquiriesState(localInqs);
         }
@@ -288,22 +302,32 @@ function AdminAppContent() {
   };
 
   return (
-    <AdminLayout
-      user={currentUser}
-      onLogout={handleLogout}
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      darkMode={darkMode}
-      setDarkMode={setDarkMode}
-      allData={allData}
-    >
-      {activeTab === 'dashboard' && (
-        <DashboardOverview allData={allData} onNavigate={setActiveTab} />
+    <>
+      {cloudSyncError && (
+        <div style={{
+          background: '#FEF2F2', color: '#991B1B', padding: '0.6rem 1.25rem',
+          fontSize: '0.85rem', fontWeight: 600, textAlign: 'center',
+          borderBottom: '1px solid #FCA5A5', position: 'sticky', top: 0, zIndex: 9999
+        }}>
+          ⚠️ {cloudSyncError} — showing locally cached data only, entries from other devices may be missing.
+        </div>
       )}
+      <AdminLayout
+        user={currentUser}
+        onLogout={handleLogout}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        allData={allData}
+      >
+        {activeTab === 'dashboard' && (
+          <DashboardOverview allData={allData} onNavigate={setActiveTab} />
+        )}
 
-      {activeTab === 'bookings' && (
-        <BookingsManagement bookings={bookings} setBookings={setBookings} technicians={technicians} />
-      )}
+        {activeTab === 'bookings' && (
+          <BookingsManagement bookings={bookings} setBookings={setBookings} technicians={technicians} />
+        )}
 
       {activeTab === 'technicians' && (
         <TechnicianManagement technicians={technicians} setTechnicians={setTechnicians} />
@@ -355,7 +379,8 @@ function AdminAppContent() {
       {activeTab === 'logs' && (
         <ActivityLogs logs={logs} />
       )}
-    </AdminLayout>
+      </AdminLayout>
+    </>
   );
 }
 

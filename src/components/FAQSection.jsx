@@ -63,7 +63,7 @@ export default function FAQSection() {
     // Save to Supabase Cloud if configured
     if (isSupabaseConfigured && supabase) {
       try {
-        await supabase.from('customer_inquiries').insert([{
+        const { error: insertError } = await supabase.from('customer_inquiries').insert([{
           id: newInquiry.id,
           asker_name: newInquiry.name,
           phone: newInquiry.phone,
@@ -71,8 +71,11 @@ export default function FAQSection() {
           question: newInquiry.question,
           status: newInquiry.status
         }]);
+        if (insertError) {
+          console.error('Supabase inquiry insert failed:', insertError.message, insertError);
+        }
       } catch (dbErr) {
-        console.warn('Supabase DB inquiry save error:', dbErr);
+        console.error('Supabase DB inquiry save error:', dbErr);
       }
     }
 

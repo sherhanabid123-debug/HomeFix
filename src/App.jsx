@@ -10,8 +10,6 @@ import Testimonials from './components/Testimonials';
 import FAQSection from './components/FAQSection';
 import Footer from './components/Footer';
 
-import BookingModal from './components/BookingModal';
-import PartnerModal from './components/PartnerModal';
 import TrackBookingModal from './components/TrackBookingModal';
 import ActiveBookingBar from './components/ActiveBookingBar';
 import AuthModal from './auth/AuthModal';
@@ -24,14 +22,12 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
 
   // Modals state
-  const [bookingModalOpen, setBookingModalOpen] = useState(false);
-  const [partnerModalOpen, setPartnerModalOpen] = useState(false);
+  // Pre-launch mode: BookingModal and PartnerModal are retired, all CTAs route to the technician waitlist (AuthModal)
   const [trackModalOpen, setTrackModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [authRole, setAuthRole] = useState('customer');
 
-  const [selectedService, setSelectedService] = useState('Electrical Repairs');
   const [trackBookingId, setTrackBookingId] = useState('');
 
   // Route & Session Sync
@@ -140,17 +136,6 @@ export default function App() {
       <ActiveBookingBar onOpenTrack={handleOpenTrack} />
 
       {/* Interactive Modals */}
-      <BookingModal 
-        isOpen={bookingModalOpen} 
-        onClose={() => setBookingModalOpen(false)}
-        initialService={selectedService}
-      />
-
-      <PartnerModal 
-        isOpen={partnerModalOpen} 
-        onClose={() => setPartnerModalOpen(false)}
-      />
-
       <TrackBookingModal 
         isOpen={trackModalOpen} 
         onClose={() => setTrackModalOpen(false)}

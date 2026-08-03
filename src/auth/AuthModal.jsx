@@ -159,9 +159,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     }
 
     // Save to Supabase Cloud if configured
+    let cloudSaveFailed = false;
     if (isSupabaseConfigured && supabase) {
       try {
-        await supabase.from('technician_applications').insert([{
+        const { error: insertError } = await supabase.from('technician_applications').insert([{
           id: `APP-${Date.now().toString().slice(-4)}`,
           name: fullName.trim(),
           phone: phone.trim(),
@@ -171,9 +172,16 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
           status: 'Pending',
           applied_date: new Date().toISOString().slice(0, 10)
         }]);
+        if (insertError) {
+          console.error('Supabase technician application insert failed:', insertError.message, insertError);
+          cloudSaveFailed = true;
+        }
       } catch (dbErr) {
-        console.warn('Supabase DB save error:', dbErr);
+        console.error('Supabase DB save error:', dbErr);
+        cloudSaveFailed = true;
       }
+    } else {
+      cloudSaveFailed = true;
     }
 
     // Do NOT auto login for pre-launch waiting list
@@ -182,7 +190,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     setTechStatusInfo({
       type: 'pending',
       title: 'Technician Application Submitted!',
-      msg: 'Thank you for joining the HomeFix Technician Waiting List. Our operations desk will review your details and contact you shortly.'
+      msg: cloudSaveFailed
+        ? `Thank you for joining the HomeFix Technician Waiting List. We had trouble syncing your details to our system just now, so please also call or WhatsApp our operations desk at +91 95353 37959 with your name and phone number to make sure you're on the list.`
+        : 'Thank you for joining the HomeFix Technician Waiting List. Our operations desk will review your details and contact you shortly.'
     });
     setMode('tech_status');
   };
