@@ -13,7 +13,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
         <div className="hero-content">
           <div className="location-pill">
             <MapPin size={16} className="pin-icon" />
-            <span>Serving <strong>Kannur, Kozhikode & Kochi</strong> • Expanding across Kerala</span>
+            <span>Serving <strong>Kannur & Kozhikode</strong> • Expanding across Kerala</span>
           </div>
 
           <h1 className="hero-title">
@@ -21,7 +21,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
           </h1>
 
           <p className="hero-subtitle">
-            From small repairs to emergency call outs, HomeFix connects you with trusted local professionals across Kerala. Fast, reliable, and upfront about pricing.
+            From small repairs to emergency services, HomeFix connects you with verified local professionals across Kerala—fast, reliable, and transparent.
           </p>
 
           {/* Quick Value Props */}
@@ -32,19 +32,22 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
             </div>
             <div className="bullet-item">
               <CheckCircle2 size={18} className="bullet-icon" />
-              <span>Live Status Updates</span>
+              <span>Background Verified</span>
             </div>
             <div className="bullet-item">
               <CheckCircle2 size={18} className="bullet-icon" />
-              <span>45 Minute Arrival</span>
+              <span>45-Min Arrival</span>
             </div>
           </div>
 
-          {/* CTA */}
+          {/* CTAs */}
           <div className="hero-cta-group">
             <button onClick={onOpenBooking} className="btn-primary hero-btn">
               <span>Book a Service</span>
               <ArrowRight size={18} />
+            </button>
+            <button onClick={onOpenPartner} className="btn-secondary hero-btn">
+              <span>Become a Technician</span>
             </button>
           </div>
         </div>
@@ -54,7 +57,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
           <div className="hero-image-wrapper">
             <img 
               src="/images/hero.jpg" 
-              alt="HomeFix verified electricians and plumbers arriving at customer home" 
+              alt="HomeFix Kerala verified electricians and plumbers arriving at customer home" 
               className="hero-main-image"
             />
 
@@ -65,7 +68,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
               </div>
               <div className="card-info">
                 <div className="card-value">⭐ 4.9 Rating</div>
-                <div className="card-sub">1,200+ Happy Customers</div>
+                <div className="card-sub">1,200+ Kerala Customers</div>
               </div>
             </div>
 
@@ -79,13 +82,13 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
               </div>
             </div>
 
-            {/* Floating Glass UI Card 3: Same Day Service */}
+            {/* Floating Glass UI Card 3: ⚡ Same-Day Service */}
             <div className="floating-card float-speed">
               <div className="card-icon zap-bg">
                 <Zap size={20} color="#2563EB" />
               </div>
               <div className="card-info">
-                <div className="card-value">⚡ Same Day</div>
+                <div className="card-value">⚡ Same-Day</div>
                 <div className="card-sub">Arrives in &lt; 45 Mins</div>
               </div>
             </div>

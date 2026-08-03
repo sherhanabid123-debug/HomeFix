@@ -11,7 +11,7 @@ const SERVICES_DATA = [
     icon: Zap,
     badge: 'Popular',
     price: '₹299',
-    time: '30 to 45 mins',
+    time: '30-45 mins',
     rating: '4.9 (420+)'
   },
   {
@@ -92,7 +92,7 @@ export default function Services({ onOpenBooking }) {
           </div>
           <h2 className="section-title">Popular Services</h2>
           <p className="section-subtitle mx-auto">
-            Choose from our highest rated electrical and plumbing services, with upfront pricing and no hidden charges.
+            Choose from our top-rated electrical and plumbing services. transparent upfront estimates, no hidden charges.
           </p>
         </div>
 

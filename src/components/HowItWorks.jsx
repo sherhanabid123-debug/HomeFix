@@ -9,11 +9,11 @@ export default function HowItWorks({ onOpenBooking }) {
         <div className="text-center">
           <div className="section-badge secondary">
             <ShieldCheck size={14} />
-            <span>Book in 3 Steps</span>
+            <span>Seamless 3-Step Booking</span>
           </div>
           <h2 className="section-title">How HomeFix Works</h2>
           <p className="section-subtitle mx-auto">
-            Booking a professional has never been simpler. Just 3 quick steps to get service at your doorstep.
+            Booking professional home maintenance in Kerala has never been simpler. Just 3 quick steps to get verified service at your doorstep.
           </p>
         </div>
 
@@ -27,7 +27,7 @@ export default function HowItWorks({ onOpenBooking }) {
             </div>
             <h3 className="step-title">1. Book</h3>
             <p className="step-desc">
-              Choose your required electrical or plumbing service, select your district (Kannur, Kozhikode or Kochi), and pick a convenient time slot.
+              Choose your required electrical or plumbing service, select your district (Kannur or Kozhikode), and pick a convenient time slot.
             </p>
             <div className="step-footer-tag">Instant Request</div>
           </div>
@@ -45,9 +45,9 @@ export default function HowItWorks({ onOpenBooking }) {
             </div>
             <h3 className="step-title">2. Get Matched</h3>
             <p className="step-desc">
-              We match you with a highly rated technician near your location, usually in under 2 minutes.
+              Our automated system pairs you with a top-rated, background-verified technician near your location in under 2 minutes.
             </p>
-            <div className="step-footer-tag">Rated Technicians</div>
+            <div className="step-footer-tag">Verified Professionals</div>
           </div>
 
           {/* Connection Indicator Arrow (Desktop) */}
@@ -73,7 +73,7 @@ export default function HowItWorks({ onOpenBooking }) {
         <div className="how-cta-banner">
           <div className="banner-text">
             <h3>Need an Emergency Electrician or Plumber Right Now?</h3>
-            <p>Technicians available on standby in Kannur, Kozhikode & Kochi.</p>
+            <p>Technicians available on standby in Kannur & Kozhikode.</p>
           </div>
           <button onClick={onOpenBooking} className="btn-primary">
             <span>Book Express Service</span>
