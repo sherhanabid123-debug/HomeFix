@@ -129,16 +129,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
     e.preventDefault();
     setErrorMessage('');
 
-    if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match.');
-      return;
-    }
-
     const res = registerTechnician({
       name: fullName,
       phone,
-      email,
-      password,
+      email: email || `${phone}@homefix.in`,
+      password: 'techpassword123',
       category,
       experience,
       city,
@@ -153,10 +148,13 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
       return;
     }
 
+    // Do NOT auto login for pre-launch waiting list
+    localStorage.removeItem('homefix_current_user');
+
     setTechStatusInfo({
       type: 'pending',
-      title: 'Application Submitted Successfully!',
-      msg: 'Your account is currently under review. You will receive access after HomeFix approves your application.'
+      title: 'Technician Application Submitted!',
+      msg: 'Thank you for joining the HomeFix Technician Waiting List. Our operations desk will review your details and contact you shortly.'
     });
     setMode('tech_status');
   };
@@ -619,33 +617,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login', init
                 </div>
               </div>
 
-              <div className="grid-2-col">
-                <div className="form-group">
-                  <label className="form-label">Password</label>
-                  <input 
-                    type="password" 
-                    className="form-input" 
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Confirm Password</label>
-                  <input 
-                    type="password" 
-                    className="form-input" 
-                    placeholder="••••••••"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <button type="submit" className="btn-emerald w-full mt-2">
-                Submit Application
+              <button type="submit" className="btn-emerald w-full mt-3">
+                Join Technician Waiting List
               </button>
             </form>
           </div>
