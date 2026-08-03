@@ -21,7 +21,7 @@ const FAQ_DATA = [
   },
   {
     q: 'What if I’m not satisfied?',
-    a: 'Customer satisfaction is guaranteed. All HomeFix services come with a 30-Day Service Guarantee. If any issue reoccurs or you are unhappy with the quality, we will dispatch a senior technician to re-inspect and fix it for free.'
+    a: 'All HomeFix services come with a 30 day service guarantee. If the same issue comes back, or you are not happy with the work, we will send a senior technician to re inspect and fix it for free.'
   }
 ];
 

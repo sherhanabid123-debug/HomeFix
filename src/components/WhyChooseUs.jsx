@@ -6,7 +6,7 @@ const WHY_CARDS = [
   {
     icon: ShieldCheck,
     title: 'Verified Professionals',
-    desc: '100% background checked and skill-evaluated trade experts.',
+    desc: '100% background checked and tested on their trade skills.',
     color: 'blue'
   },
   {
@@ -30,7 +30,7 @@ const WHY_CARDS = [
   {
     icon: MapPin,
     title: 'Live Booking Status',
-    desc: 'Real-time GPS tracking of your technician’s travel status and estimated arrival.',
+    desc: 'Live GPS tracking of your technician’s travel status and estimated arrival.',
     color: 'green'
   },
   {
@@ -52,7 +52,7 @@ export default function WhyChooseUs() {
           </div>
           <h2 className="section-title">Why Choose HomeFix</h2>
           <p className="section-subtitle mx-auto">
-            We are redefining home maintenance in Kerala by bringing reliability, safety, and modern convenience to every doorway.
+            No more asking neighbors for a plumber's number or waiting around all day. Every technician on HomeFix is checked and rated before they reach your door.
           </p>
         </div>
 

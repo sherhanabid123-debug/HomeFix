@@ -52,7 +52,7 @@ export default function NotificationsCenter() {
           <div>
             <label className="form-label">Notification Channel</label>
             <div className="grid grid-cols-4 gap-2">
-              {['Push', 'SMS', 'Email', 'In-App'].map(ch => (
+              {['Push', 'SMS', 'Email', 'In App'].map(ch => (
                 <button 
                   key={ch} 
                   type="button" 

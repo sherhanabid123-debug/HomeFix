@@ -21,7 +21,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
           </h1>
 
           <p className="hero-subtitle">
-            From small repairs to emergency services, HomeFix connects you with verified local professionals across Kerala—fast, reliable, and transparent.
+            From small repairs to emergency call outs, HomeFix connects you with verified local professionals across Kerala. Fast, reliable, and upfront about pricing.
           </p>
 
           {/* Quick Value Props */}
@@ -36,7 +36,7 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
             </div>
             <div className="bullet-item">
               <CheckCircle2 size={18} className="bullet-icon" />
-              <span>45-Min Arrival</span>
+              <span>45 Minute Arrival</span>
             </div>
           </div>
 
@@ -82,13 +82,13 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
               </div>
             </div>
 
-            {/* Floating Glass UI Card 3: ⚡ Same-Day Service */}
+            {/* Floating Glass UI Card 3: Same Day Service */}
             <div className="floating-card float-speed">
               <div className="card-icon zap-bg">
                 <Zap size={20} color="#2563EB" />
               </div>
               <div className="card-info">
-                <div className="card-value">⚡ Same-Day</div>
+                <div className="card-value">⚡ Same Day</div>
                 <div className="card-sub">Arrives in &lt; 45 Mins</div>
               </div>
             </div>

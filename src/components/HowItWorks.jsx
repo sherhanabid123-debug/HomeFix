@@ -11,7 +11,7 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
         <div className="text-center">
           <div className="section-badge secondary">
             <ShieldCheck size={14} />
-            <span>Seamless 3-Step Booking</span>
+            <span>Book in 3 Steps</span>
           </div>
           <h2 className="section-title">How HomeFix Works</h2>
           <p className="section-subtitle mx-auto">
@@ -47,7 +47,7 @@ export default function HowItWorks({ onOpenBooking, onOpenPartner }) {
             </div>
             <h3 className="step-title">2. Get Matched</h3>
             <p className="step-desc">
-              Our automated system pairs you with a top-rated, background-verified technician near your location in under 2 minutes.
+              We match you with a highly rated, background checked technician near your location, usually in under 2 minutes.
             </p>
             <div className="step-footer-tag">Verified Professionals</div>
           </div>

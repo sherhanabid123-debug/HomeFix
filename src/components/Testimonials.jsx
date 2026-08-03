@@ -19,7 +19,7 @@ const TESTIMONIALS_DATA = [
     rating: 5,
     date: '1 week ago',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
-    comment: 'Extremely professional plumbing service. I had a concealed pipe leak in the kitchen wall. The plumber diagnosed it accurately using a detector without unnecessary wall damage. Very transparent pricing.'
+    comment: 'I had a concealed pipe leak inside the kitchen wall and was dreading having it broken open. The plumber used a leak detector, found the exact spot, and only opened a small section. Quoted the price before starting, no surprises after.'
   },
   {
     name: 'Dr. Priya Varma',

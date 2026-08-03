@@ -80,7 +80,7 @@ export default function AnalyticsDashboard() {
               <strong className="text-red">52%</strong>
             </div>
             <div className="rank-item">
-              <span>Self-resolved minor issue</span>
+              <span>Resolved without escalation</span>
               <strong className="text-amber">28%</strong>
             </div>
             <div className="rank-item">
