@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { X, Briefcase, CheckCircle2, ShieldCheck, Phone, User } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
+import { db, isFirebaseConfigured } from '../lib/firebaseClient';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import './PartnerModal.css';
 
 export default function PartnerModal({ isOpen, onClose }) {
@@ -42,6 +44,25 @@ export default function PartnerModal({ isOpen, onClose }) {
       appliedDate: new Date().toISOString().slice(0, 10),
       timestamp: new Date().toLocaleString()
     };
+
+    // Save to Firebase Firestore if configured
+    if (isFirebaseConfigured && db) {
+      try {
+        await setDoc(doc(db, 'technician_applications', newApp.id), {
+          id: newApp.id,
+          name: newApp.name,
+          phone: newApp.phone,
+          trade: newApp.trade,
+          district: newApp.district,
+          experience: newApp.experience,
+          status: 'Pending',
+          applied_date: newApp.applied_date,
+          created_at: new Date().toISOString()
+        });
+      } catch (fbErr) {
+        console.warn('Firebase DB save error:', fbErr);
+      }
+    }
 
     // Save to Supabase Cloud if configured
     if (isSupabaseConfigured && supabase) {

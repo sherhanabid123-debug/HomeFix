@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, ChevronUp, Search, MessageSquare, Send, CheckCircle2, User, Phone, Mail, FileText } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
+import { db, isFirebaseConfigured } from '../lib/firebaseClient';
+import { doc, setDoc } from 'firebase/firestore';
 import './FAQSection.css';
 
 const FAQ_DATA = [
@@ -51,7 +53,7 @@ export default function FAQSection() {
     if (!askerName.trim() || !askerPhone.trim() || !askerQuestion.trim()) return;
 
     const newInquiry = {
-      id: `INQ-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: `INQ-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
       name: askerName.trim(),
       phone: askerPhone.trim(),
       email: askerEmail.trim() || '',
@@ -59,6 +61,23 @@ export default function FAQSection() {
       status: 'Pending',
       submittedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
     };
+
+    // Save to Firebase Cloud if configured
+    if (isFirebaseConfigured && db) {
+      try {
+        await setDoc(doc(db, 'customer_inquiries', newInquiry.id), {
+          id: newInquiry.id,
+          asker_name: newInquiry.name,
+          phone: newInquiry.phone,
+          email: newInquiry.email,
+          question: newInquiry.question,
+          status: newInquiry.status,
+          created_at: new Date().toISOString()
+        });
+      } catch (fbErr) {
+        console.warn('Firebase inquiry save error:', fbErr);
+      }
+    }
 
     // Save to Supabase Cloud if configured
     if (isSupabaseConfigured && supabase) {
