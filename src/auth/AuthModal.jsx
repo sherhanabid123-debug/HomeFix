@@ -5,8 +5,6 @@ import {
 import { loginWithCredentials, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
 import { triggerGoogleLoginPopup } from './googleAuthService';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
-import { db, isFirebaseConfigured } from '../lib/firebaseClient';
-import { doc, setDoc } from 'firebase/firestore';
 import './AuthModal.css';
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'tech_register', initialRole = 'technician', onAuthSuccess }) {
@@ -142,25 +140,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     }
 
     const uniqueAppId = `APP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
-
-    // Save to Firebase Cloud if configured
-    if (isFirebaseConfigured && db) {
-      try {
-        await setDoc(doc(db, 'technician_applications', uniqueAppId), {
-          id: uniqueAppId,
-          name: fullName.trim(),
-          phone: phone.trim(),
-          trade: category,
-          district: city,
-          experience: experience,
-          status: 'Pending',
-          applied_date: new Date().toISOString().slice(0, 10),
-          created_at: new Date().toISOString()
-        });
-      } catch (fbErr) {
-        console.warn('Firebase DB save error:', fbErr);
-      }
-    }
 
     // Save to Supabase Cloud ALWAYS
     if (isSupabaseConfigured && supabase) {

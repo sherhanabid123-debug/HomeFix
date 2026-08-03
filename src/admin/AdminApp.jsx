@@ -15,8 +15,6 @@ import AdminUsers from './components/AdminUsers';
 import ActivityLogs from './components/ActivityLogs';
 import CustomerInquiries from './components/CustomerInquiries';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
-import { db, isFirebaseConfigured } from '../lib/firebaseClient';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 
 import { 
   INITIAL_BOOKINGS, 
@@ -257,50 +255,8 @@ function AdminAppContent() {
     };
 
     syncData();
-    const interval = setInterval(syncData, 4000);
+    const interval = setInterval(syncData, 3000);
     window.addEventListener('focus', syncData);
-
-    let unsubFbApps = null;
-    let unsubFbInqs = null;
-
-    if (isFirebaseConfigured && db) {
-      try {
-        unsubFbApps = onSnapshot(collection(db, 'technician_applications'), (snapshot) => {
-          const fbApps = snapshot.docs.map(doc => doc.data());
-          if (Array.isArray(fbApps) && fbApps.length > 0) {
-            const formatted = fbApps.map(a => ({
-              id: a.id,
-              name: a.name,
-              phone: a.phone,
-              trade: a.trade,
-              district: a.district,
-              experience: a.experience,
-              status: String(a.status || 'Pending').toLowerCase() === 'approved' ? 'Approved' : (String(a.status || '').toLowerCase() === 'rejected' ? 'Rejected' : 'Pending'),
-              appliedDate: a.applied_date || new Date().toISOString().slice(0, 10)
-            })).filter(item => !String(item.name || '').toLowerCase().includes('test applicant') && !String(item.id || '').includes('APP-TEST'));
-            setApplicationsState(formatted);
-          }
-        });
-
-        unsubFbInqs = onSnapshot(collection(db, 'customer_inquiries'), (snapshot) => {
-          const fbInqs = snapshot.docs.map(doc => doc.data());
-          if (Array.isArray(fbInqs) && fbInqs.length > 0) {
-            const formatted = fbInqs.map(i => ({
-              id: i.id,
-              name: i.asker_name,
-              phone: i.phone,
-              email: i.email || '',
-              question: i.question,
-              status: i.status || 'Pending',
-              submittedAt: i.created_at ? new Date(i.created_at).toISOString().slice(0, 16).replace('T', ' ') : ''
-            }));
-            setInquiriesState(formatted);
-          }
-        });
-      } catch (fbErr) {
-        console.warn('Firebase snapshot listener warning:', fbErr);
-      }
-    }
 
     let channel = null;
     if (isSupabaseConfigured && supabase) {
@@ -326,8 +282,6 @@ function AdminAppContent() {
     return () => {
       clearInterval(interval);
       window.removeEventListener('focus', syncData);
-      if (unsubFbApps) unsubFbApps();
-      if (unsubFbInqs) unsubFbInqs();
       if (channel && supabase) {
         supabase.removeChannel(channel);
       }
