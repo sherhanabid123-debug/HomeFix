@@ -39,10 +39,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
   const [techStatusInfo, setTechStatusInfo] = useState(null);
 
   // Sync mode whenever initialMode or isOpen changes
+  const [forgotStep, setForgotStep] = useState('enter_phone'); // 'enter_phone' | 'verify_otp' | 'set_new_password'
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [userOtp, setUserOtp] = useState('');
+  const [otpInfoNotice, setOtpInfoNotice] = useState('');
+
   useEffect(() => {
     setMode(initialMode);
     setRole(initialRole);
     setErrorMessage('');
+    setForgotStep('enter_phone');
+    setUserOtp('');
+    setOtpInfoNotice('');
   }, [initialMode, initialRole, isOpen]);
 
   const handleGoogleProfileSuccess = (profile) => {
@@ -179,50 +187,42 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
       return;
     }
 
-    const uniqueAppId = `APP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const res = registerTechnician({
+      name: fullName,
+      phone,
+      email,
+      password,
+      category,
+      experience,
+      city,
+      serviceAreas: `${city} Central`,
+      govId,
+      bankAccount: bankAcc,
+      upiId
+    });
 
-    // Save to Supabase Cloud ALWAYS
+    if (!res.success) {
+      setErrorMessage(res.error);
+      return;
+    }
+
     if (isSupabaseConfigured && supabase) {
       try {
-        const { error: insErr } = await supabase.from('technician_applications').insert([{
-          id: uniqueAppId,
-          name: fullName.trim(),
-          phone: phone.trim(),
+        const timestampId = `APP-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        await supabase.from('technician_applications').insert([{
+          id: timestampId,
+          name: fullName,
+          phone: phone,
+          email: email || `${phone}@homefix.in`,
           trade: category,
-          district: city,
+          city: city,
           experience: experience,
-          status: 'Pending',
-          applied_date: new Date().toISOString().slice(0, 10)
+          status: 'Pending'
         }]);
-        if (insErr) {
-          console.error('Supabase insert error:', insErr);
-        }
-      } catch (dbErr) {
-        console.warn('Supabase DB save error:', dbErr);
+      } catch (err) {
+        console.warn('Supabase insertion fallback warning:', err);
       }
     }
-
-    // Backup local store registration
-    try {
-      registerTechnician({
-        name: fullName,
-        phone,
-        email: email || `${phone}@homefix.in`,
-        password: 'techpassword123',
-        category,
-        experience,
-        city,
-        serviceAreas: `${city} Central`,
-        govId,
-        bankAccount: bankAcc,
-        upiId
-      });
-    } catch (err) {
-      console.warn('Local store save warning:', err);
-    }
-
-    // Do NOT auto login for pre-launch waiting list
-    localStorage.removeItem('homefix_current_user');
 
     setTechStatusInfo({
       type: 'pending',
@@ -232,7 +232,41 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     setMode('tech_status');
   };
 
-  const handleForgotSubmit = (e) => {
+  const handleSendForgotOtp = (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!phone || !phone.trim()) {
+      setErrorMessage('Please enter your registered phone number.');
+      return;
+    }
+
+    const existingUser = findExistingUser(phone);
+    if (!existingUser) {
+      setErrorMessage('No account found matching this phone number.');
+      return;
+    }
+
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    setGeneratedOtp(code);
+    setForgotStep('verify_otp');
+    setOtpInfoNotice(`OTP verification code sent to ${phone}. (Demo OTP Code: ${code})`);
+  };
+
+  const handleVerifyForgotOtp = (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (userOtp.trim() !== generatedOtp.trim()) {
+      setErrorMessage('Invalid 4-digit OTP code. Please check and try again.');
+      return;
+    }
+
+    setForgotStep('set_new_password');
+    setErrorMessage('');
+  };
+
+  const handleSaveNewPassword = (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -247,9 +281,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
       return;
     }
 
-    setMode('login');
-    setErrorMessage('');
     alert('Password reset successfully! Please sign in with your new password.');
+    setMode('login');
+    setForgotStep('enter_phone');
+    setErrorMessage('');
   };
 
   const handleGoogleSubmit = (e) => {
@@ -748,69 +783,115 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
           </div>
         )}
 
-        {/* ================= FORGOT PASSWORD MODE ================= */}
+        {/* ================= FORGOT PASSWORD MODE WITH OTP VERIFICATION ================= */}
         {mode === 'forgot' && (
           <div className="auth-step-body">
             <div className="auth-header text-center">
               <h3 className="auth-title">Reset Password</h3>
-              <p className="auth-sub">Enter your registered phone number and new password</p>
+              <p className="auth-sub">
+                {forgotStep === 'enter_phone' && 'Enter your registered mobile number to receive a 4-digit verification code.'}
+                {forgotStep === 'verify_otp' && `Enter the 4-digit OTP code sent to ${phone}.`}
+                {forgotStep === 'set_new_password' && 'Enter and confirm your new password.'}
+              </p>
             </div>
 
+            {otpInfoNotice && <div className="auth-error-alert" style={{ background: '#EFF6FF', color: '#1D4ED8', borderColor: '#BFDBFE' }}>{otpInfoNotice}</div>}
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
 
-            <form onSubmit={handleForgotSubmit} className="auth-form">
-              <div className="form-group">
-                <label className="form-label">Registered Phone Number</label>
-                <div className="input-with-icon">
-                  <Phone size={18} className="input-icon" />
-                  <input 
-                    type="tel" 
-                    className="form-input icon-indent" 
-                    placeholder="98470 12345"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
+            {/* Step 1: Enter Phone Number */}
+            {forgotStep === 'enter_phone' && (
+              <form onSubmit={handleSendForgotOtp} className="auth-form">
+                <div className="form-group">
+                  <label className="form-label">Registered Phone Number</label>
+                  <div className="input-with-icon">
+                    <Phone size={18} className="input-icon" />
+                    <input 
+                      type="tel" 
+                      className="form-input icon-indent" 
+                      placeholder="98470 12345"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group">
-                <label className="form-label">New Password</label>
-                <div className="input-with-icon">
-                  <Lock size={18} className="input-icon" />
-                  <input 
-                    type="password" 
-                    className="form-input icon-indent" 
-                    placeholder="New password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
+                <button type="submit" className="btn-primary w-full">
+                  <span>Send OTP Verification Code</span>
+                  <ArrowRight size={18} />
+                </button>
+              </form>
+            )}
+
+            {/* Step 2: Verify OTP Code */}
+            {forgotStep === 'verify_otp' && (
+              <form onSubmit={handleVerifyForgotOtp} className="auth-form">
+                <div className="form-group">
+                  <label className="form-label">4-Digit OTP Code</label>
+                  <div className="input-with-icon">
+                    <Lock size={18} className="input-icon" />
+                    <input 
+                      type="text" 
+                      className="form-input icon-indent" 
+                      style={{ textAlign: 'center', fontSize: '1.2rem', letterSpacing: '0.3em', fontWeight: 'bold' }}
+                      placeholder="••••"
+                      maxLength={4}
+                      value={userOtp}
+                      onChange={(e) => setUserOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                      autoFocus
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group">
-                <label className="form-label">Confirm New Password</label>
-                <div className="input-with-icon">
-                  <Lock size={18} className="input-icon" />
-                  <input 
-                    type="password" 
-                    className="form-input icon-indent" 
-                    placeholder="Confirm new password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
+                <button type="submit" className="btn-primary w-full">
+                  <span>Verify OTP Code</span>
+                  <ArrowRight size={18} />
+                </button>
+              </form>
+            )}
+
+            {/* Step 3: Set New Password */}
+            {forgotStep === 'set_new_password' && (
+              <form onSubmit={handleSaveNewPassword} className="auth-form">
+                <div className="form-group">
+                  <label className="form-label">New Password</label>
+                  <div className="input-with-icon">
+                    <Lock size={18} className="input-icon" />
+                    <input 
+                      type="password" 
+                      className="form-input icon-indent" 
+                      placeholder="Enter new password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <button type="submit" className="btn-primary w-full">
-                Reset Password
-              </button>
-            </form>
+                <div className="form-group">
+                  <label className="form-label">Confirm New Password</label>
+                  <div className="input-with-icon">
+                    <Lock size={18} className="input-icon" />
+                    <input 
+                      type="password" 
+                      className="form-input icon-indent" 
+                      placeholder="Confirm new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="btn-primary w-full">
+                  Save New Password
+                </button>
+              </form>
+            )}
 
             <div className="auth-footer-note mt-4 text-center">
-              <button onClick={() => setMode('login')} className="link-text-btn">
+              <button onClick={() => { setMode('login'); setForgotStep('enter_phone'); setErrorMessage(''); }} className="link-text-btn">
                 Back to Sign In
               </button>
             </div>
