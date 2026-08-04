@@ -237,20 +237,21 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     setErrorMessage('');
 
     if (!phone || !phone.trim()) {
-      setErrorMessage('Please enter your registered phone number.');
+      setErrorMessage('Please enter your registered email address or phone number.');
       return;
     }
 
     const existingUser = findExistingUser(phone);
     if (!existingUser) {
-      setErrorMessage('No account found matching this phone number.');
+      setErrorMessage('No account found matching this email or phone number.');
       return;
     }
 
+    const targetEmail = existingUser.email || (phone.includes('@') ? phone : `${phone}@gmail.com`);
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setGeneratedOtp(code);
     setForgotStep('verify_otp');
-    setOtpInfoNotice(`OTP verification code sent to ${phone}. (Demo OTP Code: ${code})`);
+    setOtpInfoNotice(`📧 Free Email OTP verification code sent to ${targetEmail} (Demo Code: ${code})`);
   };
 
   const handleVerifyForgotOtp = (e) => {
@@ -783,14 +784,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
           </div>
         )}
 
-        {/* ================= FORGOT PASSWORD MODE WITH OTP VERIFICATION ================= */}
+        {/* ================= FORGOT PASSWORD MODE WITH FREE EMAIL OTP VERIFICATION ================= */}
         {mode === 'forgot' && (
           <div className="auth-step-body">
             <div className="auth-header text-center">
               <h3 className="auth-title">Reset Password</h3>
               <p className="auth-sub">
-                {forgotStep === 'enter_phone' && 'Enter your registered mobile number to receive a 4-digit verification code.'}
-                {forgotStep === 'verify_otp' && `Enter the 4-digit OTP code sent to ${phone}.`}
+                {forgotStep === 'enter_phone' && 'Enter your registered email address or phone number to receive a free 4-digit Email OTP code.'}
+                {forgotStep === 'verify_otp' && `Enter the 4-digit Email OTP code sent to your inbox.`}
                 {forgotStep === 'set_new_password' && 'Enter and confirm your new password.'}
               </p>
             </div>
@@ -798,17 +799,17 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
             {otpInfoNotice && <div className="auth-error-alert" style={{ background: '#EFF6FF', color: '#1D4ED8', borderColor: '#BFDBFE' }}>{otpInfoNotice}</div>}
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
 
-            {/* Step 1: Enter Phone Number */}
+            {/* Step 1: Enter Email / Phone Number */}
             {forgotStep === 'enter_phone' && (
               <form onSubmit={handleSendForgotOtp} className="auth-form">
                 <div className="form-group">
-                  <label className="form-label">Registered Phone Number</label>
+                  <label className="form-label">Email Address / Phone Number</label>
                   <div className="input-with-icon">
-                    <Phone size={18} className="input-icon" />
+                    <Mail size={18} className="input-icon" />
                     <input 
-                      type="tel" 
+                      type="text" 
                       className="form-input icon-indent" 
-                      placeholder="98470 12345"
+                      placeholder="Enter registered email or phone"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       required
@@ -817,7 +818,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 </div>
 
                 <button type="submit" className="btn-primary w-full">
-                  <span>Send OTP Verification Code</span>
+                  <span>Send Free Email OTP Code</span>
                   <ArrowRight size={18} />
                 </button>
               </form>
