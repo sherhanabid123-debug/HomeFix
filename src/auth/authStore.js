@@ -37,26 +37,37 @@ export function getCurrentUser() {
   }
 }
 
-export function loginWithCredentials({ phoneOrEmail, password, name = '' }) {
+export function findExistingUser(phoneOrEmail) {
   const users = getRegisteredUsers();
   const rawInput = phoneOrEmail ? phoneOrEmail.trim() : '';
   const cleanPhone = rawInput.replace(/[^0-9]/g, '');
   const cleanEmail = rawInput.toLowerCase();
 
-  // Find existing user by phone or email
-  let user = users.find(u => {
+  if (!rawInput) return null;
+
+  return users.find(u => {
     const uPhone = u.phone ? u.phone.replace(/[^0-9]/g, '') : '';
     const uEmail = u.email ? u.email.toLowerCase() : '';
     return (cleanPhone && uPhone === cleanPhone) || (cleanEmail && uEmail === cleanEmail);
   });
+}
 
-  if (user) {
+export function loginWithCredentials({ phoneOrEmail, password, name = '' }) {
+  const users = getRegisteredUsers();
+  const existingUser = findExistingUser(phoneOrEmail);
+
+  if (existingUser) {
+    if (existingUser.password && password && existingUser.password !== password) {
+      return { success: false, error: 'Incorrect password. Please try again.' };
+    }
     // If account exists, log in normally!
-    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-    return { success: true, user, isNewAccount: false };
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(existingUser));
+    return { success: true, user: existingUser, isNewAccount: false };
   }
 
   // If NO account exists, automatically create a new customer account!
+  const rawInput = phoneOrEmail ? phoneOrEmail.trim() : '';
+  const cleanPhone = rawInput.replace(/[^0-9]/g, '');
   const isEmail = rawInput.includes('@');
   const autoName = name.trim() || (isEmail ? rawInput.split('@')[0] : `Customer (${cleanPhone || rawInput})`);
 

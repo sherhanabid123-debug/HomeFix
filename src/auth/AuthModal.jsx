@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Zap, Mail, Lock, Phone, User, Wrench, ShieldCheck, CheckCircle2, ArrowRight, Eye, EyeOff, AlertTriangle, MapPin, Briefcase, Clock 
 } from 'lucide-react';
-import { loginWithCredentials, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
+import { loginWithCredentials, findExistingUser, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
 import { triggerGoogleLoginPopup } from './googleAuthService';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import './AuthModal.css';
 
 export default function AuthModal({ isOpen, onClose, initialMode = 'tech_register', initialRole = 'technician', onAuthSuccess }) {
-  const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot' | 'tech_register' | 'tech_status' | 'google_prompt'
+  const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot' | 'tech_register' | 'tech_status' | 'google_prompt' | 'new_customer_prompt'
   const [role, setRole] = useState(initialRole); // 'customer' | 'technician'
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,12 +40,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
 
   // Sync mode whenever initialMode or isOpen changes
   useEffect(() => {
-    if (isOpen) {
-      setMode(initialMode || 'tech_register');
-      setRole(initialRole || 'technician');
-      setErrorMessage('');
-    }
-  }, [isOpen, initialMode, initialRole]);
+    setMode(initialMode);
+    setRole(initialRole);
+    setErrorMessage('');
+  }, [initialMode, initialRole, isOpen]);
 
   const handleGoogleProfileSuccess = (profile) => {
     const users = getRegisteredUsers();
@@ -68,7 +66,26 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     e.preventDefault();
     setErrorMessage('');
 
-    const res = loginWithCredentials({ phoneOrEmail: phone, password: password || 'defaultpass123', name: fullName });
+    if (!phone || !phone.trim()) {
+      setErrorMessage('Please enter your phone number or email.');
+      return;
+    }
+
+    const existingUser = findExistingUser(phone);
+
+    if (!existingUser) {
+      // New user detected! Move to Full Name prompt step
+      setErrorMessage('');
+      setMode('new_customer_prompt');
+      return;
+    }
+
+    // Existing user found! Login with credentials
+    const res = loginWithCredentials({ 
+      phoneOrEmail: phone, 
+      password 
+    });
+
     if (!res.success) {
       setErrorMessage(res.error);
       return;
@@ -97,6 +114,29 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     }
 
     onAuthSuccess(user);
+  };
+
+  const handleNewCustomerPromptSubmit = (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!fullName || !fullName.trim()) {
+      setErrorMessage('Please enter your Full Name.');
+      return;
+    }
+
+    const res = loginWithCredentials({ 
+      phoneOrEmail: phone, 
+      password: password || 'defaultpass123', 
+      name: fullName 
+    });
+
+    if (!res.success) {
+      setErrorMessage(res.error);
+      return;
+    }
+
+    onAuthSuccess(res.user);
   };
 
   const handleCustomerRegisterSubmit = (e) => {
@@ -315,8 +355,77 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 </div>
               </div>
 
+              <div className="form-group">
+                <div className="flex-between mb-1" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label className="form-label mb-0">Password</label>
+                  <button 
+                    type="button" 
+                    onClick={() => { setMode('forgot'); setErrorMessage(''); }} 
+                    className="forgot-link-btn"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+                <div className="input-with-icon">
+                  <Lock size={18} className="input-icon" />
+                  <input 
+                    type={showPassword ? 'text' : 'password'} 
+                    className="form-input icon-indent pr-10" 
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button 
+                    type="button" 
+                    className="eye-toggle-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
               <button type="submit" className="btn-primary w-full mt-4">
-                <span>Continue</span>
+                <span>Continue / Sign In</span>
+                <ArrowRight size={18} />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ================= NEW CUSTOMER NAME PROMPT MODE ================= */}
+        {mode === 'new_customer_prompt' && (
+          <div className="auth-step-body">
+            <div className="auth-header text-center">
+              <div className="brand-auth-badge">
+                <User size={22} className="text-primary" />
+              </div>
+              <h3 className="auth-title">Welcome to HomeFix!</h3>
+              <p className="auth-sub">No existing account found for <strong>{phone}</strong>. Please enter your Full Name to complete account setup.</p>
+            </div>
+
+            {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
+
+            <form onSubmit={handleNewCustomerPromptSubmit} className="auth-form">
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <div className="input-with-icon">
+                  <User size={18} className="input-icon" />
+                  <input 
+                    type="text" 
+                    className="form-input icon-indent" 
+                    placeholder="e.g. Mohammed Sherhan"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    autoFocus
+                    required
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn-primary w-full mt-4">
+                <span>Complete Setup & Continue</span>
                 <ArrowRight size={18} />
               </button>
             </form>
