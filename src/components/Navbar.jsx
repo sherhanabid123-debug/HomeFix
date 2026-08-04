@@ -39,8 +39,12 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
 
         {/* CTA Actions */}
         <div className="desktop-actions">
-          <button onClick={onOpenPartner} className="btn-primary btn-sm">
-            <span>Join Technician Waiting List</span>
+          <button onClick={() => onOpenAuth('login', 'customer')} className="btn-secondary btn-sm">
+            <User size={15} />
+            <span>Sign In</span>
+          </button>
+          <button onClick={onOpenBooking} className="btn-primary btn-sm">
+            <span>Book a Service</span>
             <ArrowRight size={16} />
           </button>
         </div>
@@ -66,10 +70,16 @@ export default function Navbar({ onOpenBooking, onOpenPartner, onOpenAuth }) {
           </nav>
           <div className="mobile-drawer-actions">
             <button 
-              onClick={() => { setMobileMenuOpen(false); onOpenPartner(); }} 
+              onClick={() => { setMobileMenuOpen(false); onOpenAuth('login', 'customer'); }} 
+              className="btn-secondary w-full mb-2"
+            >
+              Sign In / Login
+            </button>
+            <button 
+              onClick={() => { setMobileMenuOpen(false); onOpenBooking(); }} 
               className="btn-primary w-full"
             >
-              Join Technician Waiting List
+              Book a Service Now
             </button>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, ShieldCheck, Zap, ArrowRight, CheckCircle2, MapPin } from 'lucide-react';
+import { Star, ShieldCheck, Zap, ArrowRight, CheckCircle2, MapPin, Wrench } from 'lucide-react';
 import './Hero.css';
 
 export default function Hero({ onOpenBooking, onOpenPartner }) {
@@ -41,10 +41,14 @@ export default function Hero({ onOpenBooking, onOpenPartner }) {
           </div>
 
           {/* CTAs */}
-          <div className="hero-cta-group">
-            <button onClick={onOpenPartner} className="btn-primary hero-btn">
-              <span>Join Technician Waiting List</span>
+          <div className="hero-cta-group" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <button onClick={onOpenBooking} className="btn-primary hero-btn">
+              <span>Book a Service Now</span>
               <ArrowRight size={18} />
+            </button>
+            <button onClick={onOpenPartner} className="btn-secondary hero-btn">
+              <Wrench size={18} />
+              <span>Join as Technician</span>
             </button>
           </div>
         </div>

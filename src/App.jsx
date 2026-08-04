@@ -10,6 +10,8 @@ import Testimonials from './components/Testimonials';
 import FAQSection from './components/FAQSection';
 import Footer from './components/Footer';
 
+import BookingModal from './components/BookingModal';
+import PartnerModal from './components/PartnerModal';
 import TrackBookingModal from './components/TrackBookingModal';
 import ActiveBookingBar from './components/ActiveBookingBar';
 import AuthModal from './auth/AuthModal';
@@ -21,8 +23,10 @@ import { getCurrentUser } from './auth/authStore';
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
 
-  // Modals state
-  // Pre-launch mode: BookingModal and PartnerModal are retired, all CTAs route to the technician waitlist (AuthModal)
+  // Modals state - Full Launch Mode
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
+  const [partnerModalOpen, setPartnerModalOpen] = useState(false);
   const [trackModalOpen, setTrackModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -40,7 +44,8 @@ export default function App() {
   }, []);
 
   const handleOpenBooking = (serviceName = '') => {
-    handleOpenPartner();
+    setSelectedService(serviceName);
+    setBookingModalOpen(true);
   };
 
   const handleOpenPartner = () => {
@@ -95,6 +100,7 @@ export default function App() {
       <Navbar 
         onOpenBooking={() => handleOpenBooking()} 
         onOpenPartner={handleOpenPartner} 
+        onOpenAuth={(mode, role) => handleOpenAuth(mode, role)}
         onOpenTrack={() => handleOpenTrack()}
       />
 
@@ -136,6 +142,18 @@ export default function App() {
       <ActiveBookingBar onOpenTrack={handleOpenTrack} />
 
       {/* Interactive Modals */}
+      <BookingModal 
+        isOpen={bookingModalOpen}
+        onClose={() => setBookingModalOpen(false)}
+        initialService={selectedService}
+        onOpenTrack={handleOpenTrack}
+      />
+
+      <PartnerModal 
+        isOpen={partnerModalOpen}
+        onClose={() => setPartnerModalOpen(false)}
+      />
+
       <TrackBookingModal 
         isOpen={trackModalOpen} 
         onClose={() => setTrackModalOpen(false)}
