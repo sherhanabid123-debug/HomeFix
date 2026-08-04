@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Zap, Mail, Lock, Phone, User, Wrench, ShieldCheck, CheckCircle2, ArrowRight, Eye, EyeOff, AlertTriangle, MapPin, Briefcase, Clock 
 } from 'lucide-react';
-import { loginWithCredentials, findExistingUser, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
+import { loginWithCredentials, findExistingUser, findExistingUserAsync, registerCustomer, registerTechnician, resetPassword, getRegisteredUsers } from './authStore';
 import { triggerGoogleLoginPopup } from './googleAuthService';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import './AuthModal.css';
@@ -70,7 +70,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
 
   if (!isOpen) return null;
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -79,7 +79,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
       return;
     }
 
-    const existingUser = findExistingUser(phone);
+    let existingUser = findExistingUser(phone);
+    if (!existingUser) {
+      existingUser = await findExistingUserAsync(phone);
+    }
 
     if (!existingUser) {
       // New user detected! Move to Full Name prompt step
@@ -92,7 +95,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     }
 
     // Existing user found! Login with credentials
-    const res = loginWithCredentials({ 
+    const res = await loginWithCredentials({ 
       phoneOrEmail: phone, 
       password 
     });
@@ -127,7 +130,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     onAuthSuccess(user);
   };
 
-  const handleNewCustomerPromptSubmit = (e) => {
+  const handleNewCustomerPromptSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -148,7 +151,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
       return;
     }
 
-    const res = registerCustomer({ 
+    const res = await registerCustomer({ 
       name: fullName, 
       phone, 
       email, 

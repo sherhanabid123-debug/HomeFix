@@ -8,6 +8,8 @@ const CURRENT_USER_KEY = 'homefix_current_user';
 // Default initial accounts if empty
 const INITIAL_USERS = [];
 
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
+
 export function getRegisteredUsers() {
   try {
     const saved = localStorage.getItem(USERS_KEY);
@@ -57,8 +59,64 @@ export function findExistingUser(phoneOrEmail) {
   });
 }
 
-export function loginWithCredentials({ phoneOrEmail, password }) {
-  const existingUser = findExistingUser(phoneOrEmail);
+export async function findExistingUserAsync(phoneOrEmail) {
+  const localMatch = findExistingUser(phoneOrEmail);
+  if (localMatch) return localMatch;
+
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const rawInput = phoneOrEmail ? phoneOrEmail.trim() : '';
+      if (!rawInput) return null;
+      const cleanPhone = rawInput.replace(/[^0-9]/g, '');
+      const cleanEmail = rawInput.toLowerCase();
+
+      let query = supabase.from('customer_inquiries').select('*').eq('status', 'RegisteredCustomer');
+      if (cleanPhone && cleanPhone.length >= 7) {
+        query = query.eq('phone', cleanPhone);
+      } else if (cleanEmail.includes('@')) {
+        query = query.eq('email', cleanEmail);
+      } else {
+        return null;
+      }
+
+      const { data, error } = await query.limit(1);
+      if (!error && data && data.length > 0) {
+        const item = data[0];
+        let pass = 'defaultpass123';
+        if (item.question && item.question.startsWith('PASS:')) {
+          pass = item.question.replace('PASS:', '');
+        }
+
+        const cloudUser = {
+          id: item.id || `CUST-${Math.floor(100 + Math.random() * 900)}`,
+          role: 'customer',
+          name: item.asker_name || 'Customer',
+          phone: item.phone,
+          email: item.email || `${item.phone}@homefix.in`,
+          password: pass,
+          city: 'Kannur',
+          status: 'approved',
+          joinedDate: item.created_at ? item.created_at.slice(0, 10) : new Date().toISOString().slice(0, 10)
+        };
+
+        const users = getRegisteredUsers();
+        if (!users.some(u => u.phone === cloudUser.phone || u.email === cloudUser.email)) {
+          localStorage.setItem(USERS_KEY, JSON.stringify([...users, cloudUser]));
+        }
+        return cloudUser;
+      }
+    } catch (err) {
+      console.warn("Supabase Cloud customer user lookup warning:", err);
+    }
+  }
+  return null;
+}
+
+export async function loginWithCredentials({ phoneOrEmail, password }) {
+  let existingUser = findExistingUser(phoneOrEmail);
+  if (!existingUser) {
+    existingUser = await findExistingUserAsync(phoneOrEmail);
+  }
 
   if (existingUser) {
     if (existingUser.password && password && existingUser.password !== password) {
@@ -72,7 +130,7 @@ export function loginWithCredentials({ phoneOrEmail, password }) {
   return { success: false, error: 'No account found matching this phone number or email.' };
 }
 
-export function registerCustomer({ name, phone, email, password }) {
+export async function registerCustomer({ name, phone, email, password }) {
   const users = getRegisteredUsers();
   const cleanPhone = phone ? phone.replace(/[^0-9]/g, '') : '';
   const cleanEmail = email ? email.trim().toLowerCase() : '';
@@ -112,6 +170,22 @@ export function registerCustomer({ name, phone, email, password }) {
   const updatedUsers = [...users, newCustomer];
   localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
   localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newCustomer));
+
+  // Sync Customer Account to Supabase Cloud Database for cross-device & cross-location login
+  if (isSupabaseConfigured && supabase) {
+    try {
+      await supabase.from('customer_inquiries').insert([{
+        id: `CUST-USER-${cleanPhone}`,
+        asker_name: name.trim(),
+        phone: cleanPhone,
+        email: cleanEmail,
+        question: `PASS:${password}`,
+        status: 'RegisteredCustomer'
+      }]);
+    } catch (dbErr) {
+      console.warn("Supabase customer account registration cloud sync error:", dbErr);
+    }
+  }
 
   return { success: true, user: newCustomer };
 }
