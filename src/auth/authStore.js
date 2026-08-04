@@ -8,6 +8,29 @@ const CURRENT_USER_KEY = 'homefix_current_user';
 // Default initial accounts if empty
 const INITIAL_USERS = [];
 
+export function clearAllCustomerAccounts() {
+  try {
+    const saved = localStorage.getItem(USERS_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        // Keep ONLY technicians! Delete all customer accounts!
+        const onlyTechnicians = parsed.filter(u => u && u.role === 'technician');
+        localStorage.setItem(USERS_KEY, JSON.stringify(onlyTechnicians));
+      }
+    }
+    const current = getCurrentUser();
+    if (current && current.role === 'customer') {
+      localStorage.removeItem(CURRENT_USER_KEY);
+    }
+  } catch (err) {
+    console.warn("Error clearing customer accounts:", err);
+  }
+}
+
+// Automatically purge all existing customer accounts
+clearAllCustomerAccounts();
+
 export function getRegisteredUsers() {
   try {
     const saved = localStorage.getItem(USERS_KEY);
@@ -16,7 +39,7 @@ export function getRegisteredUsers() {
       return INITIAL_USERS;
     }
     const parsed = JSON.parse(saved);
-    return Array.isArray(parsed) ? parsed : INITIAL_USERS;
+    return Array.isArray(parsed) ? parsed.filter(u => u && u.role === 'technician' || u.role === 'customer') : INITIAL_USERS;
   } catch (e) {
     console.error("Error parsing registered users:", e);
     localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
@@ -29,6 +52,15 @@ export function getCurrentUser() {
     const saved = localStorage.getItem(CURRENT_USER_KEY);
     if (!saved || saved === 'undefined' || saved === 'null') return null;
     const parsed = JSON.parse(saved);
+    if (parsed && parsed.role === 'customer') {
+      // Clear legacy customer session if any
+      const users = getRegisteredUsers();
+      const stillExists = users.some(u => u.id === parsed.id);
+      if (!stillExists) {
+        localStorage.removeItem(CURRENT_USER_KEY);
+        return null;
+      }
+    }
     return (parsed && typeof parsed === 'object') ? parsed : null;
   } catch (e) {
     console.error("Error parsing current user session:", e);
@@ -52,7 +84,7 @@ export function findExistingUser(phoneOrEmail) {
   });
 }
 
-export function loginWithCredentials({ phoneOrEmail, password, name = '' }) {
+export function loginWithCredentials({ phoneOrEmail, password }) {
   const users = getRegisteredUsers();
   const existingUser = findExistingUser(phoneOrEmail);
 
@@ -65,37 +97,32 @@ export function loginWithCredentials({ phoneOrEmail, password, name = '' }) {
     return { success: true, user: existingUser, isNewAccount: false };
   }
 
-  // If NO account exists, automatically create a new customer account!
-  const rawInput = phoneOrEmail ? phoneOrEmail.trim() : '';
-  const cleanPhone = rawInput.replace(/[^0-9]/g, '');
-  const isEmail = rawInput.includes('@');
-  const autoName = name.trim() || (isEmail ? rawInput.split('@')[0] : `Customer (${cleanPhone || rawInput})`);
-
-  const newCustomer = {
-    id: `CUST-${Math.floor(100 + Math.random() * 900)}`,
-    role: 'customer',
-    name: autoName,
-    phone: cleanPhone || rawInput,
-    email: isEmail ? rawInput : '',
-    password: password || 'defaultpass123',
-    city: 'Kannur',
-    status: 'approved',
-    joinedDate: new Date().toISOString().slice(0, 10)
-  };
-
-  const updatedUsers = [...users, newCustomer];
-  localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newCustomer));
-
-  return { success: true, user: newCustomer, isNewAccount: true };
+  return { success: false, error: 'No account found. Please complete registration with both phone and email.' };
 }
 
 export function registerCustomer({ name, phone, email, password }) {
   const users = getRegisteredUsers();
-  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  const cleanPhone = phone ? phone.replace(/[^0-9]/g, '') : '';
+  const cleanEmail = email ? email.trim().toLowerCase() : '';
 
-  if (users.some(u => u.phone.replace(/[^0-9]/g, '') === cleanPhone)) {
+  if (!name || !name.trim()) {
+    return { success: false, error: 'Full Name is required.' };
+  }
+  if (!cleanPhone || cleanPhone.length < 10) {
+    return { success: false, error: 'A valid 10-digit mobile phone number is mandatory.' };
+  }
+  if (!cleanEmail || !cleanEmail.includes('@')) {
+    return { success: false, error: 'A valid email address is mandatory.' };
+  }
+  if (!password || password.length < 4) {
+    return { success: false, error: 'Password must be at least 4 characters.' };
+  }
+
+  if (users.some(u => u.phone && u.phone.replace(/[^0-9]/g, '') === cleanPhone)) {
     return { success: false, error: 'An account with this phone number already exists.' };
+  }
+  if (users.some(u => u.email && u.email.toLowerCase() === cleanEmail)) {
+    return { success: false, error: 'An account with this email address already exists.' };
   }
 
   const newCustomer = {
@@ -103,7 +130,7 @@ export function registerCustomer({ name, phone, email, password }) {
     role: 'customer',
     name: name.trim(),
     phone: cleanPhone,
-    email: email ? email.trim() : '',
+    email: cleanEmail,
     password,
     city: 'Kannur',
     status: 'approved',

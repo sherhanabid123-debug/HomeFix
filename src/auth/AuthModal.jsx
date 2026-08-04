@@ -129,14 +129,27 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     setErrorMessage('');
 
     if (!fullName || !fullName.trim()) {
-      setErrorMessage('Please enter your Full Name.');
+      setErrorMessage('Full Name is required.');
+      return;
+    }
+    if (!phone || phone.replace(/[^0-9]/g, '').length < 10) {
+      setErrorMessage('A valid 10-digit mobile phone number is mandatory.');
+      return;
+    }
+    if (!email || !email.includes('@')) {
+      setErrorMessage('A valid email address is mandatory.');
+      return;
+    }
+    if (!password || password.length < 4) {
+      setErrorMessage('Please create a password (at least 4 characters).');
       return;
     }
 
-    const res = loginWithCredentials({ 
-      phoneOrEmail: phone, 
-      password: password || 'defaultpass123', 
-      name: fullName 
+    const res = registerCustomer({ 
+      name: fullName, 
+      phone, 
+      email, 
+      password 
     });
 
     if (!res.success) {
@@ -430,22 +443,22 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
           </div>
         )}
 
-        {/* ================= NEW CUSTOMER NAME PROMPT MODE ================= */}
+        {/* ================= NEW CUSTOMER MANDATORY REGISTRATION MODE ================= */}
         {mode === 'new_customer_prompt' && (
           <div className="auth-step-body">
             <div className="auth-header text-center">
               <div className="brand-auth-badge">
                 <User size={22} className="text-primary" />
               </div>
-              <h3 className="auth-title">Welcome to HomeFix!</h3>
-              <p className="auth-sub">No existing account found for <strong>{phone}</strong>. Please enter your Full Name to complete account setup.</p>
+              <h3 className="auth-title">Create Customer Account</h3>
+              <p className="auth-sub">No account found. Both <strong>Phone Number</strong> and <strong>Email Address</strong> are mandatory for registration.</p>
             </div>
 
             {errorMessage && <div className="auth-error-alert">{errorMessage}</div>}
 
             <form onSubmit={handleNewCustomerPromptSubmit} className="auth-form">
               <div className="form-group">
-                <label className="form-label">Full Name</label>
+                <label className="form-label">Full Name *</label>
                 <div className="input-with-icon">
                   <User size={18} className="input-icon" />
                   <input 
@@ -460,8 +473,53 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 </div>
               </div>
 
+              <div className="form-group">
+                <label className="form-label">Mobile Phone Number *</label>
+                <div className="input-with-icon">
+                  <Phone size={18} className="input-icon" />
+                  <input 
+                    type="tel" 
+                    className="form-input icon-indent" 
+                    placeholder="10-digit mobile number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Email Address *</label>
+                <div className="input-with-icon">
+                  <Mail size={18} className="input-icon" />
+                  <input 
+                    type="email" 
+                    className="form-input icon-indent" 
+                    placeholder="name@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Create Password *</label>
+                <div className="input-with-icon">
+                  <Lock size={18} className="input-icon" />
+                  <input 
+                    type="password" 
+                    className="form-input icon-indent" 
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
               <button type="submit" className="btn-primary w-full mt-4">
-                <span>Complete Setup & Continue</span>
+                <span>Create Account & Continue</span>
                 <ArrowRight size={18} />
               </button>
             </form>
