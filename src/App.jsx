@@ -43,7 +43,16 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  const [pendingBookingService, setPendingBookingService] = useState(null);
+
   const handleOpenBooking = (serviceName = '') => {
+    if (!currentUser) {
+      setPendingBookingService(serviceName);
+      setAuthMode('login');
+      setAuthRole('customer');
+      setAuthModalOpen(true);
+      return;
+    }
     setSelectedService(serviceName);
     setBookingModalOpen(true);
   };
@@ -74,6 +83,12 @@ export default function App() {
     // Redirect based on role
     if (user.role === 'customer') {
       window.history.pushState({}, '', '/customer');
+      if (pendingBookingService !== null) {
+        const serviceToBook = pendingBookingService;
+        setPendingBookingService(null);
+        setSelectedService(serviceToBook);
+        setBookingModalOpen(true);
+      }
     } else if (user.role === 'technician') {
       window.history.pushState({}, '', '/partner/dashboard');
     }
