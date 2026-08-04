@@ -8,29 +8,6 @@ const CURRENT_USER_KEY = 'homefix_current_user';
 // Default initial accounts if empty
 const INITIAL_USERS = [];
 
-export function clearAllCustomerAccounts() {
-  try {
-    const saved = localStorage.getItem(USERS_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        // Keep ONLY technicians! Delete all customer accounts!
-        const onlyTechnicians = parsed.filter(u => u && u.role === 'technician');
-        localStorage.setItem(USERS_KEY, JSON.stringify(onlyTechnicians));
-      }
-    }
-    const current = getCurrentUser();
-    if (current && current.role === 'customer') {
-      localStorage.removeItem(CURRENT_USER_KEY);
-    }
-  } catch (err) {
-    console.warn("Error clearing customer accounts:", err);
-  }
-}
-
-// Automatically purge all existing customer accounts
-clearAllCustomerAccounts();
-
 export function getRegisteredUsers() {
   try {
     const saved = localStorage.getItem(USERS_KEY);
@@ -39,7 +16,7 @@ export function getRegisteredUsers() {
       return INITIAL_USERS;
     }
     const parsed = JSON.parse(saved);
-    return Array.isArray(parsed) ? parsed.filter(u => u && u.role === 'technician' || u.role === 'customer') : INITIAL_USERS;
+    return Array.isArray(parsed) ? parsed : INITIAL_USERS;
   } catch (e) {
     console.error("Error parsing registered users:", e);
     localStorage.setItem(USERS_KEY, JSON.stringify(INITIAL_USERS));
@@ -52,15 +29,6 @@ export function getCurrentUser() {
     const saved = localStorage.getItem(CURRENT_USER_KEY);
     if (!saved || saved === 'undefined' || saved === 'null') return null;
     const parsed = JSON.parse(saved);
-    if (parsed && parsed.role === 'customer') {
-      // Clear legacy customer session if any
-      const users = getRegisteredUsers();
-      const stillExists = users.some(u => u.id === parsed.id);
-      if (!stillExists) {
-        localStorage.removeItem(CURRENT_USER_KEY);
-        return null;
-      }
-    }
     return (parsed && typeof parsed === 'object') ? parsed : null;
   } catch (e) {
     console.error("Error parsing current user session:", e);
@@ -72,32 +40,36 @@ export function getCurrentUser() {
 export function findExistingUser(phoneOrEmail) {
   const users = getRegisteredUsers();
   const rawInput = phoneOrEmail ? phoneOrEmail.trim() : '';
+  if (!rawInput) return null;
+
   const cleanPhone = rawInput.replace(/[^0-9]/g, '');
   const cleanEmail = rawInput.toLowerCase();
 
-  if (!rawInput) return null;
-
   return users.find(u => {
+    if (!u) return false;
     const uPhone = u.phone ? u.phone.replace(/[^0-9]/g, '') : '';
-    const uEmail = u.email ? u.email.toLowerCase() : '';
-    return (cleanPhone && uPhone === cleanPhone) || (cleanEmail && uEmail === cleanEmail);
+    const uEmail = u.email ? u.email.trim().toLowerCase() : '';
+
+    const phoneMatch = cleanPhone && cleanPhone.length >= 7 && uPhone.includes(cleanPhone);
+    const emailMatch = cleanEmail && cleanEmail.includes('@') && uEmail === cleanEmail;
+
+    return phoneMatch || emailMatch;
   });
 }
 
 export function loginWithCredentials({ phoneOrEmail, password }) {
-  const users = getRegisteredUsers();
   const existingUser = findExistingUser(phoneOrEmail);
 
   if (existingUser) {
     if (existingUser.password && password && existingUser.password !== password) {
-      return { success: false, error: 'Incorrect password. Please try again.' };
+      return { success: false, error: 'Incorrect password. Please check your password and try again.' };
     }
-    // If account exists, log in normally!
+    // Account exists! Log in normally
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(existingUser));
     return { success: true, user: existingUser, isNewAccount: false };
   }
 
-  return { success: false, error: 'No account found. Please complete registration with both phone and email.' };
+  return { success: false, error: 'No account found matching this phone number or email.' };
 }
 
 export function registerCustomer({ name, phone, email, password }) {

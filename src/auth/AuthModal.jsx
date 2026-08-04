@@ -84,6 +84,9 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     if (!existingUser) {
       // New user detected! Move to Full Name prompt step
       setErrorMessage('');
+      if (phone.includes('@')) {
+        setEmail(phone.trim());
+      }
       setMode('new_customer_prompt');
       return;
     }
