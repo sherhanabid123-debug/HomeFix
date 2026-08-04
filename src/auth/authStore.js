@@ -37,23 +37,46 @@ export function getCurrentUser() {
   }
 }
 
-export function loginWithCredentials({ phoneOrEmail, password }) {
+export function loginWithCredentials({ phoneOrEmail, password, name = '' }) {
   const users = getRegisteredUsers();
-  const query = phoneOrEmail ? phoneOrEmail.trim().toLowerCase().replace(/[^a-z0-9@.]/g, '') : '';
+  const rawInput = phoneOrEmail ? phoneOrEmail.trim() : '';
+  const cleanPhone = rawInput.replace(/[^0-9]/g, '');
+  const cleanEmail = rawInput.toLowerCase();
 
-  const user = users.find(u => {
-    const cleanPhone = u.phone ? u.phone.replace(/[^0-9]/g, '') : '';
-    const cleanEmail = u.email ? u.email.toLowerCase() : '';
-    return (cleanPhone === query || cleanEmail === query) && u.password === password;
+  // Find existing user by phone or email
+  let user = users.find(u => {
+    const uPhone = u.phone ? u.phone.replace(/[^0-9]/g, '') : '';
+    const uEmail = u.email ? u.email.toLowerCase() : '';
+    return (cleanPhone && uPhone === cleanPhone) || (cleanEmail && uEmail === cleanEmail);
   });
 
-  if (!user) {
-    return { success: false, error: 'Invalid phone number / email or password.' };
+  if (user) {
+    // If account exists, log in normally!
+    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    return { success: true, user, isNewAccount: false };
   }
 
-  // Save session
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-  return { success: true, user };
+  // If NO account exists, automatically create a new customer account!
+  const isEmail = rawInput.includes('@');
+  const autoName = name.trim() || (isEmail ? rawInput.split('@')[0] : `Customer (${cleanPhone || rawInput})`);
+
+  const newCustomer = {
+    id: `CUST-${Math.floor(100 + Math.random() * 900)}`,
+    role: 'customer',
+    name: autoName,
+    phone: cleanPhone || rawInput,
+    email: isEmail ? rawInput : '',
+    password: password || 'defaultpass123',
+    city: 'Kannur',
+    status: 'approved',
+    joinedDate: new Date().toISOString().slice(0, 10)
+  };
+
+  const updatedUsers = [...users, newCustomer];
+  localStorage.setItem(USERS_KEY, JSON.stringify(updatedUsers));
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(newCustomer));
+
+  return { success: true, user: newCustomer, isNewAccount: true };
 }
 
 export function registerCustomer({ name, phone, email, password }) {

@@ -68,7 +68,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
     e.preventDefault();
     setErrorMessage('');
 
-    const res = loginWithCredentials({ phoneOrEmail: phone, password });
+    const res = loginWithCredentials({ phoneOrEmail: phone, password: password || 'defaultpass123', name: fullName });
     if (!res.success) {
       setErrorMessage(res.error);
       return;
@@ -279,7 +279,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 <Zap size={22} className="text-primary" />
               </div>
               <h3 className="auth-title">Welcome to HomeFix</h3>
-              <p className="auth-sub">Sign in to manage your bookings and repairs</p>
+              <p className="auth-sub">Enter your mobile number or email to sign in or get started</p>
             </div>
 
             {/* Google Sign In Button */}
@@ -307,7 +307,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                   <input 
                     type="text" 
                     className="form-input icon-indent" 
-                    placeholder="98470 12345"
+                    placeholder="Enter mobile number or email"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
@@ -315,49 +315,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'tech_registe
                 </div>
               </div>
 
-              <div className="form-group">
-                <div className="flex-between mb-1">
-                  <label className="form-label mb-0">Password</label>
-                  <button 
-                    type="button" 
-                    onClick={() => { setMode('forgot'); setErrorMessage(''); }} 
-                    className="forgot-link-btn"
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-                <div className="input-with-icon">
-                  <Lock size={18} className="input-icon" />
-                  <input 
-                    type={showPassword ? 'text' : 'password'} 
-                    className="form-input icon-indent pr-10" 
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <button 
-                    type="button" 
-                    className="eye-toggle-btn"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-              </div>
-
               <button type="submit" className="btn-primary w-full mt-4">
-                <span>Sign In</span>
+                <span>Continue</span>
                 <ArrowRight size={18} />
               </button>
             </form>
-
-            <div className="auth-footer-note mt-4 text-center">
-              Don’t have an account?{' '}
-              <button onClick={() => { setMode('register'); setErrorMessage(''); }} className="link-text-btn">
-                Create Account
-              </button>
-            </div>
           </div>
         )}
 
